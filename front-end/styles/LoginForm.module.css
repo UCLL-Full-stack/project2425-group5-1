@@ -1,0 +1,53 @@
+.loginForm {
+  position: absolute;
+  z-index: 10;
+  background: black;
+  border-radius: 6px;
+  width: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  background-color: rgba(168, 65, 65, 0);
+  border-radius: 12px;
+}
+
+.loginForm input {
+  font-size: 16px;
+  font-size: max(16px, 1em);
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 1.7em;
+  margin-top: 1em;
+  color: #000;
+}
+
+.loginForm label {
+  margin-top: 2em;
+}
+
+.loginForm button {
+  background: #ff4742;
+  border: 1px solid #ff4742;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  margin-top: 2em;
+}

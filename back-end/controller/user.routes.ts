@@ -7,4 +7,6 @@ router.use(userMiddleWare);
 
 router.get('/', UserController.getUsers);
 
+router.post('/', UserController.createUser);
+
 export default router;

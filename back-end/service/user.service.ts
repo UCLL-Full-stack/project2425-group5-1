@@ -1,18 +1,15 @@
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-import { User } from '../types';
+
+const prisma = new PrismaClient();
 
 /**
  * GET
  */
 export const getUsers = async (req: Request, res: Response) => {
     try {
-        const user: User = {
-            id: 1,
-            email: 'johndoe@gmail.com',
-            password: 'password123',
-            username: 'johndoe',
-        };
-        res.send(user);
+        const users = await prisma.user.findMany();
+        res.send(users);
     } catch (error: unknown) {
         let msg = 'unknown error';
         if (error instanceof Error) {
@@ -25,3 +22,14 @@ export const getUsers = async (req: Request, res: Response) => {
 /**
  * POST
  */
+export const createUser = async (req: Request, res: Response) => {
+    const { username, email, password } = req.body;
+    const user = await prisma.user.create({
+        data: {
+            username,
+            email,
+            password,
+        },
+    });
+    res.json(user);
+};
