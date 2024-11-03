@@ -2,10 +2,12 @@ import style from "@/styles/SplashScreen.module.css";
 import { ISourceOptions } from "@tsparticles/engine";
 import { loadFirePreset } from "@tsparticles/preset-fire";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const SplashScreen = () => {
   const [init, setInit] = useState(false);
+  const router = useRouter();
 
   // this should be run only once per application lifetime
   useEffect(() => {
@@ -13,6 +15,7 @@ const SplashScreen = () => {
       await loadFirePreset(engine);
     }).then(() => {
       setInit(true);
+      setTimeout(() => router.push("/register"), 7000);
     });
   }, []);
 

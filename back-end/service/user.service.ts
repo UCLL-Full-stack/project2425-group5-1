@@ -36,5 +36,5 @@ export const createUser = async (req: Request, res: Response) => {
             character,
         },
     });
-    res.json(user);
+    res.json({ user: user });
 };

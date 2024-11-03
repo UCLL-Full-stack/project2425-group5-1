@@ -60,3 +60,22 @@ export const createCharacter = async (req: Request, res: Response) => {
 
     res.json(character);
 };
+
+/**
+ * DELETE
+ */
+export const deleteCharacter = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.body;
+        console.log(id);
+        const characters = await prisma.character.delete({
+            where: {
+                id: id,
+            },
+        });
+        res.json(characters); // Stuur de data terug als JSON-response
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
+    }
+};
