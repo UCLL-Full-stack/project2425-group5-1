@@ -1,0 +1,11 @@
+.splash-title {
+  color: "#ce4444";
+  position: "absolute";
+  left: "50%";
+  top: "50%";
+  transform: "translate(-50%, -50%)";
+  fontweight: "bold";
+  fontsize: "6rem";
+  userselect: "none";
+  zindex: 9;
+}

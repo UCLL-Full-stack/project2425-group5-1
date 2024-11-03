@@ -1,0 +1,40 @@
+.overlay {
+  z-index: 2;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  opacity: 1;
+  animation: fadeIn 5s ease forwards;
+}
+
+.title {
+  z-index: 1;
+  color: #ce4444;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 6rem;
+  user-select: none;
+  animation: fadeOut 4s ease forwards 4s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
