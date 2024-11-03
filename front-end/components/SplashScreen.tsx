@@ -2,13 +2,7 @@ import style from "@/styles/SplashScreen.module.css";
 import { ISourceOptions } from "@tsparticles/engine";
 import { loadFirePreset } from "@tsparticles/preset-fire";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { Major_Mono_Display } from 'next/font/google';
 import { useEffect, useState } from "react";
-
-const majorMonoDisplay = Major_Mono_Display({
-    subsets: ["latin"],
-    weight: "400"
-});
 
 const SplashScreen = () => {
     const [init, setInit] = useState(false);
@@ -37,7 +31,7 @@ const SplashScreen = () => {
     return (
         <>
             <div className={`${style.overlay}`}></div>
-            <h1 className={`${majorMonoDisplay.className} ${style.title}`} id="title">Ember</h1>
+            <h1 className={`${style.title}`} id="title">Ember</h1>
             <Particles options={options} />
         </>
     );

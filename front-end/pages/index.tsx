@@ -1,9 +1,9 @@
-import SplashScreen from "@/components/SplashScreen.tsx";
+import SplashScreen from "@/components/SplashScreen";
 
 export default function Home() {
-	return (
-		<main>
-			<SplashScreen />
-		</main>
-	);
-};
+  return (
+    <>
+      <SplashScreen />
+    </>
+  );
+}
