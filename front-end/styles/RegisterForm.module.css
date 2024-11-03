@@ -1,8 +1,8 @@
-.loginForm {
+.registerForm {
   position: absolute;
   z-index: 10;
   background: black;
-  border-radius: 6px;
+  border-radius: 12px;
   width: 400px;
   height: 600px;
   display: flex;
@@ -10,16 +10,15 @@
   justify-content: center;
   align-items: left;
   padding: 0rem 2rem 0rem 2rem;
-  left: 70%;
+  left: 30%;
   top: 50%;
   transform: translate(-50%, -50%);
   backdrop-filter: blur(10px) saturate(110%);
   -webkit-backdrop-filter: blur(10px) saturate(110%);
   background-color: rgba(168, 65, 65, 0);
-  border-radius: 12px;
 }
 
-.loginForm input {
+.registerForm input {
   font-size: 16px;
   font-size: max(16px, 1em);
   font-family: inherit;
@@ -33,11 +32,11 @@
   color: #000;
 }
 
-.loginForm label {
+.registerForm label {
   margin-top: 2em;
 }
 
-.loginForm button {
+.registerForm button {
   background: #ff4742;
   border: 1px solid #ff4742;
   border-radius: 6px;

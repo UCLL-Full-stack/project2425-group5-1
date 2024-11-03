@@ -1,4 +1,5 @@
 import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
 import SplashScreen from "@/components/SplashScreen";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <>
       <SplashScreen />
       <LoginForm />
+      <RegisterForm />
     </>
   );
 }
