@@ -8,7 +8,11 @@ const prisma = new PrismaClient();
  */
 export const getUsers = async (req: Request, res: Response) => {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            include: {
+                character: true, // Include the related characters
+            },
+        });
         res.send(users);
     } catch (error: unknown) {
         let msg = 'unknown error';
@@ -23,12 +27,13 @@ export const getUsers = async (req: Request, res: Response) => {
  * POST
  */
 export const createUser = async (req: Request, res: Response) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, character } = req.body;
     const user = await prisma.user.create({
         data: {
             username,
             email,
             password,
+            character,
         },
     });
     res.json(user);

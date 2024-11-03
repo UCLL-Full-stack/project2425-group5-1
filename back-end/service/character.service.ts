@@ -32,7 +32,7 @@ export const createCharacter = async (req: Request, res: Response) => {
         defense,
         magicDefense,
         progress,
-        user,
+        userId,
     } = req.body;
 
     const character = await prisma.character.create({
@@ -50,7 +50,9 @@ export const createCharacter = async (req: Request, res: Response) => {
             defense,
             magicDefense,
             progress,
-            user,
+            user: {
+                connect: { id: userId },
+            },
         },
     });
 
