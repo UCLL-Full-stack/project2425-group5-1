@@ -6,11 +6,13 @@ const prisma = new PrismaClient();
 /**
  * GET
  */
-export const getCharacters = async () => {
+export const getCharacters = async (req: Request, res: Response) => {
     try {
-        return await prisma.character.findMany();
+        const characters = await prisma.character.findMany();
+        res.json(characters); // Stuur de data terug als JSON-response
     } catch (error) {
         console.error(error);
+        res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
     }
 };
 
