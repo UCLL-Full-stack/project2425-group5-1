@@ -1,10 +1,15 @@
-const postLoginData = () => {
+const postLoginData = (body: { email: string; password: string }) => {
   return fetch(process.env.API_URL + "/user/login", {
     method: "POST",
+    body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
     },
-  });
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      localStorage.setItem("userId", data.user.id);
+    });
 };
 
 const postRegisterData = (body: {

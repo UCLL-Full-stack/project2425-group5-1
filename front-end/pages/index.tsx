@@ -1,6 +1,7 @@
-import LoginForm from "@/components/LoginForm";
-import RegisterForm from "@/components/RegisterForm";
-import SplashScreen from "@/components/SplashScreen";
+import LoginForm from "@/components/main-menu/LoginForm";
+import MenuMusic from "@/components/main-menu/MenuMusic";
+import RegisterForm from "@/components/main-menu/RegisterForm";
+import SplashScreen from "@/components/main-menu/SplashScreen";
 import { useState } from "react";
 
 export default function Home() {
@@ -12,9 +13,11 @@ export default function Home() {
 
   return (
     <>
-      <SplashScreen />
       <RegisterForm setShow={setShow} showState={showState} />
       <LoginForm setShow={setShow} showState={showState} />
+
+      <SplashScreen />
+      <MenuMusic />
     </>
   );
 }

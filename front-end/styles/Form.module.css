@@ -1,0 +1,99 @@
+.form {
+  position: absolute;
+  z-index: 10;
+  background: black;
+  border-radius: 6px;
+  width: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  padding: 0rem 2rem 0rem 2rem;
+  left: 70%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  background-color: rgba(168, 65, 65, 0);
+  border-radius: 12px;
+  opacity: 0;
+}
+
+.form input {
+  font-size: max(16px, 1rem);
+  font-family: inherit;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 1.25rem;
+  margin-top: 1rem;
+  color: #fff;
+
+  border: none;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.form input:focus {
+  outline: none;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label:focus-within::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  bottom: 1rem;
+  width: 100%;
+  height: 2px;
+  background-color: white;
+  z-index: 999;
+  border-radius: 8px;
+  animation: 0.7s fadeIn ease forwards;
+}
+
+.form button {
+  background: #ff4742;
+  border: 1px solid #ff4742;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  user-select: none;
+}
+
+.instead {
+  text-align: center;
+  user-select: none;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

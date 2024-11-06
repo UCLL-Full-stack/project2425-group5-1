@@ -1,0 +1,13 @@
+.icon {
+  z-index: 2;
+  font-size: 2rem;
+  cursor: pointer;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  transition: 0.4s ease color;
+}
+
+.icon:hover {
+  color: #7f7f7f;
+}

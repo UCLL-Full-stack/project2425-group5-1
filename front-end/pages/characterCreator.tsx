@@ -1,4 +1,4 @@
-import CharacterForm from "@/components/CharacterForm";
+import CharacterForm from "@/components/main-menu/CharacterForm";
 
 export default function characterCreator() {
     return (
