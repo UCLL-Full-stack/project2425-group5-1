@@ -1,8 +1,21 @@
 import styles from "@/styles/LoginForm.module.css";
+import { useEffect, useState } from "react";
 
-const LoginForm = () => {
+interface Props {
+  setShow?: (show: "login" | "register") => void;
+  showState: "login" | "register";
+}
+
+const LoginForm: React.FC<Props> = ({ setShow, showState }) => {
+  const [firstAnimateDelay, usefirstAnimateDelay] = useState(-1);
+
+  useEffect(() => {
+    usefirstAnimateDelay(firstAnimateDelay + 1);
+  }, [showState]);
+
+  if (showState !== "login") return <></>;
   return (
-    <form className={`${styles.loginForm}`}>
+    <form className={`${styles.loginForm} ${firstAnimateDelay ? styles.animate : null}`}>
       <h1>Login</h1>
       <label>
         <b>Username</b>
@@ -18,6 +31,7 @@ const LoginForm = () => {
         />
       </label>
       <button type="submit">Login</button>
+      <a href="#" onClick={() => setShow ? setShow("register") : null}>Register instead</a>
     </form>
   );
 };
