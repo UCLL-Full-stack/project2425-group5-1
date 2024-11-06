@@ -1,3 +1,5 @@
+import { User as U} from '../model/user'
+
 type User = {
     id?: number;
     username: string;
@@ -19,12 +21,12 @@ type Character = {
     defense: number;
     magicDefense: number;
     progress: string;
-    inventory: Item[];
-    move: Move[];
-    user: User;
-    class: Class;
-    weapon: Weapon;
-    armor: Armor;
+    // inventory: Item[];
+    // move: Move[];
+    user: U;
+    // class: Class;
+    // weapon: Weapon;
+    // armor: Armor;
 };
 type Class = {
     id?: number;

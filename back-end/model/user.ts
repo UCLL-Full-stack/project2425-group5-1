@@ -1,10 +1,12 @@
+import {User as IUser } from '../types/index';
+
 export class User {
     private id?: number;
     private username: string;
     private email: string;
     private password: string;
 
-    constructor(user: { id?: number; username: string; email: string; password: string }) {
+    constructor(user: IUser) {
         this.validate(user);
 
         this.id = user.id;
@@ -22,11 +24,13 @@ export class User {
     getEmail(): string {
         return this.email;
     }
+
     getPassword(): string {
         return this.password;
     }
+    
+    validate(user: IUser): void {
 
-    validate(user: { id?: number; username: string; email: string; password: string }) {
         if (!user.username.trim()) {
             throw new Error('Username is required');
         }
