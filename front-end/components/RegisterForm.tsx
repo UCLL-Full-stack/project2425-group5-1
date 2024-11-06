@@ -1,17 +1,20 @@
 import UserService from "@/services/UserService";
 import styles from "@/styles/RegisterForm.module.css";
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
-const RegisterForm = () => {
-  const [submit, setSubmit] = useState(false);
+interface Props {
+  setShow?: (show: "login" | "register") => void;
+  showState: "login" | "register";
+}
+
+const RegisterForm: React.FC<Props> = ({ setShow, showState }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    if (!submit) return;
+  function registerUser() {
     const data = {
       username: username,
       email: email,
@@ -19,14 +22,11 @@ const RegisterForm = () => {
     };
     if (data.email.length && data.username.length && data.password.length) {
       UserService.postRegisterData(data);
+      router.push("/characterCreator");
     } else {
       return;
     }
-
-    router.push("/characterCreator");
-
-    setSubmit(false);
-  }, [submit]);
+  }
 
   function handleUsernameChange(e: ChangeEvent<HTMLInputElement>) {
     setUsername(e.target.value);
@@ -38,8 +38,9 @@ const RegisterForm = () => {
     setEmail(e.target.value);
   }
 
+  if (showState !== "register") return <></>;
   return (
-    <form className={`${styles.registerForm}`} onSubmit={(e) => { e.preventDefault(); setSubmit(true); }}>
+    <form className={`${styles.registerForm}`} onSubmit={(e) => { e.preventDefault(); registerUser(); }}>
       <h1>Register</h1>
       <label>
         <b>Username</b>
@@ -72,6 +73,7 @@ const RegisterForm = () => {
         />
       </label>
       <button type="submit">Register</button>
+      <a href="#" onClick={() => setShow ? setShow("login") : null}>Login instead</a>
     </form>
   );
 };
