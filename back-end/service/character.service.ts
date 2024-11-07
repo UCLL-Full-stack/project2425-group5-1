@@ -37,26 +37,6 @@ export const createCharacter = async (req: Request, res: Response) => {
         userId,
     } = req.body;
 
-    const character = await prisma.character.create({
-        data: {
-            name,
-            level,
-            xp,
-            strength,
-            speed,
-            magic,
-            dexterity,
-            healthPoints,
-            manaPoints,
-            luck,
-            defense,
-            magicDefense,
-            progress,
-            user: {
-                connect: { id: userId },
-            },
-        },
-    });
 
     res.json(character);
 };

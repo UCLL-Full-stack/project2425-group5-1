@@ -1,22 +1,22 @@
-import { Character } from "../../model/character";
-import { User } from "../../model/user";
+import Character from '../../model/character';
+import User from '../../model/user';
 
 let mockUser: User;
 let validCharacter: Character;
 
-beforeEach( () => {
-    mockUser = new User({ 
+beforeEach(() => {
+    mockUser = new User({
         id: 1,
         username: 'John Doe',
         email: 'john.doe@example.com',
         password: 'password123',
     });
 
-    validCharacter = new Character ({
+    validCharacter = new Character({
         id: 1,
         name: 'John',
         level: 1,
-        xp:  0,
+        xp: 0,
         strength: 10,
         speed: 5,
         magic: 8,
@@ -29,16 +29,15 @@ beforeEach( () => {
         progress: 'starting',
         user: mockUser,
     });
-
 });
 
 test('given: valid values for character, when: character is created, then: character is created with does values.', () => {
-    // Given 
+    // Given
     const validCharacterData = {
         id: 1,
         name: 'John',
         level: 1,
-        xp:  0,
+        xp: 0,
         strength: 10,
         speed: 5,
         magic: 8,
@@ -50,9 +49,9 @@ test('given: valid values for character, when: character is created, then: chara
         magicDefense: 1,
         progress: 'starting',
         user: mockUser,
-    }
+    };
 
-    // When 
+    // When
     const character = new Character(validCharacterData);
 
     // Then
@@ -74,13 +73,13 @@ test('given: valid values for character, when: character is created, then: chara
 });
 
 test('given: valid character, when: setName is called with a new name, then: valid character has a new name.', () => {
-    // Given 
+    // Given
     // validCharacter
 
     // When
     validCharacter.setName('new name');
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('new name');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -99,21 +98,21 @@ test('given: valid character, when: setName is called with a new name, then: val
 });
 
 test('given: valid character, when: setName is called with an empty string, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid Character
 
-    // When & Then 
-    expect( () => validCharacter.setName('')).toThrow('Name cannot be empty');
+    // When & Then
+    expect(() => validCharacter.setName('')).toThrow('Name cannot be empty');
 });
 
 test('given: valid character, when: setLevel is called with a new level, then: valid character has a new level.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setLevel(2);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(2);
@@ -132,21 +131,21 @@ test('given: valid character, when: setLevel is called with a new level, then: v
 });
 
 test('given: valid character, when: setLevel is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setLevel(-1)).toThrow('Level must be at least 0');
+    // When & Then
+    expect(() => validCharacter.setLevel(-1)).toThrow('Level must be at least 0');
 });
 
 test('given: valid character, when: setXp is called with a new Xp value, then: valid character has a new Xp value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setXp(100);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -165,21 +164,21 @@ test('given: valid character, when: setXp is called with a new Xp value, then: v
 });
 
 test('given: valid character, when: setXp is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setXp(-100)).toThrow('Xp cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setXp(-100)).toThrow('Xp cannot be negative');
 });
 
 test('given: valid character, when: setStrength is called with a new strength value, then: valid character has a new strength value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setStrength(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -198,21 +197,21 @@ test('given: valid character, when: setStrength is called with a new strength va
 });
 
 test('given: valid character, when: setStrength is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setStrength(-100)).toThrow('Strength cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setStrength(-100)).toThrow('Strength cannot be negative');
 });
 
 test('given: valid character, when: setSpeed is called with a new speed value, then: valid character has a new speed value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setSpeed(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -231,21 +230,21 @@ test('given: valid character, when: setSpeed is called with a new speed value, t
 });
 
 test('given: valid character, when: setSpeed is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setSpeed(-100)).toThrow('Speed cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setSpeed(-100)).toThrow('Speed cannot be negative');
 });
 
 test('given: valid character, when: setMagic is called with a new magic value, then: valid character has a new magic value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setMagic(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -264,21 +263,21 @@ test('given: valid character, when: setMagic is called with a new magic value, t
 });
 
 test('given: valid character, when: setMagic is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setMagic(-100)).toThrow('Magic cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setMagic(-100)).toThrow('Magic cannot be negative');
 });
 
 test('given: valid character, when: setDexterity is called with a new dexterity value, then: valid character has a new dexterity value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setDexterity(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -297,21 +296,21 @@ test('given: valid character, when: setDexterity is called with a new dexterity 
 });
 
 test('given: valid character, when: setDexterity is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setDexterity(-100)).toThrow('Dexterity cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setDexterity(-100)).toThrow('Dexterity cannot be negative');
 });
 
 test('given: valid character, when: setHealthPoints is called with a new healthPoints value, then: valid character has a new healthPoints value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setHealthPoints(500);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -330,21 +329,21 @@ test('given: valid character, when: setHealthPoints is called with a new healthP
 });
 
 test('given: valid character, when: setHealthPoints is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setHealthPoints(-100)).toThrow('Health points cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setHealthPoints(-100)).toThrow('Health points cannot be negative');
 });
 
 test('given: valid character, when: setManaPoints is called with a new manaPoints value, then: valid character has a new manaPoints value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setManaPoints(500);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -363,21 +362,21 @@ test('given: valid character, when: setManaPoints is called with a new manaPoint
 });
 
 test('given: valid character, when: setManaPoints is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setManaPoints(-100)).toThrow('Mana points cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setManaPoints(-100)).toThrow('Mana points cannot be negative');
 });
 
 test('given: valid character, when: setLuck is called with a new luck value, then: valid character has a new luck value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setLuck(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -396,21 +395,21 @@ test('given: valid character, when: setLuck is called with a new luck value, the
 });
 
 test('given: valid character, when: setLuck is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setLuck(-100)).toThrow('Luck cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setLuck(-100)).toThrow('Luck cannot be negative');
 });
 
 test('given: valid character, when: setDefense is called with a new defense value, then: valid character has a new defense value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setDefense(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -429,21 +428,21 @@ test('given: valid character, when: setDefense is called with a new defense valu
 });
 
 test('given: valid character, when: setDefense is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setDefense(-100)).toThrow('Defense cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setDefense(-100)).toThrow('Defense cannot be negative');
 });
 
 test('given: valid character, when: setMagicDefense is called with a new magicDefense value, then: valid character has a new magicDefense value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setMagicDefense(50);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -462,21 +461,21 @@ test('given: valid character, when: setMagicDefense is called with a new magicDe
 });
 
 test('given: valid character, when: setMagicDefense is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setMagicDefense(-100)).toThrow('Magic defense cannot be negative');
+    // When & Then
+    expect(() => validCharacter.setMagicDefense(-100)).toThrow('Magic defense cannot be negative');
 });
 
 test('given: valid character, when: setProgress is called with a new progress value, then: valid character has a new progress value.', () => {
-    // Given 
+    // Given
     //  validCharacter
 
     // When
     validCharacter.setProgress('1-1');
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);
@@ -495,16 +494,16 @@ test('given: valid character, when: setProgress is called with a new progress va
 });
 
 test('given: valid character, when: setProgress is called with a negative value, then: an error is throw.', () => {
-    // Given 
+    // Given
     // valid character
 
-    // When & Then 
-    expect( () => validCharacter.setProgress('')).toThrow('Progress cannot be empty');
+    // When & Then
+    expect(() => validCharacter.setProgress('')).toThrow('Progress cannot be empty');
 });
 
 test('given: valid character, when: setUser is called with a new user value, then: valid character has a new user value.', () => {
-    // Given 
-    const newUser: User = new User({ 
+    // Given
+    const newUser: User = new User({
         id: 2,
         username: 'Alex Johnson',
         email: 'AlexJohnson@example.com',
@@ -514,7 +513,7 @@ test('given: valid character, when: setUser is called with a new user value, the
     // When
     validCharacter.setUser(newUser);
 
-    // Then 
+    // Then
     expect(validCharacter.getId()).toEqual(1);
     expect(validCharacter.getName()).toEqual('John');
     expect(validCharacter.getLevel()).toEqual(1);

@@ -1,9 +1,9 @@
 import { Character as ICharacter } from '../types';
 // import { User } from  '../types';
 
-import { User } from './user'
+import User from './user';
 
-export class Character {
+export default class Character {
     private id?: number;
     private name!: string;
     private level!: number;
@@ -59,7 +59,7 @@ export class Character {
 
     setLevel(level: number): void {
         if (level < 0) {
-            throw new Error('Level must be at least 0')
+            throw new Error('Level must be at least 0');
         }
         this.level = level;
     }
@@ -81,7 +81,7 @@ export class Character {
 
     setStrength(strength: number): void {
         if (strength < 0) {
-            throw  new Error('Strength cannot be negative');
+            throw new Error('Strength cannot be negative');
         }
         this.strength = strength;
     }
@@ -100,7 +100,7 @@ export class Character {
     getMagic(): number {
         return this.magic;
     }
-    
+
     setMagic(magic: number): void {
         if (magic < 0) {
             throw new Error('Magic cannot be negative');
@@ -111,7 +111,7 @@ export class Character {
     getDexterity(): number {
         return this.dexterity;
     }
-    
+
     setDexterity(dexterity: number): void {
         if (dexterity < 0) {
             throw new Error('Dexterity cannot be negative');
@@ -122,18 +122,18 @@ export class Character {
     getHealthPoints(): number {
         return this.healthPoints;
     }
-    
+
     setHealthPoints(healthPoints: number): void {
         if (healthPoints < 0) {
             throw new Error('Health points cannot be negative');
-        } 
+        }
         this.healthPoints = healthPoints;
     }
 
     getManaPoints(): number {
         return this.manaPoints;
     }
-    
+
     setManaPoints(manaPoints: number) {
         if (manaPoints < 0) {
             throw new Error('Mana points cannot be negative');
@@ -144,7 +144,7 @@ export class Character {
     getLuck(): number {
         return this.luck;
     }
-    
+
     setLuck(luck: number): void {
         if (luck < 0) {
             throw new Error('Luck cannot be negative');
@@ -155,7 +155,7 @@ export class Character {
     getDefense(): number {
         return this.defense;
     }
-    
+
     setDefense(defense: number): void {
         if (defense < 0) {
             throw new Error('Defense cannot be negative');
@@ -166,7 +166,7 @@ export class Character {
     getMagicDefense(): number {
         return this.magicDefense;
     }
-    
+
     setMagicDefense(magicDefense: number): void {
         if (magicDefense < 0) {
             throw new Error('Magic defense cannot be negative');
@@ -177,10 +177,10 @@ export class Character {
     getProgress(): string {
         return this.progress;
     }
-    
+
     setProgress(progress: string): void {
         if (!progress.trim()) {
-            throw new  Error('Progress cannot be empty');
+            throw new Error('Progress cannot be empty');
         }
         this.progress = progress;
     }

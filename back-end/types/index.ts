@@ -1,4 +1,4 @@
-import { User as U} from '../model/user'
+import UserModel from '../model/user';
 
 type User = {
     id?: number;
@@ -6,6 +6,7 @@ type User = {
     email: string;
     password: string;
 };
+
 type Character = {
     id?: number;
     name: string;
@@ -23,7 +24,7 @@ type Character = {
     progress: string;
     // inventory: Item[];
     // move: Move[];
-    user: U;
+    user: UserModel;
     // class: Class;
     // weapon: Weapon;
     // armor: Armor;
