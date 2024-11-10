@@ -1,6 +1,6 @@
 import UserService from "@/services/UserService";
-import formStyles from "@/styles/Form.module.css";
-import registerStyles from "@/styles/RegisterForm.module.css";
+import formStyles from "@/styles/main-menu/Form.module.css";
+import registerStyles from "@/styles/main-menu/RegisterForm.module.css";
 import { useForm } from "react-hook-form";
 
 interface Props {

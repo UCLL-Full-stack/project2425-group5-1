@@ -1,6 +1,6 @@
 import UserService from "@/services/UserService";
-import formStyles from "@/styles/Form.module.css";
-import loginStyles from "@/styles/LoginForm.module.css";
+import formStyles from "@/styles/main-menu/Form.module.css";
+import loginStyles from "@/styles/main-menu/LoginForm.module.css";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 

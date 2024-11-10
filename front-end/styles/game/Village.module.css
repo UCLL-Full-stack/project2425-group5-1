@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+}
+
+.wrapper {
+    display: flex;
+    align-items: flex-end;
+}
+
+.slide {
+    display: flex;
+    align-items: flex-end;
+    width: auto;
+}

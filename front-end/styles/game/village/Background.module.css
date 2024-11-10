@@ -1,0 +1,9 @@
+.image {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    height: 100vh;
+    min-width: max-content;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

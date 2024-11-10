@@ -1,0 +1,29 @@
+.image {
+    object-fit: cover;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.blacksmith {
+    position: relative; /* This is important for the ::after to position correctly */
+    width: 128px;
+    height: 128px;
+    cursor: pointer;
+    transition: filter 0.4s ease;
+}
+
+.blacksmith::after {
+    content: "Blacksmith";
+    position: absolute;
+    color: rgb(42, 33, 13);
+    top: 43%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    font-weight: 1000;
+    font-size: 0.9rem;
+}
+.blacksmith:hover {
+    filter: brightness(0.8);
+}

@@ -1,4 +1,4 @@
-import style from "@/styles/SplashScreen.module.css";
+import style from "@/styles/main-menu/SplashScreen.module.css";
 import { ISourceOptions } from "@tsparticles/engine";
 import { loadFirePreset } from "@tsparticles/preset-fire";
 // @ts-ignore:next-line
