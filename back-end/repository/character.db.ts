@@ -2,12 +2,12 @@ import { User } from '../types/index';
 import prisma from './database';
 
 const getCharacters = async () => {
-    // const users = await prisma.user.findMany({
-    //     include: {
-    //         character: true, // Include the related characters
-    //     },
-    // });
-    // return users;
+    const characters = await prisma.character.findMany({
+        include: {
+            user: true,
+        },
+    });
+    return characters;
 };
 
 const createCharacter = async (
@@ -41,7 +41,9 @@ const createCharacter = async (
             defense,
             magicDefense,
             progress,
-            user: user,
+            user: {
+                connect: { id: user.id },
+            },
         },
     });
     return character;

@@ -2,12 +2,17 @@ import { Character } from '../types';
 import prisma from './database';
 
 const getUsers = async () => {
-    const users = await prisma.user.findMany({
-        include: {
-            character: true, // Include the related characters
-        },
-    });
-    return users;
+    try {
+        const users = await prisma.user.findMany({
+            include: {
+                character: true, // Include related characters
+            },
+        });
+        return users;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw new Error('Failed to fetch users');
+    }
 };
 
 const createUser = async (
@@ -16,19 +21,24 @@ const createUser = async (
     password: string,
     character?: Character
 ) => {
-    const user = await prisma.user.create({
-        data: {
-            username,
-            email,
-            password,
-            character: character
-                ? {
-                      create: character,
-                  }
-                : undefined,
-        },
-    });
-    return user;
+    try {
+        const user = await prisma.user.create({
+            data: {
+                username,
+                email,
+                password,
+                character: character
+                    ? {
+                        create: character,
+                    }
+                    : undefined,
+            },
+        });
+        return user;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw new Error('Failed to create user');
+    }
 };
 
 const userRepositry = {

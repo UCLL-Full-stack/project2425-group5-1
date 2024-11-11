@@ -2,7 +2,13 @@ import express from 'express';
 import * as CharacterController from '../service/character.service';
 const router = express.Router();
 
-router.get('/', CharacterController.getCharacters);
+router.get('/', async (req, res, next) => {
+    try {
+        await CharacterController.getCharacters(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 

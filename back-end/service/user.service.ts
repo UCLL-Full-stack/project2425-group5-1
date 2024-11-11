@@ -5,7 +5,12 @@ import { Character } from '../types';
  * GET
  */
 const getUsers = async () => {
-    return userRepositry.getUsers();
+    try {
+        return await userRepositry.getUsers();
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        throw new Error('Unable to fetch users.');
+    }
 };
 
 /**
@@ -17,8 +22,13 @@ const createUser = async (
     password: string,
     character?: Character
 ) => {
-    return userRepositry.createUser(username, email, password, character);
-};
+    try {
+        return await userRepositry.createUser(username, email, password, character);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw new Error('Unable to create user.');
+    }
+    };
 
 const userService = {
     createUser,

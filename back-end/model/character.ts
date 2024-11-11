@@ -134,7 +134,7 @@ export default class Character {
         return this.manaPoints;
     }
 
-    setManaPoints(manaPoints: number) {
+    setManaPoints(manaPoints: number): void {
         if (manaPoints < 0) {
             throw new Error('Mana points cannot be negative');
         }

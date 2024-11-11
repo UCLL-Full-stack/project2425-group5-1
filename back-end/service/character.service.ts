@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export const getCharacters = async (req: Request, res: Response) => {
     try {
         const characters = await prisma.character.findMany();
-        res.json(characters); // Stuur de data terug als JSON-response
+        res.status(200).json(characters); // Stuur de data terug als JSON-response
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
@@ -37,8 +37,30 @@ export const createCharacter = async (req: Request, res: Response) => {
         userId,
     } = req.body;
 
-
+    try {
+        const character = await prisma.character.create({
+            data: {
+                name,
+                level,
+                xp,
+                strength,
+                speed,
+                magic,
+                dexterity,
+                healthPoints,
+                manaPoints,
+                luck,
+                defense,
+                magicDefense,
+                progress,
+                userId,
+            },
+        });
     res.json(character);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Failed to create character' });
+    }
 };
 
 /**
@@ -53,7 +75,7 @@ export const deleteCharacter = async (req: Request, res: Response) => {
                 id: id,
             },
         });
-        res.json(characters); // Stuur de data terug als JSON-response
+        res.status(200).json(characters); // Stuur de data terug als JSON-response
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
