@@ -1,45 +1,59 @@
-import { Character } from '../types';
+import User from '../model/user';
+import { UserInput } from '../types';
 import prisma from './database';
 
-const getUsers = async () => {
+const getUsers = async (): Promise<User[]> => {
     try {
-        const users = await prisma.user.findMany({
+        const usersPrisma = await prisma.user.findMany({
             include: {
-                character: true, // Include related characters
+                character: true,
             },
         });
-        return users;
+        return usersPrisma.map((userPrisma) => User.from(userPrisma));
     } catch (error) {
         console.error('Error fetching users:', error);
         throw new Error('Failed to fetch users');
     }
 };
 
+
 const createUser = async (
-    username: string,
+    name: string,
     email: string,
     password: string,
-    character?: Character
 ) => {
     try {
-        const user = await prisma.user.create({
+        const userPrisma = await prisma.user.create({
             data: {
-                username,
+                name,
                 email,
                 password,
-                character: character
-                    ? {
-                        create: character,
-                    }
-                    : undefined,
             },
         });
-        return user;
+        return new User(userPrisma);
     } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Failed to create user');
     }
 };
+
+
+// const createUser = async (userData: UserInput): Promise<User> => {
+//     try {
+//         const userPayload = {
+//             name: userData.name,
+//             email: userData.email,
+//             password: userData.password,
+//             }
+
+//         const createdUser = await prisma.user.create({
+//             data: userPayload,
+//         });
+//     } catch (error) {
+//         console.error('Error creating user:', error);
+//         throw new Error('Failed to create user');
+//     }
+// };
 
 const userRepositry = {
     createUser,

@@ -1,7 +1,6 @@
-import { Character as ICharacter } from '../types';
-// import { User } from  '../types';
-
+import { CharacterInput } from '../types';
 import User from './user';
+
 
 export default class Character {
     private id?: number;
@@ -18,9 +17,25 @@ export default class Character {
     private defense!: number;
     private magicDefense!: number;
     private progress!: string;
-    private user!: User;
+    private user?: User;
 
-    constructor(character: ICharacter) {
+    constructor(character: {
+        id?: number;
+        name: string;
+        level: number;
+        xp: number;
+        strength: number;
+        speed: number;
+        magic: number;
+        dexterity: number;
+        healthPoints: number;
+        manaPoints: number;
+        luck: number;
+        defense: number;
+        magicDefense: number;
+        progress: string;
+        user?: User;
+    }) {
         this.id = character.id;
         this.setName(character.name);
         this.setLevel(character.level);
@@ -35,7 +50,8 @@ export default class Character {
         this.setDefense(character.defense);
         this.setMagicDefense(character.magicDefense);
         this.setProgress(character.progress);
-        this.setUser(character.user);
+        // this.setUser(character.user);
+        this.user = character.user
     }
 
     getId(): number | undefined {
@@ -185,16 +201,37 @@ export default class Character {
         this.progress = progress;
     }
 
-    getUser(): User {
+    getUser(): User | undefined {
         return this.user;
     }
 
     setUser(newUser: User): void {
-        // if (!newUser) throw new Error('User cannot be null or undefined');
         const id = newUser.getId();
-        const username = newUser.getUsername();
+        const name = newUser.getName();
         const email = newUser.getEmail();
         const password = newUser.getPassword();
-        this.user = new User({ id, username, email, password });
+        this.user = new User({ id, name, email, password });
+    }
+
+
+    equals(character: Character): boolean {
+        return (
+            this.id === character.getId() &&
+            this.name === character.getName() &&
+            this.level === character.getLevel() &&
+            this.xp === character.getXp() &&
+
+            this.strength === character.getStrength() &&
+            this.speed === character.getSpeed() &&
+            this.magic === character.getMagic() &&
+            this.dexterity === character.getDexterity() &&
+            this.healthPoints === character.getHealthPoints() &&
+            this.manaPoints === character.getManaPoints() &&
+            this.luck === character.getLuck() &&
+            this.defense === character.getDefense() &&
+            this.magicDefense === character.getMagicDefense() &&
+            this.progress === character.getProgress() &&
+            (this.user ? this.user.equals(character.getUser()!) : character.getUser() === undefined)
+        );
     }
 }

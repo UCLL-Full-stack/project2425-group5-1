@@ -15,27 +15,44 @@ datasource db {
 
 model User {
   id        Int        @id @default(autoincrement())
-  username  String     @unique
+  name      String     
   email     String     @unique
   password  String
-  character Character? @relation
+  character Character?
 }
 
 model Character {
-  id           Int    @id @default(autoincrement())
-  name         String
-  level        Int
-  xp           Int
-  strength     Int
-  speed        Int
-  magic        Int
-  dexterity    Int
-  healthPoints Int
-  manaPoints   Int
-  luck         Int
-  defense      Int
-  magicDefense Int
-  progress     String
-  user         User   @relation(fields: [userId], references: [id])
-  userId       Int    @unique
+  id                Int    @id @default(autoincrement())
+  name              String
+  level             Int
+  xp                Int
+  strength          Int
+  speed             Int
+  magic             Int
+  dexterity         Int
+  healthPoints      Int
+  manaPoints        Int
+  luck              Int
+  defense           Int
+  magicDefense      Int
+  progress          String
+  userId            Int?    @unique   
+  user              User?   @relation(fields: [userId], references: [id])
+  // characterClass    CharacterClass @relation(fields: [characterClassId], references: [id])
+  // characterClassId  Int
 }
+
+// model CharacterClass {
+//   id           Int    @id @default(autoincrement())
+//   name         String
+//   strength     Int
+//   speed        Int
+//   magic        Int
+//   dexterity    Int
+//   healthPoints Int
+//   manaPoints   Int
+//   luck         Int
+//   defense      Int
+//   magicDefense Int
+//   characters   Character[]
+// }

@@ -1,23 +1,48 @@
+import Character from './character';
+import {
+    User as UserPrisma,
+    Character as CharacterPrisma,
+} from '@prisma/client';
+
 export default class User {
     private id?: number;
-    private username: string;
+    private name: string;
     private email: string;
     private password: string;
+    private character?: Character;
 
-    constructor(user: { id?: number; username: string; email: string; password: string }) {
+    constructor(user: { id?: number; name: string; email: string; password: string, character?: Character }) {
         this.validate(user);
 
         this.id = user.id;
-        this.username = user.username;
+        this.name = user.name;
         this.email = user.email;
         this.password = user.password;
+        this.character = user.character;
     }
-
+    
+    static from({
+        id,
+        name,
+        email,
+        password,
+        character,
+    }: UserPrisma & { character?: CharacterPrisma | null }) {
+        const userInstance = new User({ id, name, email, password });
+        if (character) {
+            userInstance.character = new Character({
+                ...character,
+                user: userInstance,
+            });
+        }
+        return userInstance;
+    }
+    
     getId(): number | undefined {
         return this.id;
     }
-    getUsername(): string {
-        return this.username;
+    getName(): string {
+        return this.name;
     }
     getEmail(): string {
         return this.email;
@@ -26,9 +51,13 @@ export default class User {
         return this.password;
     }
 
-    validate(user: { id?: number; username: string; email: string; password: string }) {
-        if (!user.username.trim()) {
-            throw new Error('Username is required');
+    getCharacter(): Character | undefined {
+        return this.character;
+    }
+
+    validate(user: { id?: number; name: string; email: string; password: string }) {
+        if (!user.name.trim()) {
+            throw new Error('Name is required');
         }
         if (!user.email.trim()) {
             throw new Error('Email is required');
@@ -36,5 +65,15 @@ export default class User {
         if (!user.password.trim()) {
             throw new Error('Password is required');
         }
+    }
+
+    equals(user: User): boolean {
+        return (
+            this.id === user.getId() &&
+            this.name === user.getName() &&
+            this.email === user.getEmail() &&
+            this.password === user.getPassword() &&
+            this.character === user.getCharacter()
+        );
     }
 }

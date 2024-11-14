@@ -1,3 +1,4 @@
+import Character from '../../model/character';
 import User from '../../model/user';
 
 test('given: valid values for user, when: user is created, then user is created with those values.', () => {
@@ -10,67 +11,102 @@ test('given: valid values for user, when: user is created, then user is created 
     // When
     const user: User = new User({
         id: id,
-        username: username,
+        name: username,
         email: email,
         password: password,
     });
 
     // Then
     expect(user.getId()).toEqual(id);
-    expect(user.getUsername()).toEqual(username);
+    expect(user.getName()).toEqual(username);
     expect(user.getEmail()).toEqual(email);
     expect(user.getPassword()).toEqual(password);
 });
+
+test('given: empty name, when: user is created, then: throws error', () => {
+    // Given
+    const username: string = '';
+    const email: string = 'john.doe@example.com';
+    const password: string = 'password123';
+
+    // When / Then
+    expect(() => new User({ name: username, email: email, password: password })).toThrow('Name is required');
+});
+
+test('given: empty email, when: user is created, then: throws error', () => {
+    // Given
+    const username: string = 'John Doe';
+    const email: string = '';
+    const password: string = 'password123';
+
+    // When / Then
+    expect(() => new User({ name: username, email: email, password: password })).toThrow('Email is required');
+});
+
+test('given: empty password, when: user is created, then: throws error', () => {
+    // Given
+    const username: string = 'John Doe';
+    const email: string = 'john.doe@example.com';
+    const password: string = '';
+
+    // When / Then
+    expect(() => new User({ name: username, email: email, password: password })).toThrow('Password is required');
+});
+
+
+
 
 test('given: undefined id, when: user is created, then: id is set to undefined.', () => {
     // Given
     const username: string = 'John Doe';
     const email: string = 'john.doe@example.com';
     const password: string = 'password123';
-
+    
     // When
     const user: User = new User({
-        username: username,
+        name: username,
         email: email,
         password: password,
     });
 
     // Then
     expect(user.getId()).toBeUndefined();
-    expect(user.getUsername()).toEqual(username);
+    expect(user.getName()).toEqual(username);
     expect(user.getEmail()).toEqual(email);
     expect(user.getPassword()).toEqual(password);
 });
 
-test('given: empty username, when: user is created, then: it throws "Username is required" error.', () => {
+
+test('given: valid user and character data, when: user is created, then: user has a character', () => {
     // Given
-    const id: number = 1;
-    const username: string = '';
-    const email: string = 'john.doe@example.com';
+    const username: string = 'Jane Doe';
+    const email: string = 'jane.doe@example.com';
     const password: string = 'password123';
+    const character = new Character({
+        name: 'Warrior',
+        level: 1,
+        xp: 100,
+        strength: 10,
+        speed: 5,
+        magic: 3,
+        dexterity: 8,
+        healthPoints: 100,
+        manaPoints: 50,
+        luck: 5,
+        defense: 7,
+        magicDefense: 5,
+        progress: 'In Progress',
+    });
 
-    // When & Then
-    expect(() => new User({ id, username, email, password })).toThrow('Username is required');
-});
+    // When
+    const user: User = new User({
+        name: username,
+        email: email,
+        password: password,
+        character: character,
+    });
 
-test('given: empty email, when: user is created, then: it throws "Email is required" error.', () => {
-    // Given
-    const id: number = 1;
-    const username: string = 'John Doe';
-    const email: string = '';
-    const password: string = 'password123';
-
-    // When & Then
-    expect(() => new User({ id, username, email, password })).toThrow('Email is required');
-});
-
-test('given: empty password, when: user is created, then: it throws "Password is required" error.', () => {
-    // Given
-    const id: number = 1;
-    const username: string = 'John Doe';
-    const email: string = 'john.doe@example.com';
-    const password: string = '';
-
-    // When & Then
-    expect(() => new User({ id, username, email, password })).toThrow('Password is required');
+    // Then
+    expect(user.getCharacter()).toBeDefined();
+    expect(user.getCharacter()?.getName()).toEqual('Warrior');
 });
