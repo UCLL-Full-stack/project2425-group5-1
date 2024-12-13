@@ -1,0 +1,71 @@
+.spritesheet_container {
+  position: fixed;
+  cursor: pointer;
+  z-index: 999;
+  bottom: 12vh;
+  left: 40%;
+  overflow: visible;
+}
+
+.spritesheet {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: calc(37px * 4);
+  height: calc(46px * 4);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* sprite: 34px width ; 42px height */
+
+.idle {
+  background-image: url("/images/sprites/woman-idle.png");
+}
+.walking {
+  background-image: url("/images/sprites/woman-walk.png");
+}
+
+.animate_idle {
+  animation: sprite_idle 1s steps(6) forwards;
+}
+.animate_walking {
+  animation: sprite_walking 1s steps(5) infinite;
+}
+.animate_position {
+  animation: sprite_position linear 35s infinite;
+}
+
+@keyframes sprite_walking {
+  100% {
+    background-position: calc(-185px * 4);
+  }
+}
+
+@keyframes sprite_position {
+  0% {
+    left: 40%;
+    transform: scaleX(1);
+  }
+  30% {
+    left: 90%;
+    transform: scaleX(1);
+  }
+  31% {
+    left: 90%;
+    transform: scaleX(-1);
+  }
+  75% {
+    left: 15%;
+    transform: scaleX(-1);
+  }
+  76% {
+    left: 15%;
+    transform: scaleX(1);
+  }
+  100% {
+    left: 40%;
+    transform: scaleX(1);
+  }
+}

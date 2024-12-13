@@ -1,0 +1,72 @@
+.spritesheet_container {
+  position: fixed;
+  cursor: pointer;
+  z-index: 999;
+  bottom: 12vh;
+  left: 90%;
+  overflow: visible;
+}
+
+.spritesheet {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: calc(39px * 4);
+  height: calc(52px * 4);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* sprite: 39px width ; 52px height */
+
+.idle {
+  background-image: url("/images/sprites/hat-man-idle.png");
+}
+.walking {
+  background-image: url("/images/sprites/hat-man-walk.png");
+}
+
+.animate_idle {
+  animation: sprite_idle 1s steps(3) forwards;
+}
+.animate_walking {
+  animation: sprite_walking 1s steps(5) infinite;
+}
+.animate_position {
+  animation: sprite_position linear 30s infinite;
+}
+
+@keyframes sprite_idle {
+  100% {
+    background-position: calc(-117px * 4);
+  }
+}
+@keyframes sprite_walking {
+  100% {
+    background-position: calc(-195px * 4);
+  }
+}
+
+@keyframes sprite_position {
+  0% {
+    left: 90%;
+    transform: scaleX(1);
+  }
+  1% {
+    transform: scaleX(-1);
+  }
+  50% {
+    left: 15%;
+    transform: scaleX(-1);
+  }
+  51% {
+    transform: scaleX(1);
+  }
+  100% {
+    left: 90%;
+    transform: scaleX(1);
+  }
+}
+
+  

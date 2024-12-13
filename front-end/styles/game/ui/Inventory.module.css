@@ -1,0 +1,21 @@
+.container {
+    position: absolute;
+    top: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid #B5B0B3;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+        rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+        rgba(0, 0, 0, 0.5) -10px -10px 20px inset;
+    background: rgb(6,1,155);
+    background: linear-gradient(180deg, rgba(6,1,155,1) 0%, rgba(3,0,80,1) 100%);
+    width: 60%;
+    max-width: 1200px;
+    max-height: 450px;
+    height: auto;
+    aspect-ratio: 16/10;
+    border-radius: 1.75rem;
+    z-index: 999999;
+    padding: 1.6rem;
+    font-size: 1.3rem;
+}

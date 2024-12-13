@@ -1,0 +1,72 @@
+.spritesheet_container {
+  position: fixed;
+  cursor: pointer;
+  z-index: 999;
+  bottom: 12vh;
+  left: 15%;
+  overflow: visible;
+}
+
+.spritesheet {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: calc(34px * 4);
+  height: calc(42px * 4);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+
+/* sprite: 34px width ; 42px height */
+
+.idle {
+  background-image: url("/images/sprites/oldman-idle.png");
+}
+.walking {
+  background-image: url("/images/sprites/oldman-walk.png");
+}
+
+.animate_idle {
+  animation: sprite_idle 1s steps(7) forwards;
+}
+.animate_walking {
+  animation: sprite_walking 1s steps(11) infinite;
+}
+.animate_position {
+  animation: sprite_position linear 35s infinite;
+}
+
+@keyframes sprite_walking {
+  100% {
+    background-position: calc(-374px * 4);
+  }
+}
+
+@keyframes sprite_position {
+  0% {
+    left: 15%;
+    transform: scaleX(-1);
+  }
+  1% {
+    transform: scaleX(1);
+  }
+  50% {
+    left: 90%;
+    transform: scaleX(1);
+  }
+  51% {
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 15%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes sprite_idle {
+  100% {
+    background-position: calc(-238px * 4);
+  }
+}

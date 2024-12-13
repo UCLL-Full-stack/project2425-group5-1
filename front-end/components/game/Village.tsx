@@ -1,6 +1,10 @@
-import { useHorizontalScroll } from '@/helpers/useHorizontalScroll';
+import { useHorizontalScroll } from '@/hooks/useHorizontalScroll';
 import { useEffect, useRef } from 'react';
 import Background from './village/Background';
+import Merchant from './village/Merchant';
+import HatMan from './village/HatMan';
+import Woman from './village/Woman';
+import Inventory from './ui/Inventory';
 
 export default function Village() {
     const ref = useRef(null);
@@ -10,7 +14,7 @@ export default function Village() {
         // Adapted to horizontal https://jsfiddle.net/byeam39o/2/
         const container = scrollRef.current;
         if (container) {
-            container.appendChild(container.firstElementChild!.cloneNode(true));
+            container.appendChild(container.lastElementChild!.cloneNode(true));
             container.scrollLeft = 1;
             container.scrollLeft = 0;
 
@@ -38,8 +42,16 @@ export default function Village() {
     }
 
     return (
-        <div ref={ref} style={{ overflowX: "scroll", display: 'flex' }}>
+        <div ref={ref} style={{ overflowX: "scroll", display: 'flex', }}>
+            <div style={{ width: "1536px", height: "100vh", overflowX: "scroll" }}></div>
+
             <Background />
+
+            <Merchant />
+            <HatMan />
+            <Woman />
+            
+            <Inventory />
         </div>
     );
 }

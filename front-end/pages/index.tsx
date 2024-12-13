@@ -1,5 +1,5 @@
+import Music from "@/components/Music";
 import LoginForm from "@/components/main-menu/LoginForm";
-import MenuMusic from "@/components/main-menu/MenuMusic";
 import RegisterForm from "@/components/main-menu/RegisterForm";
 import SplashScreen from "@/components/main-menu/SplashScreen";
 import { useState } from "react";
@@ -17,7 +17,7 @@ export default function Home() {
       <LoginForm setShow={setShow} showState={showState} />
 
       <SplashScreen />
-      <MenuMusic />
+      <Music musicPath="/music/Soliloquy.mp3" volume={0.07} />
     </>
   );
 }

@@ -106,6 +106,8 @@ type Move = {
   aoe: boolean;
 };
 
+type Vector2D = [x: number, y: number];
+
 export type {
   Armor,
   Battle,
@@ -117,4 +119,5 @@ export type {
   Move,
   User,
   Weapon,
+  Vector2D,
 };
