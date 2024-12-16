@@ -5,6 +5,7 @@ import Merchant from './village/Merchant';
 import HatMan from './village/HatMan';
 import Woman from './village/Woman';
 import TextContainer from './ui/TextContainer';
+import Shop from './ui/Shop';
 
 export default function Village() {
     const ref = useRef(null);
@@ -50,13 +51,13 @@ export default function Village() {
             <Merchant isClicked={setClickHandler} textHandler={clickHandler} />
             <HatMan isClicked={setClickHandler} textHandler={clickHandler} />
             <Woman isClicked={setClickHandler} textHandler={clickHandler} />
-            
+
             {clickHandler === "merchant" ? (
-                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+                <Shop isClicked={setClickHandler} textContent={["Hello there, adventurer!\n Come take a look at my wares!"]} />
             ) : clickHandler === "hatman" ? (
-                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+                <Shop isClicked={setClickHandler} textContent={["Hello there, adventurer!\n Come take a look at my wares!"]} />
             ) : clickHandler === "woman" ? (
-                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+                <Shop isClicked={setClickHandler} textContent={["Hello there, adventurer!\n Come take a look at my wares!"]} />
             ) : null}
 
             {/* Background always needs to be the last element inside this container */}
