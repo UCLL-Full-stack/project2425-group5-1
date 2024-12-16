@@ -1,20 +1,34 @@
 import styles from "@/styles/game/village/HatMan.module.css";
 import { useEffect, useRef, useState } from "react";
 
-export default function HatMan() {
+interface Props {
+    isClicked: (name: string) => void;
+    textHandler: string;
+}
+
+export default function HatMan({ isClicked, textHandler }: Props) {
     const [animationState, setAnimationState] = useState<"idle" | "walking">("walking");
     const villagerContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if(!villagerContainerRef.current) return;
         if(animationState === "idle") {
+            isClicked("hatman");
             villagerContainerRef.current.style.animationPlayState = "paused";
         } else {
+            isClicked("");
             villagerContainerRef.current.style.animationPlayState = "running";
         }
 
         return () => {}
     }, [animationState]);
+
+    useEffect(() => {
+        if(!villagerContainerRef.current) return;
+        if(textHandler === "") {
+            setAnimationState("walking");
+        }
+    }, [textHandler]);
 
     return (
         <div className={`${styles.spritesheet_container} ${styles.animate_position}`}

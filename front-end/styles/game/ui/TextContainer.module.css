@@ -1,5 +1,17 @@
+.fillContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    cursor: pointer;
+    z-index: 99999999;
+}
+
 .container {
     position: absolute;
+    display: flex;
+    flex-direction: column;
     top: 10vh;
     left: 50%;
     transform: translateX(-50%);
@@ -11,11 +23,19 @@
     background: linear-gradient(180deg, rgba(6,1,155,1) 0%, rgba(3,0,80,1) 100%);
     width: 60%;
     max-width: 1200px;
+    min-width: 400px;
     max-height: 450px;
-    height: auto;
-    aspect-ratio: 16/10;
+    min-height: 200px;
+    height: fit-content;
     border-radius: 1.75rem;
     z-index: 999999;
-    padding: 1.6rem;
+    padding: 1rem 2rem;
     font-size: 1.3rem;
+    white-space: pre-line;
+    box-sizing: border-box;
+}
+
+.gap {
+    margin: 1rem 0;
+    box-sizing: border-box;
 }

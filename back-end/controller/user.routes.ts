@@ -23,11 +23,11 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     try {
         const user = <UserInput>req.body;
         const result = await userService.createUser(user);
-        res.status(200).json({ message: 'User successfully created', result});
+        res.status(200).json({ message: 'User successfully created', result });
     } catch (error) {
         console.log(error);
         next(error);
     }
 });
- 
+
 export default router;

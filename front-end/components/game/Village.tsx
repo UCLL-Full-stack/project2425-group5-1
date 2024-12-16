@@ -1,14 +1,15 @@
 import { useHorizontalScroll } from '@/hooks/useHorizontalScroll';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Background from './village/Background';
 import Merchant from './village/Merchant';
 import HatMan from './village/HatMan';
 import Woman from './village/Woman';
-import Inventory from './ui/Inventory';
+import TextContainer from './ui/TextContainer';
 
 export default function Village() {
     const ref = useRef(null);
     const scrollRef = useHorizontalScroll(ref);
+    const [clickHandler, setClickHandler] = useState("");
 
     useEffect(() => {
         // Adapted to horizontal https://jsfiddle.net/byeam39o/2/
@@ -45,13 +46,21 @@ export default function Village() {
         <div ref={ref} style={{ overflowX: "scroll", display: 'flex', }}>
             <div style={{ width: "1536px", height: "100vh", overflowX: "scroll" }}></div>
 
-            <Background />
 
-            <Merchant />
-            <HatMan />
-            <Woman />
+            <Merchant isClicked={setClickHandler} textHandler={clickHandler} />
+            <HatMan isClicked={setClickHandler} textHandler={clickHandler} />
+            <Woman isClicked={setClickHandler} textHandler={clickHandler} />
             
-            <Inventory />
+            {clickHandler === "merchant" ? (
+                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+            ) : clickHandler === "hatman" ? (
+                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+            ) : clickHandler === "woman" ? (
+                <TextContainer isClicked={setClickHandler} textContent={"Hello there, adventurer!\n Come take a look at my wares!"} />
+            ) : null}
+
+            {/* Background always needs to be the last element inside this container */}
+            <Background />
         </div>
     );
 }
