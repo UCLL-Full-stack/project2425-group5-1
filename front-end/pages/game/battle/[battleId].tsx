@@ -134,12 +134,7 @@ const DynamicBattle: React.FC = () => {
         setSelectedMove(moveId);
         setMoveSelected(true);
 
-        setPlayerState("attacking");
-
-        setTimeout(() => {
-            confirmMove();
-            setPlayerState("idle");
-        }, 3000);
+        confirmMove();
     };
 
     const handleEnemySelection = (enemy: EnemyType) => {
@@ -161,6 +156,7 @@ const DynamicBattle: React.FC = () => {
             return;
         }
 
+        setPlayerState("attacking");
 
         let updatedEnemies = [...enemies];
 
@@ -180,8 +176,16 @@ const DynamicBattle: React.FC = () => {
         setEnemies(updatedEnemies);
 
         setCharacter((prevCharacter) => ({ ...prevCharacter, manaPoints: prevCharacter.manaPoints - move.manaPoints }));
-        setTurnCount(turnCount + 1);
-        setTurn("enemy");
+
+        setTimeout(() => {
+            setTurnCount(turnCount + 1);
+            setTurn("enemy");
+            setMoveSelected(false);
+            setPlayerState("idle");
+        }, 3000);
+    };
+
+    const cancel = () => {
         setMoveSelected(false);
     };
 
@@ -254,7 +258,10 @@ const DynamicBattle: React.FC = () => {
                 ))}
             </div>
                 {moveSelected && selectedEnemy && (
-                    <TextButton text="Confirm Attack" onClick={confirmMove} />
+                    <>
+                        <TextButton text="Confirm Attack" onClick={confirmMove} />
+                        <TextButton text="Cancel" onClick={cancel} />
+                    </>
                 )}
         </main>
     );
