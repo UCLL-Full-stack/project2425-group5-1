@@ -1,0 +1,20 @@
+.image {
+    position: fixed;
+    left: 0;
+    top: 0;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    height: 100vh;
+    min-width: max-content;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    user-select: none;
+    z-index: -2;
+}
+
+.parallax {
+    scale: 1.04;
+    z-index: -1;
+    user-select: none;
+}

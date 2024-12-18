@@ -2,39 +2,46 @@ import styles from "@/styles/game/ui/TextContainer.module.css";
 import { useEffect, useState } from "react";
 
 interface Props {
-    textContent: string[];
-    isClicked: (arg0: string) => void;
+    textContent?: string[];
+    isClicked?: (name: "" | "merchant" | "hatman" | "woman" | "questboard" ) => void;
     children?: React.ReactNode;
+    Skippable?: boolean;
 }
 
-const TextContainer: React.FC<Props> = ({ textContent, isClicked, children }) => {
-    const [clicks, setClicks] = useState<number>(textContent.length);
+const TextContainer: React.FC<Props> = ({ textContent, isClicked, children, Skippable = true }) => {
+    const [clicks, setClicks] = useState<number>(textContent ? textContent.length : 0);
+    const [toggle, setToggle] = useState<boolean>(false);
+    const [skippable, setSkippable] = useState<boolean>(Skippable);
 
     useEffect(() => {
-        console.log(clicks);
-        if(clicks === -1) {
-            isClicked("");
+        console.log(clicks, toggle, skippable);
+        if((clicks === -1 || (!children && clicks <= 0)) && skippable) {
+            setToggle(true);
+            isClicked ? isClicked("") : null;
         }
     }, [clicks]);
 
     const handleClick = () => {
-        setClicks(clicks - 1);
+        if(clicks >= 0 && skippable) {
+            setClicks(clicks - 1);
+        }
     };
-    [clicks - 1]
+    
+    if(toggle && skippable) return <></>;
     return (
-        <div onClick={handleClick} className={styles.fillContainer}>
-            <div className={styles.container}>
-                {clicks >= 1 && clicks <= textContent.length ?
-                    textContent.slice().reverse()[clicks - 1].split("\n").map((text, i) => (
-                        <span key={i} className={styles.gap}>
-                            {text}
-                        </span>
-                    ))
-                :
-                    children
-                }
-            </div>
-        </div>
+        <>
+            {children || textContent ?
+                <div onClick={handleClick} className={styles.fillContainer}>
+                    <div className={styles.container}>
+                        {textContent && clicks >= 1 && clicks <= textContent.length ?
+                            textContent.slice().reverse()[clicks - 1].split("\n").map((text, i) => (
+                                <span key={i} className={styles.gap}>{text}</span>
+                            ))
+                        : children}
+                    </div>
+                </div>
+            : null}
+        </>
     );
 }
 

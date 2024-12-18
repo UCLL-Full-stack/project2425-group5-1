@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 type User = {
   id?: number;
   username: string;
@@ -21,12 +23,11 @@ type Character = {
   magicDefense: number;
   progress: string;
   inventory?: Item[];
-  move?: Move[];
-  user: User;
+  move: Move[];
   userId: number;
-  class: Class;
-  weapon: Weapon;
-  armor: Armor;
+  class?: Class;
+  weapon?: Weapon;
+  armor?: Armor;
 };
 type Class = {
   id?: number;
@@ -52,12 +53,14 @@ type Battle = {
   character: Character;
 };
 type Item = {
-  id?: number;
+  id: number;
   name: string;
   description: string;
   equipable: boolean;
   consumable: boolean;
   stackable: boolean;
+  image: StaticImageData;
+  price: number;
 };
 type Weapon = Item & {
   id?: number;
@@ -83,10 +86,11 @@ type Consumable = Item & {
   magicDefense: number;
   duration: number;
 };
-type Enemy = {
+type EnemyType = {
   id?: number;
   name: string;
   description: string;
+  level: number;
   strength: number;
   speed: number;
   magic: number;
@@ -96,6 +100,8 @@ type Enemy = {
   luck: number;
   defense: number;
   magicDefense: number;
+  moves: Move[];
+  state: string;
 };
 type Move = {
   id?: number;
@@ -114,10 +120,41 @@ export type {
   Character,
   Class,
   Consumable,
-  Enemy,
+  EnemyType,
   Item,
   Move,
   User,
   Weapon,
   Vector2D,
 };
+
+
+const move1 = {
+  data: {
+    name: 'Fireball',
+    attack: 30,
+    magicAttack: 50,
+    manaPoints: 20,
+    aoe: false,
+  },
+}
+
+const move2 = {
+  data: {
+    name: 'Heal',
+    attack: 0,
+    magicAttack: 30,
+    manaPoints: 15,
+    aoe: false,
+  },
+}
+
+const move3 = {
+  data: {
+    name: 'slash',
+    attack: 40,
+    magicAttack: 0,
+    manaPoints: 0,
+    aoe: true,
+  },
+}

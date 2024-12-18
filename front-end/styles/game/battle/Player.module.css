@@ -1,0 +1,54 @@
+.player {
+    position: absolute;
+    top: 50%;
+    left: 20vw;
+    transform: translateY(-50%);
+    background-image: url("/images/player/warrior_calciumtrice.png");
+    background-size: calc(256px * 10) calc(256px * 10);
+    background-repeat: no-repeat;
+    width: 256px;
+    height: 256px;
+    z-index: 2;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+.shadow {
+    position: absolute;
+    top: calc(50% + 96px);
+    left: calc(20vw + 128px);
+    transform: translateY(-50%);
+    width: 192px;
+    height: 64px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%);
+    filter: blur(15px);
+    z-index: 1;
+}
+
+.idle {
+    animation: idle 2.5s steps(10) infinite;
+}
+.attack {
+    animation: attack 2.5s steps(10) infinite;
+}
+
+
+@keyframes idle {
+    0% {
+        background-position: 0 calc(-256px * 0);
+    }
+    100% {
+        background-position: calc(-256px * 10) calc(-256px * 0);
+    }
+}
+
+@keyframes attack {
+    0% {
+        background-position: 0 calc(-256px * 3);
+    }
+    100% {
+        background-position: calc(-256px * 10) calc(-256px * 3);
+    }
+}

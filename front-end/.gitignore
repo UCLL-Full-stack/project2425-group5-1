@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore all unused assets
+/public/images/items/*
+!/public/images/items/Sword*
+!/public/images/items/CoinsGold.png

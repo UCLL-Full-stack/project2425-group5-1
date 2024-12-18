@@ -2,7 +2,7 @@ import styles from "@/styles/game/village/Merchant.module.css";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
-    isClicked: (name: string) => void;
+    isClicked?: (name: "" | "merchant" | "hatman" | "woman" | "questboard" ) => void;
     textHandler: string;
 }
 
@@ -11,7 +11,7 @@ export default function Merchant({ isClicked, textHandler }: Props) {
     const villagerContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if(!villagerContainerRef.current) return;
+        if(!villagerContainerRef.current || !isClicked) return;
         if(animationState === "idle") {
             isClicked("merchant");
             villagerContainerRef.current.style.animationPlayState = "paused";

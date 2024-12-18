@@ -1,0 +1,7 @@
+.image {
+    background-image: url("/images/sprites/well.png");
+
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}

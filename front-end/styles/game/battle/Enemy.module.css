@@ -1,0 +1,110 @@
+.enemy {
+    position: relative;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+
+.slimeContainer {
+    position: relative;
+    width: calc(96px * 5);
+    height: calc(64px * 5);
+    transform: scaleX(-1);
+}
+.slime {
+    position: relative;
+    width: 96px;
+    height: 64px;
+    background-image: url("/images/monsters/slime_basic.png");
+    transform: scale(5);
+    transform-origin: 0 0;
+}
+.slimeShadow {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    width: 200px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%);
+    filter: blur(15px);
+    z-index: 1;
+}
+.slimeIdle {
+    animation: slimeIdle 1.8s steps(10) infinite;
+}
+.slimeAttacking {
+    animation: slimeAttacking 1s steps(12) infinite;
+}
+
+@keyframes slimeIdle {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: -960px 0;
+    }
+}
+
+@keyframes slimeAttacking {
+    0% {
+        background-position: 0 -192px;
+    }
+    100% {
+        background-position: -1152px -192px;
+    }
+}
+
+
+.skeletonContainer {
+    position: relative;
+    width: calc(64px * 5);
+    height: calc(64px * 5);
+    transform: scaleX(-1);
+}
+.skeleton {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    background-image: url("/images/monsters/skeleton_basic.png");
+    transform: scale(5);
+    transform-origin: 0 0;
+}
+.skeletonShadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%);
+    filter: blur(15px);
+    z-index: 1;
+}
+.skeletonIdle {
+    animation: skeletonIdle 1.8s steps(11) infinite;
+}
+.skeletonAttacking {
+    animation: skeletonAttacking 1s steps(12) infinite;
+}
+
+@keyframes skeletonIdle {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: -704px 0;
+    }
+}
+
+@keyframes skeletonAttacking {
+    0% {
+        background-position: 0 -192px;
+    }
+    100% {
+        background-position: -768px -192px;
+    }
+}
+

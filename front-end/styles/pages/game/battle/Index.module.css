@@ -1,0 +1,11 @@
+.enemyContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    width: 50%;
+    flex-wrap: wrap;
+}

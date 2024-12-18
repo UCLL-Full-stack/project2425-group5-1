@@ -5,6 +5,11 @@
   bottom: 12vh;
   left: 15%;
   overflow: visible;
+
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    filter: brightness(130%);
+  }
 }
 
 .spritesheet {

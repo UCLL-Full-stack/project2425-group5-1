@@ -1,0 +1,45 @@
+.image {
+    position: absolute;
+    background-image: url("/images/sprites/questboard.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 300px;
+    height: 300px;
+    bottom: 9.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: brightness(80%) grayscale(30%);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+
+    &:hover {
+        filter: brightness(100%);
+    }
+}
+
+.questmarker {
+    position: absolute;
+    left: 50%;
+    top: -4rem;
+    transform: translateX(-40%);
+    color: yellow;
+    font-size: 5rem;
+    filter: brightness(150%) contrast(200%) saturate(130%);
+    text-align: center;
+    user-select: none;
+
+    animation: hover 0.8s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes hover {
+    0% {
+        top: -7rem;
+    }
+    100% {
+        top: -6.5rem;
+    }
+}
