@@ -30,8 +30,8 @@
 .idle {
     animation: idle 2.5s steps(10) infinite;
 }
-.attack {
-    animation: attack 2.5s steps(10) infinite;
+.attacking {
+    animation: attacking 1.5s steps(10) infinite;
 }
 
 
@@ -44,7 +44,7 @@
     }
 }
 
-@keyframes attack {
+@keyframes attacking {
     0% {
         background-position: 0 calc(-256px * 3);
     }

@@ -14,7 +14,6 @@ const TextContainer: React.FC<Props> = ({ textContent, isClicked, children, Skip
     const [skippable, setSkippable] = useState<boolean>(Skippable);
 
     useEffect(() => {
-        console.log(clicks, toggle, skippable);
         if((clicks === -1 || (!children && clicks <= 0)) && skippable) {
             setToggle(true);
             isClicked ? isClicked("") : null;
@@ -26,7 +25,7 @@ const TextContainer: React.FC<Props> = ({ textContent, isClicked, children, Skip
             setClicks(clicks - 1);
         }
     };
-    
+
     if(toggle && skippable) return <></>;
     return (
         <>

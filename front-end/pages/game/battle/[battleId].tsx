@@ -85,7 +85,6 @@ const DynamicBattle: React.FC = () => {
             description: "A tough skeleton",
             moves: [
                 { name: 'slash', attack: 50, magicAttack: 0, manaPoints: 0, aoe: true },
-                { name: 'Fireball', attack: 35, magicAttack: 45, manaPoints: 25, aoe: false }
             ],
             state: "skeletonIdle",
         }
@@ -95,6 +94,9 @@ const DynamicBattle: React.FC = () => {
     const [battleOver, setBattleOver] = useState<boolean>(false);
     const [turnCount, setTurnCount] = useState<number>(0);
     const [selectedEnemy, setSelectedEnemy] = useState<EnemyType | null>(null);
+    const [selectedMove, setSelectedMove] = useState<number | null>(null);
+    const [moveSelected, setMoveSelected] = useState<boolean>(false);
+    const [playerState, setPlayerState] = useState<"idle" | "attacking">("idle");
 
     useEffect(() => {
         if(!battleId) router.back();
@@ -102,7 +104,6 @@ const DynamicBattle: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        console.log(character.healthPoints, enemies[0].healthPoints);
         if (character.healthPoints <= 0 || enemies.every(enemy => enemy.healthPoints <= 0)) {
             setBattleOver(true);
         }
@@ -120,13 +121,39 @@ const DynamicBattle: React.FC = () => {
         }
     }, [battleOver]);
 
+    useEffect(() => {
+        console.log(selectedEnemy, selectedMove, moveSelected);
+    }, [moveSelected]);
+
     const calculateDamage = (attacker: Character | EnemyType, defender: Character | EnemyType, attack: number) => {
         const damage = (attacker.strength * attack / 10) - defender.defense;
         return damage > 0 ? damage : 0;
     };
 
     const playerTurn = (moveId: number) => {
-        const move = character.move[moveId];
+        setSelectedMove(moveId);
+        setMoveSelected(true);
+
+        setPlayerState("attacking");
+
+        setTimeout(() => {
+            confirmMove();
+            setPlayerState("idle");
+        }, 3000);
+    };
+
+    const handleEnemySelection = (enemy: EnemyType) => {
+        if (!moveSelected) return;
+        setSelectedEnemy(enemy);
+    }
+
+    const confirmMove = () => {
+        if(!selectedEnemy) {
+            console.log("no enemy selected");
+            return;
+        }
+
+        const move = character.move[selectedMove as number];
 
         // This move should just be greyed out
         if(move.manaPoints > character.manaPoints) {
@@ -134,8 +161,11 @@ const DynamicBattle: React.FC = () => {
             return;
         }
 
+
+        let updatedEnemies = [...enemies];
+
         if(move.aoe) {
-            const updatedEnemies = enemies.map((enemy) => {
+            updatedEnemies = enemies.map((enemy) => {
                 const damage = calculateDamage(character, enemy, move.attack);
                 return { ...enemy, healthPoints: enemy.healthPoints - damage };
             });
@@ -146,9 +176,13 @@ const DynamicBattle: React.FC = () => {
             setEnemies(enemies.map((enemy) => enemy === selectedEnemy ? updatedEnemy : enemy));
         }
 
+        updatedEnemies = updatedEnemies.filter((enemy) => enemy.healthPoints > 0);
+        setEnemies(updatedEnemies);
+
         setCharacter((prevCharacter) => ({ ...prevCharacter, manaPoints: prevCharacter.manaPoints - move.manaPoints }));
         setTurnCount(turnCount + 1);
         setTurn("enemy");
+        setMoveSelected(false);
     };
 
     const enemyTurn = () => {
@@ -177,6 +211,9 @@ const DynamicBattle: React.FC = () => {
             attackDelay += 1500;
         });
 
+        // If a move ever does damage to self
+        setEnemies((prevEnemies) => prevEnemies.filter((enemy) => enemy.healthPoints > 0));
+
         setTimeout(() => {
             setTurn("player");
         }, attackDelay);
@@ -189,14 +226,17 @@ const DynamicBattle: React.FC = () => {
 
             <p>{battleId}</p>
             <Background world={battleId} />
-            <Player />
+            <Player state={playerState} />
             {turn === "player" ?
                 <>
-                    <TextContainer Skippable={turn === "player" ? false : true}>
-                        {character.move.map((m, i) => (
-                            <TextButton key={i} text={m.name} useMove={playerTurn} moveId={i} />
-                        ))}
-                    </TextContainer>
+                    {!moveSelected ?
+                        <TextContainer Skippable={turn === "player" ? false : true}>
+                            {character.move.map((m, i) => (
+                                <TextButton key={i} text={m.name} useMove={playerTurn} moveId={i} />
+                            ))}
+                        </TextContainer>
+                    :
+                    null}
                     {turnCount === 0 ? <TextContainer textContent={["You encountered an enemy"]} /> : null}
                 </>
             :
@@ -204,9 +244,18 @@ const DynamicBattle: React.FC = () => {
             }
             <div className={styles.enemyContainer}>
                 {enemies.map((enemy) => (
-                    <Enemy key={enemy.name} name={enemy.name} state={enemy.state} />
+                    <Enemy
+                        key={enemy.name}
+                        name={enemy.name}
+                        state={enemy.state}
+                        onClick={() => handleEnemySelection(enemy)}
+                        selected={selectedEnemy}
+                    />
                 ))}
             </div>
+                {moveSelected && selectedEnemy && (
+                    <TextButton text="Confirm Attack" onClick={confirmMove} />
+                )}
         </main>
     );
 };
