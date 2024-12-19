@@ -22,8 +22,8 @@ app.use(bodyParser.json());
 app.use('/user', userRouter);
 app.use('/character', characterRouter);
 app.use('/battle', battleRouter);
-// app.use('/move', moveRouter);
-// app.use('/enemy', enemyRouter);
+app.use('/move', moveRouter);
+app.use('/enemy', enemyRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });

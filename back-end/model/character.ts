@@ -1,5 +1,6 @@
-import { Character as CharacterPrisma } from '@prisma/client';
+import { Character as CharacterPrisma, Move as MovePrisma } from '@prisma/client';
 import { User } from './user';
+import { Move } from './move';
 
 export class Character {
     readonly id?: number;
@@ -18,7 +19,9 @@ export class Character {
     readonly progress: string;
     readonly characterClass: string;
     readonly user?: User;
-    
+
+    readonly moves: Move[];
+
     constructor(character: {
         id?: number;
         name: string;
@@ -36,6 +39,7 @@ export class Character {
         progress: string;
         characterClass: string;
         user?: User;
+        moves: Move[];
     }) {
         this.id = character.id;
         this.name = character.name;
@@ -53,9 +57,10 @@ export class Character {
         this.progress = character.progress;
         this.characterClass = character.characterClass;
         this.user = character.user;
+        this.moves = character.moves;
     }
 
-    static from({ id, name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass}:  CharacterPrisma) {
+    static from({ id, name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }:  CharacterPrisma & { moves: MovePrisma[] }) {
         return new Character({
             id,
             name,
@@ -72,6 +77,8 @@ export class Character {
             magicDefense,
             progress,
             characterClass,
+
+            moves: moves.map((move) => Move.from(move)),
         });
     }
 }

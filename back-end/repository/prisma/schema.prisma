@@ -41,6 +41,8 @@ model Character {
   characterClass        String
   user User?    
   battles   Battle[]
+
+  moves  Move[]
 }
 
 model Battle {
@@ -50,4 +52,37 @@ model Battle {
   state       String
   character   Character @relation(fields: [characterId], references: [id])
   characterId Int 
+
+  enemies Enemy[]
+}
+
+model Move {
+  id          Int     @id @default(autoincrement())
+  name        String
+  attack      Int
+  magicAttack Int
+  manaPoints  Int
+  aoe         Boolean
+
+  characters Character[]
+  enemies   Enemy[]
+}
+
+
+model Enemy {
+  id           Int    @id @default(autoincrement())
+  name         String
+  level        Int
+  strength     Int
+  speed        Int
+  magic        Int
+  dexterity    Int
+  healthPoints Int
+  manaPoints   Int
+  luck         Int
+  defense      Int
+  magicDefense Int
+
+  moves Move[]
+  battles Battle[]
 }

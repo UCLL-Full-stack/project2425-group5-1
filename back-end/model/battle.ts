@@ -1,4 +1,4 @@
-import { Battle as BattlePrisma, Character as CharacterPrisma} from '@prisma/client';
+import { Battle as BattlePrisma, Character as CharacterPrisma, Move as MovePrisma } from '@prisma/client';
 import { Character } from './character';
 
 export class Battle {
@@ -32,15 +32,19 @@ export class Battle {
         state,
         character,
         characterId,
-    }: BattlePrisma & { character?: CharacterPrisma }): Battle {
+    }: BattlePrisma & { character?: CharacterPrisma & { moves: MovePrisma[] } }): Battle {
         return new Battle({
             id,
             turn,
             currentTurn,
             state,
-            character: character ? Character.from(character) : undefined,
+            character: character
+                ? Character.from({
+                      ...character,
+                      moves: character.moves || [],
+                  })
+                : undefined,
             characterId: characterId || (character ? character.id : 0),
         });
     }
-    
 }

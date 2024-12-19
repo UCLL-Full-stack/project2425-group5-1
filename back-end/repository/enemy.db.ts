@@ -1,12 +1,12 @@
 import prisma from './database';
 import { Enemy } from '../model/enemy';
-import { EnemyType } from '../types';
 
-const getEnemies = async (): Promise<EnemyType[]> => {
+const getEnemies = async (): Promise<Enemy[]> => {
     try {
         const enemiesPrisma = await prisma.enemy.findMany({
             include: {
                 moves: true,
+                battles: true,
             }
         });
         return enemiesPrisma.map((enemyPrisma) => Enemy.from(enemyPrisma));
@@ -16,12 +16,13 @@ const getEnemies = async (): Promise<EnemyType[]> => {
     }
 };
 
-const getEnemyById = async (id: number): Promise<EnemyType | null> => {
+const getEnemyById = async (id: number): Promise<Enemy | null> => {
     try {
         const enemyPrisma = await prisma.enemy.findUnique({
             where: { id },
             include: {
                 moves: true,
+                battles: true,
             }
         });
         return enemyPrisma ? Enemy.from(enemyPrisma) : null;
@@ -31,27 +32,32 @@ const getEnemyById = async (id: number): Promise<EnemyType | null> => {
     }
 };
 
-const createEnemy = async (data: EnemyType): Promise<EnemyType> => {
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles}: Enemy): Promise<Enemy> => {
     try {
         const newEnemyPrisma = await prisma.enemy.create({
             data: {
-                name: data.name,
-                level: data.level,
-                strength: data.strength,
-                speed: data.speed,
-                magic: data.magic,
-                dexterity: data.dexterity,
-                healthPoints: data.healthPoints,
-                manaPoints: data.manaPoints,
-                luck: data.luck,
-                defense: data.defense,
-                magicDefense: data.magicDefense,
+                name,
+                level,
+                strength,
+                speed,
+                magic,
+                dexterity,
+                healthPoints,
+                manaPoints,
+                luck,
+                defense,
+                magicDefense,
                 moves: {
-                    connect: data.moves.map((move) => ({ id: move.id })),
+                    connect: moves.map((move) => ({ id: move.id })),
+                },
+
+                battles: {
+                    connect: battles.map((battle) => ({ id: battle.id })),
                 }
             },
             include: {
                 moves: true,
+                battles: true,
             }
         });
         return Enemy.from(newEnemyPrisma);
@@ -61,7 +67,7 @@ const createEnemy = async (data: EnemyType): Promise<EnemyType> => {
     }
 };
 
-const updateEnemy = async (id: number, data: Partial<EnemyType>): Promise<EnemyType> => {
+const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => {
     try {
         const updatedEnemyPrisma = await prisma.enemy.update({
             where: {id},
@@ -78,9 +84,17 @@ const updateEnemy = async (id: number, data: Partial<EnemyType>): Promise<EnemyT
                 defense: data.defense,
                 magicDefense: data.magicDefense,
                 moves: data.moves
-                    ? { connect: data.moves.map((move) => ({ id:move.id })) }
+                    ? { connect: data.moves.map((move) => ({ id: move.id })) }
                     : undefined,
+
+                battles: data.battles
+                ? { connect: data.battles.map((battle) => ({ id: battle.id })) }
+                : undefined,
             },
+            include: {
+                moves: true,
+                battles: true,
+            }
         });
         return Enemy.from(updatedEnemyPrisma);
     } catch ( error ) {

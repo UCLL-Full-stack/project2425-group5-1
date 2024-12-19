@@ -6,7 +6,12 @@ const getBattles = async (): Promise<Battle[]> => {
     try {
         const battlesPrisma = await prisma.battle.findMany({
             include: {
-                character: true,
+                character: {
+                    include: {
+                        moves: true,
+                    },
+                },
+                enemies: true,
             }
         });
         return battlesPrisma.map((battlePrisma) => Battle.from(battlePrisma));
@@ -21,7 +26,12 @@ const getBattleById = async (id: number): Promise<Battle | null> => {
         const battlePrisma = await prisma.battle.findUnique({
             where: { id },
             include: {
-                character: true,
+                character: {
+                    include: {
+                        moves: true,
+                    },
+                },
+                enemies: true,
             }
         });
         return battlePrisma ? Battle.from(battlePrisma) : null;
@@ -32,7 +42,6 @@ const getBattleById = async (id: number): Promise<Battle | null> => {
 };
 const createBattle = async ({ turn, currentTurn, state, characterId }: Battle): Promise<Battle> => {
     try {
-        console.log("Received characterId:", characterId);  // Log de waarde van characterId
         if (!characterId) {
             throw new Error("Character ID is required to create a battle");
         }
@@ -44,12 +53,17 @@ const createBattle = async ({ turn, currentTurn, state, characterId }: Battle): 
                 state,
                 character: {
                     connect: {
-                        id: characterId,  // Dit verbindt de bestaande character met de battle
+                        id: characterId,
                     }
                 }
             },
             include: {
-                character: true,
+                character: {
+                    include: {
+                        moves: true,
+                    },
+                },
+                enemies: true,
             },
         });
         
@@ -74,8 +88,12 @@ const updateBattle = async (id: number, data: Partial<BattleType>): Promise<Batt
                 state: data.state,
             },
             include: {
-                character: true,
-            }
+                character: {
+                    include: {
+                        moves: true,
+                    },
+                },
+            },
         });
         return Battle.from(updatedBattlePrisma);
     } catch (error) {
@@ -88,9 +106,6 @@ const deleteBattle = async (id: number): Promise<void> => {
     try {
         await prisma.battle.delete({
             where: { id },
-            include: { 
-                character: true,
-            }
         });
     } catch (error) {
         console.error(`Error deleting battle with id ${id}:`, error);

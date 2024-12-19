@@ -76,11 +76,10 @@ const updateUser = async (id: number, data: Partial<UserType>): Promise<User> =>
 };
 const deleteUser = async (id: number): Promise<void> => {
     try {
-        // Find the user along with the associated character
         const userWithCharacter = await prisma.user.findUnique({
             where: { id },
             include: {
-                character: true, // This will include the character associated with the user
+                character: true,
             },
         });
 
@@ -88,13 +87,10 @@ const deleteUser = async (id: number): Promise<void> => {
             throw new Error(`User with id ${id} not found`);
         }
 
-        
-        // Now, delete the user
         await prisma.user.delete({
             where: { id },
         });
         
-        // If the user has an associated character, delete it first
         if (userWithCharacter.character) {
             await prisma.character.delete({
                 where: { id: userWithCharacter.character.id },

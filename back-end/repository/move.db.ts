@@ -1,8 +1,7 @@
 import prisma from './database';
 import { Move } from '../model/move';
-import { MoveType } from '../types';
 
-const getMoves = async (): Promise<MoveType[]> => {
+const getMoves = async (): Promise<Move[]> => {
     try {
         const movesPrisma = await prisma.move.findMany();
         return movesPrisma.map((movePrisma) => Move.from(movePrisma));
@@ -12,7 +11,7 @@ const getMoves = async (): Promise<MoveType[]> => {
     }
 };
 
-const getMoveById = async (id: number): Promise<MoveType | null> => {
+const getMoveById = async (id: number): Promise<Move | null> => {
     try {
         const movePrisma = await prisma.move.findUnique({ 
             where: { id } 
@@ -24,15 +23,15 @@ const getMoveById = async (id: number): Promise<MoveType | null> => {
     }
 };
 
-const createMove = async (data: MoveType): Promise<MoveType> => {
+const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: Move): Promise<Move> => {
     try {
         const newMovePrisma = await prisma.move.create({
             data: {
-                name: data.name,
-                attack: data.attack,
-                magicAttack: data.magicAttack,
-                manaPoints: data.manaPoints,
-                aoe: data.aoe,
+                name,
+                attack,
+                magicAttack,
+                manaPoints,
+                aoe,
             }
         });
         return Move.from(newMovePrisma);
@@ -42,7 +41,7 @@ const createMove = async (data: MoveType): Promise<MoveType> => {
     }
 };
 
-const updateMove = async (id: number, data: Partial<MoveType>): Promise<MoveType> => {
+const updateMove = async (id: number, data: Partial<Move>): Promise<Move> => {
     try {
         const updatedMovePrisma = await prisma.move.update({
             where: { id },

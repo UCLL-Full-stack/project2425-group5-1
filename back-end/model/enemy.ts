@@ -1,23 +1,24 @@
-import { Enemy as PrismaEnemy, Move as PrismaMove } from '@prisma/client';
-import { EnemyType, MoveType, EnemyMoveType } from "../types";
+import { Enemy as EnemyPrisma, Move as MovePrisma, Battle as BattlePrisma } from '@prisma/client';
 import { Move } from './move';
+import { Battle } from './battle';
 
 export class Enemy {
 
-    private id?: number;
-    private name: string;
-    private level: number;
-    private strength: number;
-    private speed: number;
-    private magic: number;
-    private dexterity: number;
-    private healthPoints: number;
-    private manaPoints: number;
-    private luck: number;
-    private defense: number;
-    private magicDefense: number;
+    readonly id?: number;
+    readonly name: string;
+    readonly level: number;
+    readonly strength: number;
+    readonly speed: number;
+    readonly magic: number;
+    readonly dexterity: number;
+    readonly healthPoints: number;
+    readonly manaPoints: number;
+    readonly luck: number;
+    readonly defense: number;
+    readonly magicDefense: number;
 
-    private moves: EnemyMoveType[];
+    readonly moves: Move[];
+    readonly battles: Battle[];
 
     constructor(enemy: {
         id?: number;
@@ -32,7 +33,8 @@ export class Enemy {
         luck: number;
         defense: number;
         magicDefense: number;
-        moves: EnemyMoveType[];
+        moves: Move[];
+        battles: Battle[]
     }) {
         this.id = enemy.id;
         this.name = enemy.name;
@@ -47,108 +49,24 @@ export class Enemy {
         this.defense = enemy.defense;
         this.magicDefense = enemy.magicDefense;
         this.moves = enemy.moves;
-    }
-
-    getId(): number | undefined {
-        return this.id;
-    }
-
-    getName(): string {
-        return this.name;
-    }
-
-    getLevel(): number {
-        return this.level;
-    }
-
-    getStrength(): number {
-        return this.strength;
-    }
-
-    getSpeed(): number {
-        return this.speed;
-    }
-
-    getMagic(): number {
-        return this.magic;
-    }
-
-    getDexterity(): number {
-        return this.dexterity;
-    }
-
-    getHealthPoints(): number {
-        return this.healthPoints;
-    }
-
-    getManaPoints(): number {
-        return this.manaPoints;
-    }
-
-    getLuck(): number {
-        return this.luck;
-    }
-
-    getDefense(): number {
-        return this.defense;
-    }
-
-    getMagicDefense(): number {
-        return this.magicDefense;
-    }
-
-
-    equals(otherEnemy: Enemy): boolean {
-        return (
-            this.id === otherEnemy.getId() &&
-            this.name === otherEnemy.getName() &&
-            this.level === otherEnemy.getLevel() &&
-            this.strength === otherEnemy.getStrength() &&
-            this.speed === otherEnemy.getSpeed() &&
-            this.magic === otherEnemy.getMagic() &&
-            this.dexterity === otherEnemy.getDexterity() &&
-            this.healthPoints === otherEnemy.getHealthPoints() &&
-            this.manaPoints === otherEnemy.getManaPoints() &&
-            this.luck === otherEnemy.getLuck() &&
-            this.defense === otherEnemy.getDefense() &&
-            this.magicDefense === otherEnemy.getMagicDefense()
-        );
+        this.battles = enemy.battles;
     }
     
-    static from(prismaEnemy: PrismaEnemy & { moves?: PrismaMove[] }): EnemyType {
-        return {
-            id: prismaEnemy.id,
-            name: prismaEnemy.name,
-            level: prismaEnemy.level,
-            strength: prismaEnemy.strength,
-            speed: prismaEnemy.speed,
-            magic: prismaEnemy.magic,
-            dexterity: prismaEnemy.dexterity,
-            healthPoints: prismaEnemy.healthPoints,
-            manaPoints: prismaEnemy.manaPoints,
-            luck: prismaEnemy.luck,
-            defense: prismaEnemy.defense,
-            magicDefense: prismaEnemy.magicDefense,
-            moves: prismaEnemy.moves?.map((move) => ({
-                enemyId: prismaEnemy.id,
-                enemy: {
-                    id: prismaEnemy.id,
-                    name: prismaEnemy.name,
-                    level: prismaEnemy.level,
-                    strength: prismaEnemy.strength,
-                    speed: prismaEnemy.speed,
-                    magic: prismaEnemy.magic,
-                    dexterity: prismaEnemy.dexterity,
-                    healthPoints: prismaEnemy.healthPoints,
-                    manaPoints: prismaEnemy.manaPoints,
-                    luck: prismaEnemy.luck,
-                    defense: prismaEnemy.defense,
-                    magicDefense: prismaEnemy.magicDefense,
-                    moves: [],
-                },
-                moveId: move.id,
-                move: Move.from(move),
-            })) || [],
-        };
+    static from({ id, name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles }: EnemyPrisma & { moves: MovePrisma[]; battles: BattlePrisma[] }) {
+        return new Enemy({
+            id,   
+            name,
+            level,
+            strength,
+            speed,
+            magic,
+            dexterity,
+            healthPoints,manaPoints,
+            luck,
+            defense,
+            magicDefense,
+            moves: moves.map((move) => Move.from(move)),
+            battles: battles.map((battle) => Battle.from(battle)),
+        });
     }
 }

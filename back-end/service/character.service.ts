@@ -17,8 +17,8 @@ const getCharacter = async (id: number): Promise<Character | null> => {
     return await characterRepository.getCharacterById(id);
 };
 
-const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass }: CharacterType): Promise<Character> => {
-    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass });
+const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }: CharacterType): Promise<Character> => {
+    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves });
     return await characterRepository.createCharacter(character);
 };
 

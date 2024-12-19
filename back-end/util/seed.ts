@@ -6,72 +6,70 @@ async function main() {
   console.log('Seeding database...');
   
   // 1. Verwijder alle bestaande data
+  await prisma.move.deleteMany({});
+  await prisma.battle.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.character.deleteMany({});
-  // await prisma.move.deleteMany({});
-  // await prisma.battle.deleteMany({});
-  // await prisma.characterMove.deleteMany({});
-  // await prisma.enemy.deleteMany({});
-  // await prisma.enemyMove.deleteMany({});
+  await prisma.enemy.deleteMany({});
   
   console.log('Deleted existing data.');
   
-  // // 2. Maak moves data aan
-  // console.log('Creating moves...');
-  // const move1 = await prisma.move.create({
-  //   data: {
-  //     name: 'Fireball',
-  //     attack: 30,
-  //     magicAttack: 50,
-  //     manaPoints: 20,
-  //     aoe: false,
-  //   },
-  // });
-  // console.log(`Created move: ${move1.name}`);
+  // 2. Maak moves data aan
+  console.log('Creating moves...');
+  const move1 = await prisma.move.create({
+    data: {
+      name: 'Fireball',
+      attack: 30,
+      magicAttack: 50,
+      manaPoints: 20,
+      aoe: false,
+    },
+  });
+  console.log(`Created move: ${move1.name}`);
   
-  // const move2 = await prisma.move.create({
-  //   data: {
-  //     name: 'Earthquake',
-  //     attack: 60,
-  //     magicAttack: 0,
-  //     manaPoints: 30,
-  //     aoe: true,
-  //   },
-  // });
-  // console.log(`Created move: ${move2.name}`);
+  const move2 = await prisma.move.create({
+    data: {
+      name: 'Earthquake',
+      attack: 60,
+      magicAttack: 0,
+      manaPoints: 30,
+      aoe: true,
+    },
+  });
+  console.log(`Created move: ${move2.name}`);
   
-  // const move3 = await prisma.move.create({
-  //   data: {
-  //     name: 'Ice Spike',
-  //     attack: 25,
-  //     magicAttack: 45,
-  //     manaPoints: 15,
-  //     aoe: false,
-  //   },
-  // });
-  // console.log(`Created move: ${move3.name}`);
+  const move3 = await prisma.move.create({
+    data: {
+      name: 'Ice Spike',
+      attack: 25,
+      magicAttack: 45,
+      manaPoints: 15,
+      aoe: false,
+    },
+  });
+  console.log(`Created move: ${move3.name}`);
   
-  // const move4 = await prisma.move.create({
-  //   data: {
-  //     name: 'Thunderstorm',
-  //     attack: 40,
-  //     magicAttack: 60,
-  //     manaPoints: 35,
-  //     aoe: true,
-  //   },
-  // });
-  // console.log(`Created move: ${move4.name}`);
+  const move4 = await prisma.move.create({
+    data: {
+      name: 'Thunderstorm',
+      attack: 40,
+      magicAttack: 60,
+      manaPoints: 35,
+      aoe: true,
+    },
+  });
+  console.log(`Created move: ${move4.name}`);
 
-  // const move5 = await prisma.move.create({
-  //   data: {
-  //     name: 'Shadow Strike',
-  //     attack: 50,
-  //     magicAttack: 20,
-  //     manaPoints: 10,
-  //     aoe: false,
-  //   },
-  // });
-  // console.log(`Created move: ${move5.name}`);
+  const move5 = await prisma.move.create({
+    data: {
+      name: 'Shadow Strike',
+      attack: 50,
+      magicAttack: 20,
+      manaPoints: 10,
+      aoe: false,
+    },
+  });
+  console.log(`Created move: ${move5.name}`);
   
   // // 3. Maak enemies data aan
   // console.log('Creating enemies...');

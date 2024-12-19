@@ -1,28 +1,41 @@
-import { EnemyType } from '../types';
 import enemyRepository from '../repository/enemy.db';
+import { Enemy } from '../model/enemy';
+import { EnemyType } from '../types';
 
-// Get all enemies
-const getAllEnemies = async (): Promise<EnemyType[]> => {
+const getAllEnemies = async (): Promise<Enemy[]> => {
     return await enemyRepository.getEnemies();
 };
 
-// Get a specific enemy by ID
-const getEnemy = async (id: number): Promise<EnemyType | null> => {
+const getEnemy = async (id: number): Promise<Enemy | null> => {
+    const enemies = await enemyRepository.getEnemies();
+    const enemyExists = enemies.some((enemy) => enemy.id === id);
+    
+    if (!enemyExists) {
+        throw new Error(`Enemy with id ${id} does not exist`)
+    }
     return await enemyRepository.getEnemyById(id);
 };
 
-// Create a new enemy
-const createEnemy = async (data: EnemyType): Promise<EnemyType> => {
-    return await enemyRepository.createEnemy(data);
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles }: EnemyType): Promise<Enemy> => {
+    const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles });
+    return await enemyRepository.createEnemy(enemy);
 };
 
-// Update a enemy by ID
-const updateEnemy = async (id: number, data: Partial<EnemyType>): Promise<EnemyType> => {
+const updateEnemy = async (id: number, data: Partial<EnemyType>): Promise<Enemy> => {
+    const existingEnemy = await enemyRepository.getEnemyById(id);
+    if (!existingEnemy) {
+        throw new Error(`Enemy with id ${id} does not exist`)
+    }
+
     return await enemyRepository.updateEnemy(id, data);
 };
 
-// Delete a enemy by ID
 const deleteEnemy = async (id: number): Promise<void> => {
+    const existingEnemy = await enemyRepository.getEnemyById(id);
+    if (!existingEnemy) {
+        throw new Error(`Enemy with id ${id} does not exist`)
+    }
+
     await enemyRepository.deleteEnemy(id);
 };
 

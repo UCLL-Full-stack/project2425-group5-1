@@ -1,29 +1,40 @@
-import { MoveType } from '../types';
 import moveRepository from '../repository/move.db';
+import { Move } from '../model/move';
+import { MoveType } from '../types';
 
-
-// Get all moves
-const getAllMoves = async (): Promise<MoveType[]> => {
+const getAllMoves = async (): Promise<Move[]> => {
     return await moveRepository.getMoves();
 };
 
-// Get a specific move by ID
-const getMove = async (id: number): Promise<MoveType | null> => {
+const getMove = async (id: number): Promise<Move | null> => {
+    const moves = await moveRepository.getMoves();
+    const moveExists = moves.some((move) => move.id === id );
+
+    if (!moveExists) {
+        throw new Error(`Move with id ${id} does not exist`);
+    }
     return await moveRepository.getMoveById(id);
 };
 
-// Create a new move
-const createMove = async (data: MoveType): Promise<MoveType> => {
-    return await moveRepository.createMove(data);
+const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: MoveType): Promise<Move> => {
+    const move = new Move({ name, attack, magicAttack, manaPoints, aoe })
+    return await moveRepository.createMove(move);
 };
 
-// Update a move by ID
-const updateMove = async (id: number, data: Partial<MoveType>): Promise<MoveType> => {
+const updateMove = async (id: number, data: Partial<MoveType>): Promise<Move> => {
+    const existingMove = await moveRepository.getMoveById(id);
+    if (!existingMove) {
+        throw new Error(`Move with id ${id} does not exist`);
+    }
+
     return await moveRepository.updateMove(id, data);
 };
 
-// Delete a move by ID
 const deleteMove = async (id: number): Promise<void> => {
+    const existingMove = await moveRepository.getMoveById(id);
+    if (!existingMove) {
+        throw new Error(`Move with id ${id} does not exist`);
+    }
     await moveRepository.deleteMove(id);
 };
 

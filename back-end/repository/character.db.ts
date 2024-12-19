@@ -1,12 +1,12 @@
 import prisma from './database';
 import { Character } from '../model/character';
-import { CharacterType } from '../types';
 
 const getCharacters = async (): Promise<Character[]> => {
     try {
         const charactersPrisma = await prisma.character.findMany({
             include: {
                 user: true,
+                moves: true,
             },
         });
         return charactersPrisma.map((characterPrisma) => Character.from(characterPrisma));
@@ -22,6 +22,7 @@ const getCharacterById = async ( id : number): Promise<Character | null> => {
             where: { id },
             include: {
                 user: true,
+                moves: true,
             },
         });
         return characterPrisma ? Character.from(characterPrisma) : null;
@@ -31,7 +32,7 @@ const getCharacterById = async ( id : number): Promise<Character | null> => {
     }
 };
 
-const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass }: Character): Promise<Character> => {
+const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }: Character): Promise<Character> => {
     try {
         const newCharacterPrisma = await prisma.character.create({
             data: {
@@ -49,9 +50,13 @@ const createCharacter = async ({ name, level, xp, strength, speed, magic, dexter
                 magicDefense,
                 progress,
                 characterClass,
+                moves: {
+                    connect: moves.map(move => ({ id: move.id })),
+                },
             },
             include: {
                 user: true,
+                moves: true,
             },
         });
         return Character.from(newCharacterPrisma);
@@ -61,7 +66,7 @@ const createCharacter = async ({ name, level, xp, strength, speed, magic, dexter
     }
 };
 
-const updateCharacter = async (id: number, data: Partial<CharacterType>): Promise<Character> => {
+const updateCharacter = async (id: number, data: Partial<Character>): Promise<Character> => {
     try {
         const updatedCharacter = await prisma.character.update({
             where: { id },
@@ -80,9 +85,11 @@ const updateCharacter = async (id: number, data: Partial<CharacterType>): Promis
                 magicDefense: data.magicDefense,
                 progress: data.progress,
                 characterClass: data.characterClass,
+                moves: data.moves ? { connect: data.moves.map(move => ({ id: move.id })) } : undefined,
             },
             include: {
                 user: true,
+                moves: true,
             },
         });
         return Character.from(updatedCharacter);
@@ -91,6 +98,7 @@ const updateCharacter = async (id: number, data: Partial<CharacterType>): Promis
         throw new Error('Failed to update character');
     }
 };
+
 
 const deleteCharacter = async (id: number): Promise<void> => {
     try {

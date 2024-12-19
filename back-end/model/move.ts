@@ -1,13 +1,12 @@
-import { Move as PrismaMove } from '@prisma/client';
-import { MoveType } from '../types';
+import { Move as MovePrisma } from '@prisma/client';
 
 export class Move {
-    private id?: number;
-    private name: string;
-    private attack: number;
-    private magicAttack: number;
-    private manaPoints: number;
-    private aoe: boolean;
+    readonly id?: number;
+    readonly name: string;
+    readonly attack: number;
+    readonly magicAttack: number;
+    readonly manaPoints: number;
+    readonly aoe: boolean;
 
     constructor(move: {
         id?: number;
@@ -25,38 +24,14 @@ export class Move {
         this.aoe = move.aoe;
     }
 
-    getId(): number | undefined {
-        return this.id;
-    }
-
-    getName(): string {
-        return this.name;
-    }
-
-    getAttack(): number {
-        return this.attack;
-    }
-
-    getMagicAttack(): number {
-        return this.magicAttack;
-    }
-
-    getManaPoints(): number {
-        return this.manaPoints;
-    }
-    
-    getAoe(): boolean {
-        return this.aoe;
-    }
-
-    static from(prismaMove: PrismaMove): MoveType {
-        return {
-            id: prismaMove.id,
-            name: prismaMove.name,
-            attack: prismaMove.attack,
-            magicAttack: prismaMove.magicAttack,
-            manaPoints: prismaMove.manaPoints,
-            aoe: prismaMove.aoe,
-        };
+    static from({ id, name, attack, magicAttack, manaPoints, aoe }: MovePrisma) {
+        return new Move ({
+            id,
+            name,
+            attack,
+            magicAttack,
+            manaPoints,
+            aoe,
+        });
     }
 }

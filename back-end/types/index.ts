@@ -22,6 +22,7 @@ type CharacterType = {
     magicDefense: number;
     progress: string;
     characterClass: string;
+    moves: MoveType[];
 };
 
 type BattleType = {
@@ -34,8 +35,37 @@ type BattleType = {
     character?: CharacterType;
 };
 
+type MoveType = {
+    id?: number;
+    name: string;
+    attack: number;
+    magicAttack: number;
+    manaPoints: number;
+    aoe: boolean;
+};
+
+type EnemyType = {
+    id?: number;
+    name: string;
+    level: number;
+    strength: number;
+    speed: number;
+    magic: number;
+    dexterity: number;
+    healthPoints: number;
+    manaPoints: number;
+    luck: number;
+    defense: number;
+    magicDefense: number;
+
+    moves: MoveType[];
+    battles: BattleType[];
+};
+
 export {
     UserType,
     CharacterType,
     BattleType,
+    MoveType,
+    EnemyType,
 };

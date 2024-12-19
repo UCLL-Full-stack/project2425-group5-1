@@ -55,7 +55,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
         res.json({ message: 'Move deleted successfully' });
     } catch ( error ) {
         const err = error as Error;
-        res.json(500).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
