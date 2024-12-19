@@ -1,51 +1,59 @@
-import userRepositry from '../repository/user.db';
-import User from '../model/user';
-import { UserInput } from '../types';
+import { UserType } from '../types';
+import userRepository from '../repository/user.db';
+import characterRepository from '../repository/character.db';
+import { User } from '../model/user';
 
-/**
- * GET
- */
-const getUsers = async (): Promise<User[]> => {
-    try {
-        return await userRepositry.getUsers();
-    } catch (error) {
-        console.error('Error fetching user:', error);
-        throw new Error('Unable to fetch users.');
-    }
+const getAllUsers = async (): Promise<User[]> => {
+    return await userRepository.getUsers();
 };
 
-
-const createUser = async ({ name, email, password }: UserInput): Promise<User> => {
-    try {
-        // // Validate name
-        // if (typeof name !== 'string' || name.trim() === '') {
-        //     throw new Error('Invalid user name');
-        // }
-
-        // // Validate email
-        // if (typeof email !== 'string' || email.trim() === '') {
-        //     throw new Error('Invalid email address');
-        // }
-
-        // // Validate password
-        // if (typeof password !== 'string' || password.trim() === '') {
-        //     throw new Error('Invalid password');
-        // }
-
-        const newUser = new User({ name, email, password });
-
-        return await userRepositry.createUser(name, email, password);
-
-    } catch (error) {
-        console.error('Error in createUser service:', error);
-        throw new Error('Unable to create user.');
+const getUser = async (id: number): Promise<User | null> => {
+    const users = await userRepository.getUsers();
+    const userExists = users.some((user) => user.id === id);
+    
+    if (!userExists) {
+        throw new Error('User not found');
     }
+
+    return await userRepository.getUserById(id);
 };
 
+const createUser = async ({ name, email, password, characterId}: UserType): Promise<User> => {
+    if (!characterId) {
+        throw new Error('Character id is required');
+    }
 
-const userService = {
+    const character = await characterRepository.getCharacterById( characterId );
+    if (!character) {
+        throw new Error(`Character with id ${characterId} not found`);
+    }
+
+    const user = new User({ name, email, password, characterId });
+    return await userRepository.createUser(user);
+};
+
+const updateUser = async (id: number, data: Partial<UserType>): Promise<User> => {
+    const existingUser = await userRepository.getUserById(id);
+    if (!existingUser) {
+        throw new Error('User not found');
+    }
+
+    return await userRepository.updateUser(id, data);
+};
+
+const deleteUser = async (id: number): Promise<void> => {
+    const existingUser = await userRepository.getUserById(id);
+    if (!existingUser) {
+        throw new Error('User not found');
+    }
+
+    await userRepository.deleteUser(id);
+};
+
+export {
+    getAllUsers,
+    getUser,
     createUser,
-    getUsers,
+    updateUser,
+    deleteUser,
 };
-
-export default userService;

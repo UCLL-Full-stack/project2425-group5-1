@@ -1,79 +1,35 @@
-import Character from './character';
-import {
-    User as UserPrisma,
-    Character as CharacterPrisma,
-} from '@prisma/client';
+import { User as UserPrisma, Character as CharacterPrisma} from '@prisma/client';
+import { Character } from './character';
 
-export default class User {
-    private id?: number;
-    private name: string;
-    private email: string;
-    private password: string;
-    private character?: Character;
+export class User {
 
-    constructor(user: { id?: number; name: string; email: string; password: string, character?: Character }) {
-        this.validate(user);
+    readonly id?: number;
+    readonly name: string;
+    readonly email: string;
+    readonly password: string;
+    readonly characterId: number;
 
+    constructor(user: {
+        id?: number;
+        name: string;
+        email: string;
+        password: string;
+        characterId: number;
+    }) {
         this.id = user.id;
         this.name = user.name;
         this.email = user.email;
         this.password = user.password;
-        this.character = user.character;
-    }
-    
-    static from({
-        id,
-        name,
-        email,
-        password,
-        character,
-    }: UserPrisma & { character?: CharacterPrisma | null }) {
-        const userInstance = new User({ id, name, email, password });
-        if (character) {
-            userInstance.character = new Character({
-                ...character,
-                user: userInstance,
-            });
-        }
-        return userInstance;
-    }
-    
-    getId(): number | undefined {
-        return this.id;
-    }
-    getName(): string {
-        return this.name;
-    }
-    getEmail(): string {
-        return this.email;
-    }
-    getPassword(): string {
-        return this.password;
+        this.characterId = user.characterId;
     }
 
-    getCharacter(): Character | undefined {
-        return this.character;
-    }
-
-    validate(user: { id?: number; name: string; email: string; password: string }) {
-        if (!user.name.trim()) {
-            throw new Error('Name is required');
-        }
-        if (!user.email.trim()) {
-            throw new Error('Email is required');
-        }
-        if (!user.password.trim()) {
-            throw new Error('Password is required');
-        }
-    }
-
-    equals(user: User): boolean {
-        return (
-            this.id === user.getId() &&
-            this.name === user.getName() &&
-            this.email === user.getEmail() &&
-            this.password === user.getPassword() &&
-            this.character === user.getCharacter()
-        );
+    static from({id, name, email, password, characterId }: UserPrisma & { character: CharacterPrisma;}) {
+        return new User( {
+            id,
+            name,
+            email,
+            password,
+            characterId,
+        });
     }
 }

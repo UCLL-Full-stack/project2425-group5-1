@@ -1,76 +1,73 @@
-// import Character from '../../model/character';
-// import User from '../../model/user';
+import { Character } from "../../../model/character";
+import { User } from "../../../model/user";
 
-// let mockUser: User;
-// let validCharacter: Character;
+let validCharacter: Character;
 
-// beforeEach(() => {
-//     mockUser = new User({
-//         id: 1,
-//         username: 'John Doe',
-//         email: 'john.doe@example.com',
-//         password: 'password123',
-//     });
+beforeEach(() => {
+    validCharacter = new Character({
+        id: 1,
+        name: 'John',
+        level: 1,
+        xp: 0,
+        strength: 10,
+        speed: 5,
+        magic: 8,
+        dexterity: 6,
+        healthPoints: 100,
+        manaPoints: 50,
+        luck: 3,
+        defense: 2,
+        magicDefense: 1,
+        progress: 'starting',
+        class: "Mage",
+    });
+});
 
-//     validCharacter = new Character({
-//         id: 1,
-//         name: 'John',
-//         level: 1,
-//         xp: 0,
-//         strength: 10,
-//         speed: 5,
-//         magic: 8,
-//         dexterity: 6,
-//         healthPoints: 100,
-//         manaPoints: 50,
-//         luck: 3,
-//         defense: 2,
-//         magicDefense: 1,
-//         progress: 'starting',
-//         user: mockUser,
-//     });
-// });
+test('given: valid values for character (without user), when: character is created, then: character is created with does values.', () => {
+    // Given
+    const validCharacterData = {
+        id: 1,
+        name: 'John',
+        level: 1,
+        xp: 0,
+        strength: 10,
+        speed: 5,
+        magic: 8,
+        dexterity: 6,
+        healthPoints: 100,
+        manaPoints: 50,
+        luck: 3,
+        defense: 2,
+        magicDefense: 1,
+        progress: 'starting',
+        class: "Mage",
+    };
 
-// test('given: valid values for character, when: character is created, then: character is created with does values.', () => {
-//     // Given
-//     const validCharacterData = {
-//         id: 1,
-//         name: 'John',
-//         level: 1,
-//         xp: 0,
-//         strength: 10,
-//         speed: 5,
-//         magic: 8,
-//         dexterity: 6,
-//         healthPoints: 100,
-//         manaPoints: 50,
-//         luck: 3,
-//         defense: 2,
-//         magicDefense: 1,
-//         progress: 'starting',
-//         user: mockUser,
-//     };
+    // When
+    const character = new Character(validCharacterData);
 
-//     // When
-//     const character = new Character(validCharacterData);
+    // Then
+    expect(character.id).toEqual(1);
+    expect(character.name).toEqual('John');
+    expect(character.level).toEqual(1);
+    expect(character.xp).toEqual(0);
+    expect(character.strength).toEqual(10);
+    expect(character.speed).toEqual(5);
+    expect(character.magic).toEqual(8);
+    expect(character.dexterity).toEqual(6);
+    expect(character.healthPoints).toEqual(100);
+    expect(character.manaPoints).toEqual(50);
+    expect(character.luck).toEqual(3);
+    expect(character.defense).toEqual(2);
+    expect(character.magicDefense).toEqual(1);
+    expect(character.progress).toEqual('starting');
+    expect(character.class).toEqual('Mage');
+    expect(character.user).toBeUndefined();
+});
 
-//     // Then
-//     expect(character.getId()).toEqual(1);
-//     expect(character.getName()).toEqual('John');
-//     expect(character.getLevel()).toEqual(1);
-//     expect(character.getXp()).toEqual(0);
-//     expect(character.getStrength()).toEqual(10);
-//     expect(character.getSpeed()).toEqual(5);
-//     expect(character.getMagic()).toEqual(8);
-//     expect(character.getDexterity()).toEqual(6);
-//     expect(character.getHealthPoints()).toEqual(100);
-//     expect(character.getManaPoints()).toEqual(50);
-//     expect(character.getLuck()).toEqual(3);
-//     expect(character.getDefense()).toEqual(2);
-//     expect(character.getMagicDefense()).toEqual(1);
-//     expect(character.getProgress()).toEqual('starting');
-//     expect(character.getUser()).toEqual(mockUser);
-// });
+
+
+
 
 // test('given: valid character, when: setName is called with a new name, then: valid character has a new name.', () => {
 //     // Given

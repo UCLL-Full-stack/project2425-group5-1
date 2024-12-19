@@ -1,83 +1,48 @@
-import { PrismaClient } from '@prisma/client';
-import { Request, Response } from 'express';
+import characterRepository from '../repository/character.db';
+import { Character } from '../model/character';
+import { CharacterType } from '../types';
 
-const prisma = new PrismaClient();
-
-/**
- * GET
- */
-export const getCharacters = async (req: Request, res: Response) => {
-    try {
-        const characters = await prisma.character.findMany();
-        res.status(200).json(characters); // Stuur de data terug als JSON-response
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
-    }
+const getAllCharacters = async (): Promise<Character[]> => {
+    return await characterRepository.getCharacters();
 };
 
-/**
- * POST
- */
-export const createCharacter = async (req: Request, res: Response) => {
-    const {
-        name,
-        level,
-        xp,
-        strength,
-        speed,
-        magic,
-        dexterity,
-        healthPoints,
-        manaPoints,
-        luck,
-        defense,
-        magicDefense,
-        progress,
-        userId,
-    } = req.body;
+const getCharacter = async (id: number): Promise<Character | null> => {
+    const characters = await characterRepository.getCharacters();
+    const characterExists = characters.some((character) => character.id === id );
 
-    try {
-        const character = await prisma.character.create({
-            data: {
-                name,
-                level,
-                xp,
-                strength,
-                speed,
-                magic,
-                dexterity,
-                healthPoints,
-                manaPoints,
-                luck,
-                defense,
-                magicDefense,
-                progress,
-                userId,
-            },
-        });
-    res.json(character);
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: 'Failed to create character' });
+    if (!characterExists) {
+        throw new Error(`Character with id ${id} does not exist`);
     }
+
+    return await characterRepository.getCharacterById(id);
 };
 
-/**
- * DELETE
- */
-export const deleteCharacter = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.body;
-        console.log(id);
-        const characters = await prisma.character.delete({
-            where: {
-                id: id,
-            },
-        });
-        res.status(200).json(characters); // Stuur de data terug als JSON-response
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: 'Failed to fetch characters' }); // Geef een foutmelding terug
+const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass }: CharacterType): Promise<Character> => {
+    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass });
+    return await characterRepository.createCharacter(character);
+};
+
+const updateCharacter = async (id: number, data: Partial<CharacterType>): Promise<Character> => {
+    const existingCharacter = await characterRepository.getCharacterById(id);
+    if (!existingCharacter) {
+        throw new Error(`Character with id ${id} does not exist`);
     }
+
+    return await characterRepository.updateCharacter(id, data);
+};
+
+const deleteCharacter = async (id: number): Promise<void> => {
+    const existingCharacter = await characterRepository.getCharacterById(id);
+    if (!existingCharacter) {
+        throw new Error(`Character with id ${id} does not exist`);
+    }
+    await characterRepository.deleteCharacter(id);
+};
+
+export {
+    getAllCharacters,
+    getCharacter,
+    createCharacter,
+    updateCharacter,
+    deleteCharacter,
 };

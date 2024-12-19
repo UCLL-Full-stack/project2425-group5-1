@@ -1,6 +1,6 @@
-import User from '../model/user';
-import { UserInput } from '../types';
 import prisma from './database';
+import { User } from '../model/user';
+import { UserType } from '../types';
 
 const getUsers = async (): Promise<User[]> => {
     try {
@@ -16,48 +16,108 @@ const getUsers = async (): Promise<User[]> => {
     }
 };
 
-
-const createUser = async (
-    name: string,
-    email: string,
-    password: string,
-) => {
+const getUserById = async (id: number): Promise<User | null> => {
     try {
-        const userPrisma = await prisma.user.create({
+        const userPrisma = await prisma.user.findUnique({
+            where: { id },
+            include: { 
+                character: true 
+            },
+        });
+        return userPrisma ? User.from(userPrisma) : null;
+    } catch (error) {
+        console.error(`Error fetching user with id ${id}:`, error);
+        throw new Error('Failed to fetch user');
+    }
+};
+
+const createUser = async ({ name, email, password, characterId }: User): Promise<User> => {
+    if (!characterId) {
+        throw new Error('Character must have a valid id');
+    }
+
+    try {
+        const createdUser = await prisma.user.create({
             data: {
                 name,
                 email,
                 password,
+                characterId,
+            },
+            include: {
+                character: true,
             },
         });
-        return new User(userPrisma);
-    } catch (error) {
-        console.error('Error creating user:', error);
+
+        return User.from(createdUser);
+    } catch ( error ) {
+        console.error(`Error creating user:`, error);
         throw new Error('Failed to create user');
     }
 };
 
+const updateUser = async (id: number, data: Partial<UserType>): Promise<User> => {
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                name: data.name,
+                password: data.password,
+            },
+            include: {
+                character: true,
+            },
+        });
+        return User.from(updatedUser);
+    } catch (error) {
+        console.error(`Error updating user with id ${id}:`, error);
+        throw new Error('Failed to update user');
+    }
+};
+const deleteUser = async (id: number): Promise<void> => {
+    try {
+        // Find the user along with the associated character
+        const userWithCharacter = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                character: true, // This will include the character associated with the user
+            },
+        });
 
-// const createUser = async (userData: UserInput): Promise<User> => {
-//     try {
-//         const userPayload = {
-//             name: userData.name,
-//             email: userData.email,
-//             password: userData.password,
-//             }
+        if (!userWithCharacter) {
+            throw new Error(`User with id ${id} not found`);
+        }
 
-//         const createdUser = await prisma.user.create({
-//             data: userPayload,
-//         });
-//     } catch (error) {
-//         console.error('Error creating user:', error);
-//         throw new Error('Failed to create user');
-//     }
-// };
-
-const userRepositry = {
-    createUser,
-    getUsers,
+        
+        // Now, delete the user
+        await prisma.user.delete({
+            where: { id },
+        });
+        
+        // If the user has an associated character, delete it first
+        if (userWithCharacter.character) {
+            await prisma.character.delete({
+                where: { id: userWithCharacter.character.id },
+            });
+            console.log(`Character with id ${userWithCharacter.character.id} deleted`);
+        }
+        console.log(`User with id ${id} deleted successfully`);
+    } catch (error) {
+        console.error(`Error deleting user with id ${id}:`, error);
+        throw new Error('Failed to delete user');
+    }
 };
 
-export default userRepositry;
+
+
+
+
+const userRepository = {
+    getUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser,
+};
+
+export default userRepository;

@@ -2,8 +2,13 @@ import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
+
 import characterRouter from './controller/character.routes';
 import userRouter from './controller/user.routes';
+import enemyRouter from './controller/enemy.routes';
+import moveRouter from './controller/move.routes';
+import battleRouter from './controller/battle.routes';
+
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
@@ -16,6 +21,9 @@ app.use(bodyParser.json());
 
 app.use('/user', userRouter);
 app.use('/character', characterRouter);
+// app.use('/move', moveRouter);
+// app.use('/enemy', enemyRouter);
+// app.use('/battle', battleRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
