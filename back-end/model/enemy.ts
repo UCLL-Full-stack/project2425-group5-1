@@ -3,7 +3,6 @@ import { Move } from './move';
 import { Battle } from './battle';
 
 export class Enemy {
-
     readonly id?: number;
     readonly name: string;
     readonly level: number;
@@ -17,7 +16,7 @@ export class Enemy {
     readonly defense: number;
     readonly magicDefense: number;
 
-    readonly moves: Move[];
+    readonly moveIds: number[];
     readonly battles: Battle[];
 
     constructor(enemy: {
@@ -33,7 +32,7 @@ export class Enemy {
         luck: number;
         defense: number;
         magicDefense: number;
-        moves: Move[];
+        moveIds: number[];
         battles: Battle[]
     }) {
         this.id = enemy.id;
@@ -48,11 +47,12 @@ export class Enemy {
         this.luck = enemy.luck;
         this.defense = enemy.defense;
         this.magicDefense = enemy.magicDefense;
-        this.moves = enemy.moves;
+        this.moveIds = enemy.moveIds;
         this.battles = enemy.battles;
     }
     
     static from({ id, name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles }: EnemyPrisma & { moves: MovePrisma[]; battles: BattlePrisma[] }) {
+        const moveIds = moves.map(move => move.id); 
         return new Enemy({
             id,   
             name,
@@ -65,7 +65,7 @@ export class Enemy {
             luck,
             defense,
             magicDefense,
-            moves: moves.map((move) => Move.from(move)),
+            moveIds,
             battles: battles.map((battle) => Battle.from(battle)),
         });
     }

@@ -1,3 +1,4 @@
+
 type UserType = {
     id?: number;
     name: string;
@@ -21,8 +22,8 @@ type CharacterType = {
     defense: number;
     magicDefense: number;
     progress: string;
-    characterClass: string;
-    moves: MoveType[];
+    characterClass: "Warrior" | "Mage" | "Rogue" | "Archer";
+    moveIds: number[];
 };
 
 type BattleType = {
@@ -58,7 +59,7 @@ type EnemyType = {
     defense: number;
     magicDefense: number;
 
-    moves: MoveType[];
+    moveIds: number[];
     battles: BattleType[];
 };
 

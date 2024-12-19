@@ -16,8 +16,8 @@ const getEnemy = async (id: number): Promise<Enemy | null> => {
     return await enemyRepository.getEnemyById(id);
 };
 
-const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles }: EnemyType): Promise<Enemy> => {
-    const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles });
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles }: EnemyType): Promise<Enemy> => {
+    const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles });
     return await enemyRepository.createEnemy(enemy);
 };
 
@@ -27,7 +27,10 @@ const updateEnemy = async (id: number, data: Partial<EnemyType>): Promise<Enemy>
         throw new Error(`Enemy with id ${id} does not exist`)
     }
 
-    return await enemyRepository.updateEnemy(id, data);
+    return await enemyRepository.updateEnemy(id, {
+        ...data,
+        moveIds: data.moveIds ? data.moveIds : existingEnemy.moveIds,
+    });
 };
 
 const deleteEnemy = async (id: number): Promise<void> => {

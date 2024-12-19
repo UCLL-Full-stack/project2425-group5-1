@@ -19,8 +19,7 @@ export class Character {
     readonly progress: string;
     readonly characterClass: string;
     readonly user?: User;
-
-    readonly moves: Move[];
+    readonly moveIds: number[];
 
     constructor(character: {
         id?: number;
@@ -39,7 +38,7 @@ export class Character {
         progress: string;
         characterClass: string;
         user?: User;
-        moves: Move[];
+        moveIds: number[];
     }) {
         this.id = character.id;
         this.name = character.name;
@@ -57,10 +56,11 @@ export class Character {
         this.progress = character.progress;
         this.characterClass = character.characterClass;
         this.user = character.user;
-        this.moves = character.moves;
+        this.moveIds = character.moveIds;
     }
 
-    static from({ id, name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }:  CharacterPrisma & { moves: MovePrisma[] }) {
+    static from({ id, name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }: CharacterPrisma & { moves: MovePrisma[] }) {
+        const moveIds = moves.map(move => move.id);
         return new Character({
             id,
             name,
@@ -77,8 +77,7 @@ export class Character {
             magicDefense,
             progress,
             characterClass,
-
-            moves: moves.map((move) => Move.from(move)),
+            moveIds,
         });
     }
-}
+}    

@@ -32,8 +32,11 @@ const getEnemyById = async (id: number): Promise<Enemy | null> => {
     }
 };
 
-const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles}: Enemy): Promise<Enemy> => {
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles}: Enemy): Promise<Enemy> => {
     try {
+        if (!moveIds || moveIds.length === 0) {
+            throw new Error('Move IDs must be provided');
+        }
         const newEnemyPrisma = await prisma.enemy.create({
             data: {
                 name,
@@ -48,7 +51,7 @@ const createEnemy = async ({ name, level, strength, speed, magic, dexterity, hea
                 defense,
                 magicDefense,
                 moves: {
-                    connect: moves.map((move) => ({ id: move.id })),
+                    connect: moveIds.map((moveId: number) => ({ id: moveId })),
                 },
 
                 battles: {
@@ -83,8 +86,11 @@ const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => 
                 luck: data.luck,
                 defense: data.defense,
                 magicDefense: data.magicDefense,
-                moves: data.moves
-                    ? { connect: data.moves.map((move) => ({ id: move.id })) }
+                moves: data.moveIds
+                    ? { 
+                        set: [],
+                        connect: data.moveIds.map(id => ({ id }))
+                    }
                     : undefined,
 
                 battles: data.battles

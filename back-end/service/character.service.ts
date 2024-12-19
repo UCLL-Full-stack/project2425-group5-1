@@ -17,8 +17,8 @@ const getCharacter = async (id: number): Promise<Character | null> => {
     return await characterRepository.getCharacterById(id);
 };
 
-const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }: CharacterType): Promise<Character> => {
-    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves });
+const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moveIds }: CharacterType): Promise<Character> => {
+    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moveIds });
     return await characterRepository.createCharacter(character);
 };
 
@@ -28,7 +28,10 @@ const updateCharacter = async (id: number, data: Partial<CharacterType>): Promis
         throw new Error(`Character with id ${id} does not exist`);
     }
 
-    return await characterRepository.updateCharacter(id, data);
+    return await characterRepository.updateCharacter(id, {
+        ...data,
+        moveIds: data.moveIds ? data.moveIds : existingCharacter.moveIds,
+    });
 };
 
 const deleteCharacter = async (id: number): Promise<void> => {
