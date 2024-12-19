@@ -6,6 +6,7 @@
   top: 24px;
   right: 24px;
   transition: 0.4s ease color;
+  z-index: 99999999999999;
 }
 
 .icon:hover {

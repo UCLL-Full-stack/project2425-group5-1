@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function MenuSigns() {
     return (
         <div className={styles.blacksmith}>
-            <Image src="/images/ui/arrow_signs.png" width={128} height={128} className={styles.image} quality={100} alt="Shop" />
+            <Image src="/images/ui/arrow_signs.png" width={128} height={128} className={styles.image} quality={100} alt="Shop" draggable={false}  />
         </div>
     );
 }

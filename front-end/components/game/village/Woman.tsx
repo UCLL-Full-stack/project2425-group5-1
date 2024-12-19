@@ -1,19 +1,33 @@
 import styles from "@/styles/game/village/Woman.module.css";
 import { useEffect, useRef, useState } from "react";
 
-export default function Woman() {
+interface Props {
+    isClicked?: (name: "" | "merchant" | "hatman" | "woman" | "questboard" ) => void;
+    textHandler: string;
+}
+
+export default function Woman({ isClicked, textHandler }: Props) {
     const [animationState, setAnimationState] = useState<"idle" | "walking">("walking");
     const villagerContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if(!villagerContainerRef.current) return;
+        if(!villagerContainerRef.current || !isClicked) return;
         if(animationState === "idle") {
+            isClicked("woman");
             villagerContainerRef.current.style.animationPlayState = "paused";
         } else {
+            isClicked("");
             villagerContainerRef.current.style.animationPlayState = "running";
         }
         return () => {}
     }, [animationState]);
+
+    useEffect(() => {
+        if(!villagerContainerRef.current) return;
+        if(textHandler === "") {
+            setAnimationState("walking");
+        }
+    }, [textHandler]);
 
     return (
         <div className={`${styles.spritesheet_container} ${styles.animate_position}`}

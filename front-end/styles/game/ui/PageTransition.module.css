@@ -1,0 +1,124 @@
+.container {
+    z-index: 10000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    mask-image: radial-gradient(circle, transparent 30%, black 60%);
+    -webkit-mask-image: radial-gradient(circle, transparent 30%, black 60%);
+    pointer-events: none;
+}
+
+.shrink {
+    animation: gradient 0.65s forwards;
+}
+.expand {
+    animation: gradient 0.65s reverse forwards;
+}
+
+/* Yes this is stupid but it works, ai automates this easily */
+@keyframes gradient {
+    0% {mask-image: radial-gradient(circle, transparent 100%, black 100%);}
+    1% {mask-image: radial-gradient(circle, transparent 99%, black 99%);}
+    2% {mask-image: radial-gradient(circle, transparent 98%, black 98%);}
+    3% {mask-image: radial-gradient(circle, transparent 97%, black 97%);}
+    4% {mask-image: radial-gradient(circle, transparent 96%, black 96%);}
+    5% {mask-image: radial-gradient(circle, transparent 95%, black 95%);}
+    6% {mask-image: radial-gradient(circle, transparent 94%, black 94%);}
+    7% {mask-image: radial-gradient(circle, transparent 93%, black 93%);}
+    8% {mask-image: radial-gradient(circle, transparent 92%, black 92%);}
+    9% {mask-image: radial-gradient(circle, transparent 91%, black 91%);}
+    10% {mask-image: radial-gradient(circle, transparent 90%, black 90%);}
+    11% {mask-image: radial-gradient(circle, transparent 89%, black 89%);}
+    12% {mask-image: radial-gradient(circle, transparent 88%, black 88%);}
+    13% {mask-image: radial-gradient(circle, transparent 87%, black 87%);}
+    14% {mask-image: radial-gradient(circle, transparent 86%, black 86%);}
+    15% {mask-image: radial-gradient(circle, transparent 85%, black 85%);}
+    16% {mask-image: radial-gradient(circle, transparent 84%, black 84%);}
+    17% {mask-image: radial-gradient(circle, transparent 83%, black 83%);}
+    18% {mask-image: radial-gradient(circle, transparent 82%, black 82%);}
+    19% {mask-image: radial-gradient(circle, transparent 81%, black 81%);}
+    20% {mask-image: radial-gradient(circle, transparent 80%, black 80%);}
+    21% {mask-image: radial-gradient(circle, transparent 79%, black 79%);}
+    22% {mask-image: radial-gradient(circle, transparent 78%, black 78%);}
+    23% {mask-image: radial-gradient(circle, transparent 77%, black 77%);}
+    24% {mask-image: radial-gradient(circle, transparent 76%, black 76%);}
+    25% {mask-image: radial-gradient(circle, transparent 75%, black 75%);}
+    26% {mask-image: radial-gradient(circle, transparent 74%, black 74%);}
+    27% {mask-image: radial-gradient(circle, transparent 73%, black 73%);}
+    28% {mask-image: radial-gradient(circle, transparent 72%, black 72%);}
+    29% {mask-image: radial-gradient(circle, transparent 71%, black 71%);}
+    30% {mask-image: radial-gradient(circle, transparent 70%, black 70%);}
+    31% {mask-image: radial-gradient(circle, transparent 69%, black 69%);}
+    32% {mask-image: radial-gradient(circle, transparent 68%, black 68%);}
+    33% {mask-image: radial-gradient(circle, transparent 67%, black 67%);}
+    34% {mask-image: radial-gradient(circle, transparent 66%, black 66%);}
+    35% {mask-image: radial-gradient(circle, transparent 65%, black 65%);}
+    36% {mask-image: radial-gradient(circle, transparent 64%, black 64%);}
+    37% {mask-image: radial-gradient(circle, transparent 63%, black 63%);}
+    38% {mask-image: radial-gradient(circle, transparent 62%, black 62%);}
+    39% {mask-image: radial-gradient(circle, transparent 61%, black 61%);}
+    40% {mask-image: radial-gradient(circle, transparent 60%, black 60%);}
+    41% {mask-image: radial-gradient(circle, transparent 59%, black 59%);}
+    42% {mask-image: radial-gradient(circle, transparent 58%, black 58%);}
+    43% {mask-image: radial-gradient(circle, transparent 57%, black 57%);}
+    44% {mask-image: radial-gradient(circle, transparent 56%, black 56%);}
+    45% {mask-image: radial-gradient(circle, transparent 55%, black 55%);}
+    46% {mask-image: radial-gradient(circle, transparent 54%, black 54%);}
+    47% {mask-image: radial-gradient(circle, transparent 53%, black 53%);}
+    48% {mask-image: radial-gradient(circle, transparent 52%, black 52%);}
+    49% {mask-image: radial-gradient(circle, transparent 51%, black 51%);}
+    50% {mask-image: radial-gradient(circle, transparent 50%, black 50%);}
+    51% {mask-image: radial-gradient(circle, transparent 49%, black 49%);}
+    52% {mask-image: radial-gradient(circle, transparent 48%, black 48%);}
+    53% {mask-image: radial-gradient(circle, transparent 47%, black 47%);}
+    54% {mask-image: radial-gradient(circle, transparent 46%, black 46%);}
+    55% {mask-image: radial-gradient(circle, transparent 45%, black 45%);}
+    56% {mask-image: radial-gradient(circle, transparent 44%, black 44%);}
+    57% {mask-image: radial-gradient(circle, transparent 43%, black 43%);}
+    58% {mask-image: radial-gradient(circle, transparent 42%, black 42%);}
+    59% {mask-image: radial-gradient(circle, transparent 41%, black 41%);}
+    60% {mask-image: radial-gradient(circle, transparent 40%, black 40%);}
+    61% {mask-image: radial-gradient(circle, transparent 39%, black 39%);}
+    62% {mask-image: radial-gradient(circle, transparent 38%, black 38%);}
+    63% {mask-image: radial-gradient(circle, transparent 37%, black 37%);}
+    64% {mask-image: radial-gradient(circle, transparent 36%, black 36%);}
+    65% {mask-image: radial-gradient(circle, transparent 35%, black 35%);}
+    66% {mask-image: radial-gradient(circle, transparent 34%, black 34%);}
+    67% {mask-image: radial-gradient(circle, transparent 33%, black 33%);}
+    68% {mask-image: radial-gradient(circle, transparent 32%, black 32%);}
+    69% {mask-image: radial-gradient(circle, transparent 31%, black 31%);}
+    70% {mask-image: radial-gradient(circle, transparent 30%, black 30%);}
+    71% {mask-image: radial-gradient(circle, transparent 29%, black 29%);}
+    72% {mask-image: radial-gradient(circle, transparent 28%, black 28%);}
+    73% {mask-image: radial-gradient(circle, transparent 27%, black 27%);}
+    74% {mask-image: radial-gradient(circle, transparent 26%, black 26%);}
+    75% {mask-image: radial-gradient(circle, transparent 25%, black 25%);}
+    76% {mask-image: radial-gradient(circle, transparent 24%, black 24%);}
+    77% {mask-image: radial-gradient(circle, transparent 23%, black 23%);}
+    78% {mask-image: radial-gradient(circle, transparent 22%, black 22%);}
+    79% {mask-image: radial-gradient(circle, transparent 21%, black 21%);}
+    80% {mask-image: radial-gradient(circle, transparent 20%, black 20%);}
+    81% {mask-image: radial-gradient(circle, transparent 19%, black 19%);}
+    82% {mask-image: radial-gradient(circle, transparent 18%, black 18%);}
+    83% {mask-image: radial-gradient(circle, transparent 17%, black 17%);}
+    84% {mask-image: radial-gradient(circle, transparent 16%, black 16%);}
+    85% {mask-image: radial-gradient(circle, transparent 15%, black 15%);}
+    86% {mask-image: radial-gradient(circle, transparent 14%, black 14%);}
+    87% {mask-image: radial-gradient(circle, transparent 13%, black 13%);}
+    88% {mask-image: radial-gradient(circle, transparent 12%, black 12%);}
+    89% {mask-image: radial-gradient(circle, transparent 11%, black 11%);}
+    90% {mask-image: radial-gradient(circle, transparent 10%, black 10%);}
+    91% {mask-image: radial-gradient(circle, transparent 9%, black 9%);}
+    92% {mask-image: radial-gradient(circle, transparent 8%, black 8%);}
+    93% {mask-image: radial-gradient(circle, transparent 7%, black 7%);}
+    94% {mask-image: radial-gradient(circle, transparent 6%, black 6%);}
+    95% {mask-image: radial-gradient(circle, transparent 5%, black 5%);}
+    96% {mask-image: radial-gradient(circle, transparent 4%, black 4%);}
+    97% {mask-image: radial-gradient(circle, transparent 3%, black 3%);}
+    98% {mask-image: radial-gradient(circle, transparent 2%, black  2%);}
+    99% {mask-image: radial-gradient(circle, transparent 1%, black 1%);}
+    100% {mask-image: radial-gradient(circle, transparent 0%, black 0%);}
+}
