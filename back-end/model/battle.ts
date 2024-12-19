@@ -1,57 +1,46 @@
-import { Battle as PrismaBattle, Character as PrismaCharacter, Enemy as PrismaEnemy} from '@prisma/client';
-import { BattleType, EnemyType } from '../types';
-import { Enemy } from './enemy';
+import { Battle as BattlePrisma, Character as CharacterPrisma} from '@prisma/client';
 import { Character } from './character';
 
 export class Battle {
-    private id?: number;
-    private turn: number;
-    private currentTurn: number;
-    private state: string;
-    private characterId: number;
-    private enemies: EnemyType[];
+    readonly id?: number;
+    readonly turn: number;
+    readonly currentTurn: number;
+    readonly state: string;
+    readonly character?: Character;
+    readonly characterId: number;
 
     constructor(battle: {
         id?: number;
         turn: number;
         currentTurn: number;
         state: string;
+        character?: Character;
         characterId: number;
-        enemies: EnemyType[];
     }) {
         this.id = battle.id;
         this.turn = battle.turn;
         this.currentTurn = battle.currentTurn;
         this.state = battle.state;
+        this.character = battle.character;
         this.characterId = battle.characterId;
-        this.enemies = battle.enemies;
     }
 
-    getId(): number | undefined {
-        return this.id;
+    static from({
+        id,
+        turn,
+        currentTurn,
+        state,
+        character,
+        characterId,
+    }: BattlePrisma & { character?: CharacterPrisma }): Battle {
+        return new Battle({
+            id,
+            turn,
+            currentTurn,
+            state,
+            character: character ? Character.from(character) : undefined,
+            characterId: characterId || (character ? character.id : 0),
+        });
     }
-
-    getTurn(): number {
-        return this.turn;
-    }
-
-    getCurrentTurn(): number {
-        return this.currentTurn;
-    }
-
-    getState(): string {
-        return this.state;
-    }
-
-
-    // static from(prismaBattle: PrismaBattle & { character?: PrismaCharacter; enemies?: PrismaEnemy[] }): BattleType {
-    //     return {
-    //         id: prismaBattle.id,
-    //         turn: prismaBattle.turn,
-    //         currentTurn: prismaBattle.currentTurn,
-    //         state: prismaBattle.state,
-    //         characterId: prismaBattle.character?.id || 0,
-    //         enemies: prismaBattle.enemies?.map((enemy) => Enemy.from(enemy)) || [],
-    //     };
-    // }
+    
 }

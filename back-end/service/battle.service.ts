@@ -1,28 +1,44 @@
-import { BattleType } from '../types';
 import battleRepository from '../repository/battle.db';
+import { Battle } from '../model/battle';
+import { BattleType } from '../types';
 
-// Get all battles
-const getAllBattles = async (): Promise<BattleType[]> => {
+const getAllBattles = async (): Promise<Battle[]> => {
     return await battleRepository.getBattles();
 };
 
-// Get a specific battle by ID
-const getBattle = async (id: number): Promise<BattleType | null> => {
+const getBattle = async (id: number): Promise<Battle | null> => {
+    const battles = await battleRepository.getBattles();
+    const battleExists = battles.some((battle) => battle.id === id);
+
+    if (!battleExists) {
+        throw new Error (`Battle with id ${id} does not exist`);
+    }
+
     return await battleRepository.getBattleById(id);
 };
 
-// Create a new battle
-const createBattle = async (data: BattleType): Promise<BattleType> => {
-    return await battleRepository.createBattle(data);
+const createBattle = async ({ turn, currentTurn, state, character, characterId }: BattleType): Promise<Battle> => {
+    const battle = new Battle({ turn, currentTurn, state, character, characterId });
+    return await battleRepository.createBattle(battle);
 };
 
-// Update a battle by ID
-const updateBattle = async (id: number, data: Partial<BattleType>): Promise<BattleType> => {
+const updateBattle = async (id: number, data: Partial<BattleType>): Promise<Battle> => {
+    const existingBattle = await battleRepository.getBattleById(id);
+
+    if (!existingBattle) {
+        throw new Error (`Battle with id ${id} does not exist`);
+    }
+
     return await battleRepository.updateBattle(id, data);
 };
 
-// Delete a battle by ID
 const deleteBattle = async (id: number): Promise<void> => {
+    const existingBattle = await battleRepository.getBattleById(id);
+
+    if (!existingBattle) {
+        throw new Error (`Battle with id ${id} does not exist`);
+    }
+
     await battleRepository.deleteBattle(id);
 };
 

@@ -1,5 +1,4 @@
 import { Character as CharacterPrisma } from '@prisma/client';
-
 import { User } from './user';
 
 export class Character {

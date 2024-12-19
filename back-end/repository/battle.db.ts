@@ -2,12 +2,11 @@ import prisma from './database';
 import { Battle } from '../model/battle';
 import { BattleType } from '../types';
 
-const getBattles = async (): Promise<BattleType[]> => {
+const getBattles = async (): Promise<Battle[]> => {
     try {
         const battlesPrisma = await prisma.battle.findMany({
             include: {
                 character: true,
-                enemies: true,
             }
         });
         return battlesPrisma.map((battlePrisma) => Battle.from(battlePrisma));
@@ -17,13 +16,12 @@ const getBattles = async (): Promise<BattleType[]> => {
     }
 };
 
-const getBattleById = async (id: number): Promise<BattleType | null> => {
+const getBattleById = async (id: number): Promise<Battle | null> => {
     try {
         const battlePrisma = await prisma.battle.findUnique({
             where: { id },
             include: {
                 character: true,
-                enemies: true,
             }
         });
         return battlePrisma ? Battle.from(battlePrisma) : null;
@@ -32,26 +30,30 @@ const getBattleById = async (id: number): Promise<BattleType | null> => {
         throw new Error('Failed to fetch battle');
     }
 };
-
-const createBattle = async (data: BattleType): Promise<BattleType> => {
+const createBattle = async ({ turn, currentTurn, state, characterId }: Battle): Promise<Battle> => {
     try {
+        console.log("Received characterId:", characterId);  // Log de waarde van characterId
+        if (!characterId) {
+            throw new Error("Character ID is required to create a battle");
+        }
+
         const newBattlePrisma = await prisma.battle.create({
             data: {
-                turn: data.turn,
-                currentTurn: data.currentTurn,
-                state: data.state,
+                turn,
+                currentTurn,
+                state,
                 character: {
-                    connect: { id: data.characterId },
-                },
-                enemies: {
-                    connect: data.enemies.map((enemy) => ({ id: enemy.id })),
-                },
+                    connect: {
+                        id: characterId,  // Dit verbindt de bestaande character met de battle
+                    }
+                }
             },
             include: {
                 character: true,
-                enemies: true,
-            }
+            },
         });
+        
+
         return Battle.from(newBattlePrisma);
     } catch (error) {
         console.error('Error creating battle:', error);
@@ -59,7 +61,10 @@ const createBattle = async (data: BattleType): Promise<BattleType> => {
     }
 };
 
-const updateBattle = async (id: number, data: Partial<BattleType>): Promise<BattleType> => {
+
+
+
+const updateBattle = async (id: number, data: Partial<BattleType>): Promise<Battle> => {
     try {
         const updatedBattlePrisma = await prisma.battle.update({
             where: { id },
@@ -70,7 +75,6 @@ const updateBattle = async (id: number, data: Partial<BattleType>): Promise<Batt
             },
             include: {
                 character: true,
-                enemies: true,
             }
         });
         return Battle.from(updatedBattlePrisma);
@@ -86,7 +90,6 @@ const deleteBattle = async (id: number): Promise<void> => {
             where: { id },
             include: { 
                 character: true,
-                enemies: true,
             }
         });
     } catch (error) {

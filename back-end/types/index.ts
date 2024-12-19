@@ -24,7 +24,18 @@ type CharacterType = {
     characterClass: string;
 };
 
+type BattleType = {
+    id?: number;
+    turn: number;
+    currentTurn: number;
+    state: string;
+
+    characterId: number;
+    character?: CharacterType;
+};
+
 export {
     UserType,
     CharacterType,
+    BattleType,
 };
