@@ -1,6 +1,5 @@
-import { Enemy as EnemyPrisma, Move as MovePrisma, Battle as BattlePrisma } from '@prisma/client';
+import { Enemy as EnemyPrisma, Move as MovePrisma } from '@prisma/client';
 import { Move } from './move';
-import { Battle } from './battle';
 
 export class Enemy {
     readonly id?: number;
@@ -17,7 +16,6 @@ export class Enemy {
     readonly magicDefense: number;
 
     readonly moveIds: number[];
-    readonly battles: Battle[];
 
     constructor(enemy: {
         id?: number;
@@ -33,7 +31,6 @@ export class Enemy {
         defense: number;
         magicDefense: number;
         moveIds: number[];
-        battles: Battle[];
     }) {
         this.id = enemy.id;
         this.name = enemy.name;
@@ -48,10 +45,9 @@ export class Enemy {
         this.defense = enemy.defense;
         this.magicDefense = enemy.magicDefense;
         this.moveIds = enemy.moveIds;
-        this.battles = enemy.battles;
     }
     
-    static from({ id, name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves, battles }: EnemyPrisma & { moves: MovePrisma[]; battles: BattlePrisma[] }) {
+    static from({ id, name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moves }: EnemyPrisma & { moves: MovePrisma[]; }) {
         const moveIds = moves.map(move => move.id); 
         return new Enemy({
             id,   
@@ -66,7 +62,6 @@ export class Enemy {
             defense,
             magicDefense,
             moveIds,
-            battles: battles.map((battle) => Battle.from(battle)),
         });
     }
 }

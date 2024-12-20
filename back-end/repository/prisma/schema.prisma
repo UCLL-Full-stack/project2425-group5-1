@@ -40,20 +40,8 @@ model Character {
   progress     String
   characterClass        String
   user User? @relation
-  battles   Battle[]
 
   moves  Move[]
-}
-
-model Battle {
-  id          Int    @id @default(autoincrement())
-  turn        Int
-  currentTurn Int
-  state       String
-  character   Character @relation(fields: [characterId], references: [id])
-  characterId Int
-
-  enemies Enemy[]
 }
 
 model Move {
@@ -84,5 +72,4 @@ model Enemy {
   magicDefense Int
 
   moves Move[]
-  battles Battle[]
 }

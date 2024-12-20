@@ -9,7 +9,6 @@ const getEnemies = async (): Promise<Enemy[]> => {
         const enemiesPrisma = await prisma.enemy.findMany({
             include: {
                 moves: true,
-                battles: true,
             }
         });
         return enemiesPrisma.map((enemyPrisma) => Enemy.from(enemyPrisma));
@@ -44,7 +43,6 @@ const getEnemyTemplateByWorldId = async (worldId: string): Promise<Enemy[]> => {
                 where: { name: name },
                 include: {
                     moves: true,
-                    battles: true,
                 }
             });
             if(enemyPrisma) {
@@ -72,7 +70,6 @@ const getEnemyById = async (id: number): Promise<Enemy | null> => {
             where: { id },
             include: {
                 moves: true,
-                battles: true,
             }
         });
         return enemyPrisma ? Enemy.from(enemyPrisma) : null;
@@ -82,7 +79,7 @@ const getEnemyById = async (id: number): Promise<Enemy | null> => {
     }
 };
 
-const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles}: Enemy): Promise<Enemy> => {
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds}: Enemy): Promise<Enemy> => {
     try {
         if (!moveIds || moveIds.length === 0) {
             throw new Error('Move IDs must be provided');
@@ -103,14 +100,9 @@ const createEnemy = async ({ name, level, strength, speed, magic, dexterity, hea
                 moves: {
                     connect: moveIds.map((moveId: number) => ({ id: moveId })),
                 },
-
-                battles: {
-                    connect: battles.map((battle) => ({ id: battle.id })),
-                }
             },
             include: {
                 moves: true,
-                battles: true,
             }
         });
         return Enemy.from(newEnemyPrisma);
@@ -142,14 +134,9 @@ const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => 
                         connect: data.moveIds.map(id => ({ id }))
                     }
                     : undefined,
-
-                battles: data.battles
-                ? { connect: data.battles }
-                : undefined,
             },
             include: {
                 moves: true,
-                battles: true,
             }
         });
         return Enemy.from(updatedEnemyPrisma);

@@ -7,14 +7,25 @@ const getAllMoves = async (): Promise<Move[]> => {
 };
 
 const getMove = async (id: number): Promise<Move | null> => {
-    const moves = await moveRepository.getMoves();
-    const moveExists = moves.some((move) => move.id === id );
-
-    if (!moveExists) {
+    console.log(`Fetching move with ID: ${id}`);
+    const move = await moveRepository.getMoveById(id);
+    console.log(move);
+    if (!move) {
         throw new Error(`Move with id ${id} does not exist`);
     }
-    return await moveRepository.getMoveById(id);
+
+    console.log(move);
+    return move;
 };
+
+const getMultipleMovesById = async (ids:  number[]): Promise<Move[]> => {
+    const newMoves: Move[] = [];
+    ids.map(async e => {
+        const newMove = await moveRepository.getMoveById(e);
+    })
+
+    return newMoves;
+}
 
 const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: MoveType): Promise<Move> => {
     const move = new Move({ name, attack, magicAttack, manaPoints, aoe })
@@ -44,4 +55,5 @@ export {
     createMove,
     updateMove,
     deleteMove,
+    getMultipleMovesById,
 };

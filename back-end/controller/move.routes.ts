@@ -13,14 +13,44 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
+router.get('/getmoves/:id', async (req: Request, res: Response) => {
     try {
+        const id = req.params.id;
+        console.log("NR:", id);
+
+        if (isNaN(Number(id))) {
+            return res.status(400).json({ message: 'Invalid ID format' });
+        }
         const move = await MoveService.getMove(Number(id));
+        console.log(move);
         if (!move) {
             return res.status(404).json({ message: 'Move not found' });
         }
         res.json(move);
+    } catch ( error ) {
+        console.log("TEST");
+        const err = error as Error;
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.get('/multiple', async (req: Request, res: Response) => {
+    try {
+        const { ids } = req.query;
+
+        // const idArray = Array.isArray(ids) ? ids : typeof ids === 'string' ? [ids] : [];
+        // if (idArray.length === 0) throw new Error(`Ids not found`);
+
+        // const numberArray = idArray.map(id => {
+        //     const num = Number(id);
+        //     if (isNaN(num)) throw new Error(`Invalid id: ${id}`);
+        //     return num;
+        // });
+
+        console.log(ids);
+
+        // const moves = await MoveService.getMultipleMovesById(numberArray);
+        // res.status(200).json(moves)
     } catch ( error ) {
         const err = error as Error;
         res.status(500).json({ message: err.message });

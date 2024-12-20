@@ -25,16 +25,6 @@ type CharacterType = {
     moveIds: number[];
 };
 
-type BattleType = {
-    id?: number;
-    turn: number;
-    currentTurn: number;
-    state: string;
-
-    characterId: number;
-    character?: CharacterType;
-};
-
 type worldId = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
 
 type MoveType = {
@@ -61,7 +51,6 @@ type EnemyType = {
     magicDefense: number;
 
     moveIds: number[];
-    battles: BattleType[];
 };
 
-export { UserType, CharacterType, BattleType, MoveType, EnemyType, worldId };
+export { UserType, CharacterType, MoveType, EnemyType, worldId };

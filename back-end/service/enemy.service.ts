@@ -1,7 +1,5 @@
 import enemyRepository from '../repository/enemy.db';
 import { Enemy } from '../model/enemy';
-import { BattleType, EnemyType, worldId } from '../types';
-import { Battle } from '../model/battle';
 
 const getAllEnemies = async (): Promise<Enemy[]> => {
     return await enemyRepository.getEnemies();
@@ -23,8 +21,8 @@ const getEnemyTemplates = async (worldId: string) => {
     return enemies;
 };
 
-const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles }: Enemy): Promise<Enemy> => {
-    const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles });
+const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds }: Enemy): Promise<Enemy> => {
+    const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds });
     return await enemyRepository.createEnemy(enemy);
 };
 
@@ -35,15 +33,6 @@ const createEnemies = async (enemyArr: Enemy[]): Promise<Enemy[]> => {
     return newArr;
 };
 
-// const mapBattleTypeToBattle = (battleType: BattleType): Battle => {
-//     return {
-//         ...battleType,
-//         validate: () => {
-//             return true;
-//         }
-//     };
-// };
-
 const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => {
     const existingEnemy = await enemyRepository.getEnemyById(id);
 
@@ -51,11 +40,8 @@ const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => 
         throw new Error(`Enemy with id ${id} does not exist`)
     }
 
-    // const battles = data.battles ? data.battles.map(mapBattleTypeToBattle) : existingEnemy.battles;
-
     return await enemyRepository.updateEnemy(id, {
         ...data,
-        // battles,
         moveIds: data.moveIds ? data.moveIds : existingEnemy.moveIds,
     });
 };

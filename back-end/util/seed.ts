@@ -7,7 +7,6 @@ async function main() {
   
   // 1. Verwijder alle bestaande data
   await prisma.move.deleteMany({});
-  await prisma.battle.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.character.deleteMany({});
   await prisma.enemy.deleteMany({});
@@ -295,8 +294,7 @@ const enemy1 = await prisma.enemy.create({
     magicDefense: 5,
     moves: {
       connect: [{ id: move6.id }]
-    },
-    battles: { connect: [] }
+    }
   },
 });
 console.log(`Created enemy: ${enemy1.name}`);
@@ -316,8 +314,7 @@ const enemy2 = await prisma.enemy.create({
     magicDefense: 4,
     moves: {
       connect: [{ id: move6.id }]
-    },
-    battles: { connect: [] }
+    }
   },
 });
 console.log(`Created enemy: ${enemy2.name}`);
@@ -337,8 +334,7 @@ const enemy3 = await prisma.enemy.create({
     magicDefense: 60,
     moves: {
       connect: [{ id: move3.id }, { id: move5.id }]
-    },
-    battles: { connect: [] }
+    }
   },
 });
 console.log(`Created enemy: ${enemy3.name}`);
@@ -358,8 +354,7 @@ const enemy4 = await prisma.enemy.create({
     magicDefense: 5,
     moves: {
       connect: [{ id: move6.id }]
-    },
-    battles: { connect: [] }
+    }
   },
 });
 console.log(`Created enemy: ${enemy4.name}`);
@@ -379,8 +374,7 @@ const enemy5 = await prisma.enemy.create({
     magicDefense: 2,
     moves: {
       connect: [{ id: move6.id }]
-    },
-    battles: { connect: [] }
+    }
   },
 });
 console.log(`Created enemy: ${enemy4.name}`);

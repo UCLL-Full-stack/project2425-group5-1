@@ -24,7 +24,7 @@ type Character = {
   magicDefense: number;
   progress: string;
   inventory?: Item[];
-  moveIds: number[];
+  moves: Move[];
   userId?: number;
   class?: Class;
   weapon?: Weapon;

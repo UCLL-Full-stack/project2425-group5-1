@@ -14,11 +14,23 @@ const getMoves = async (): Promise<Move[]> => {
 const getMoveById = async (id: number): Promise<Move | null> => {
     try {
         console.log(id);
-        const movePrisma = await prisma.move.findUnique({
-            where: { id }
+        const movePrisma = await prisma.move.findFirst({
+            where: { id: id }
         });
         return movePrisma ? Move.from(movePrisma) : null;
     } catch ( error ) {
+        console.error(`Error fetching move by id ${id}:`, error);
+        throw new Error('Failed to fetch move');
+    }
+};
+
+const getMoveByIdNormal = async (id: number): Promise<Move | null> => {
+    try {
+        const movePrisma = await prisma.move.findFirst({
+            where: { id: id }
+        });
+        return movePrisma ? Move.from(movePrisma) : null;
+    } catch(error) {
         console.error(`Error fetching move by id ${id}:`, error);
         throw new Error('Failed to fetch move');
     }

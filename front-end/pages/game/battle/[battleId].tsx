@@ -13,6 +13,7 @@ import Music from "@/components/settings/Music";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import EnemyService from "@/services/EnemyService";
 import BattleService from "@/services/BattleService";
+import MoveService from "@/services/MoveService";
 
 
 const quinquefiveFont = localFont({ src: "../fonts/quinque-five-font/Quinquefive-ALoRM.ttf" });
@@ -20,38 +21,7 @@ const quinquefiveFont = localFont({ src: "../fonts/quinque-five-font/Quinquefive
 const DynamicBattle: React.FC = () => {
     const router = useRouter();
     const { battleId } = router.query;
-    const [character, setCharacter] = useState<Character>({
-            name: 'Warrior John',
-            level: 10,
-            xp: 1000,
-            strength: 15,
-            speed: 10,
-            magic: 5,
-            dexterity: 12,
-            healthPoints: 150,
-            manaPoints: 3030,
-            luck: 8,
-            defense: 12,
-            magicDefense: 6,
-            progress: 'In Progress',
-            userId: 1,
-            move: [
-                {
-                    name: 'slash',
-                    attack: 40,
-                    magicAttack: 0,
-                    manaPoints: 0,
-                    aoe: true,
-                },
-                {
-                    name: 'Fireball',
-                    attack: 30,
-                    magicAttack: 50,
-                    manaPoints: 20,
-                    aoe: false,
-                }
-            ]
-    });
+    const [character, setCharacter] = useState<Character>();
 
     const [enemies, setEnemies] = useState<EnemyType[]>([]);
 
@@ -68,9 +38,9 @@ const DynamicBattle: React.FC = () => {
         if(!JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token) router.push("/");
         const urlBattleWorld = Number(battleId.split("-")[0]);
         const urlBattleLevel = Number(battleId.split("-")[1]);
-        const maxBattle = JSON.parse(sessionStorage.getItem("character") || "{}")?.data.progress;
-        const maxBattleWorld = Number(maxBattle.split("-")[0]);
-        const maxBattleLevel = Number(maxBattle.split("-")[1]);
+        const maxBattle = JSON.parse(sessionStorage.getItem("character") || "{}")?.data;
+        const maxBattleWorld = Number(maxBattle.progress.split("-")[0]);
+        const maxBattleLevel = Number(maxBattle.progress.split("-")[1]);
 
         if(urlBattleWorld > maxBattleWorld || urlBattleLevel > maxBattleLevel) {
             router.back();
@@ -78,8 +48,6 @@ const DynamicBattle: React.FC = () => {
 
         (async () => {
             const response = await EnemyService.getEnemyTemplates(urlBattleWorld);
-
-            console.log(response);
 
             if(response.status !== 200) return console.error("Failed to fetch enemy templates");
 
@@ -90,15 +58,41 @@ const DynamicBattle: React.FC = () => {
             const selectedEnemies: EnemyType[] = [];
 
             for(let i = 0 ; i < enemyCount ; i++) {
-            const randomIndex = Math.floor(Math.random() * enemyTemplates.length);
+                const randomIndex = Math.floor(Math.random() * enemyTemplates.length);
                 selectedEnemies.push(enemyTemplates[randomIndex]);
             }
 
             const scaledEnemies = await scaleEnemyTemplate(selectedEnemies, urlBattleWorld, urlBattleLevel);
-            const newBattle = await makeBattle();
+            // const newBattle = await makeBattle();
             if(!scaledEnemies) return;
-            if(!newBattle.id) return;
-            linkEnemiesToBattle(scaledEnemies.data, newBattle.id);
+            // if(!newBattle.id) return;
+            // linkEnemiesToBattle(scaledEnemies.data, newBattle.id);
+            console.log(scaledEnemies.data, maxBattle);
+
+            let userMoves = [];
+
+            for(let i of maxBattle.moveIds) {
+                const userMove = await MoveService.getMoveById(i)
+                if(!userMove.data) return;
+                userMoves.push(userMove.data);
+            }
+
+            const updatedEnemies = await Promise.all(scaledEnemies.data.map(async (enemy: { moveIds: any[]; }) => {
+                const moves = await Promise.all(enemy.moveIds.map(async (moveId) => {
+                    const enemyMove = await MoveService.getMoveById(moveId);
+                    if (!enemyMove.data) return null;
+                    return enemyMove.data;
+                }));
+                const validMoves = moves.filter(move => move !== null);
+
+                return {
+                    ...enemy,
+                    moves: validMoves
+                };
+            }));
+
+            setEnemies(updatedEnemies);
+            setCharacter({...maxBattle, moves: userMoves});
         })();
         return () => {};
     }, []);
@@ -116,9 +110,7 @@ const DynamicBattle: React.FC = () => {
             enemyTemplate.level = enemyTemplate.level + (1 * worldId) + levelId;
             return enemyTemplate
         });
-        console.log(newEnemies);
         const createdEnemies = await EnemyService.createEnemies(newEnemies);
-        console.log(createdEnemies);
         if(!createdEnemies) return;
         return createdEnemies;
     };
@@ -128,7 +120,6 @@ const DynamicBattle: React.FC = () => {
         if(battleResponse.status !== 200) console.error("Something went wrong with battle creation");
 
         const battle = battleResponse.data;
-        console.log(battle);
         return battle;
     };
 
@@ -136,15 +127,16 @@ const DynamicBattle: React.FC = () => {
         enemies.map(async enemy => {
             if(!enemy.id) return;
             const test = await EnemyService.addBattleToEnemy(battleId, enemy.id);
-            console.log(test);
         })
     };
 
     useEffect(() => {
+        console.log(character, enemies);
+        if(!character) return;
         if (character.healthPoints <= 0 || enemies.every(enemy => enemy.healthPoints <= 0)) {
             setBattleOver(true);
         }
-    }, [character.healthPoints, enemies]);
+    }, [character, enemies]);
 
     useEffect(() => {
         if(turn === "enemy") {
@@ -171,15 +163,27 @@ const DynamicBattle: React.FC = () => {
         console.log("Player turn: Move selected", moveId);
         setSelectedMove(moveId);
         setMoveSelected(true);
-    
-        const move = character.moveIds[moveId];
+
+        if(!character || !character.moves) return;
+
+        console.log(moveId);
+
+        console.log(character.moves[moveId]);
+        const move = character.moves[moveId];
+        console.log(move);
+        if(!move) return;
+
         if (move.aoe) {
             confirmMove(moveId);
         }
     };
 
     const handleEnemySelection = (enemy: EnemyType) => {
-        if (!moveSelected || character.move[selectedMove as number].aoe) return;
+        console.log(!moveSelected, character?.moves[selectedMove as number].aoe)
+        if (!moveSelected) return;
+        if(character?.moves[selectedMove as number].aoe){
+            
+        }
         console.log("Enemy selected:", enemy.id);
     
         setSelectedEnemy(enemy);
@@ -191,8 +195,10 @@ const DynamicBattle: React.FC = () => {
             return;
         }
 
-        const move = character.move[moveId];
+        if(!character) return;
+        const move = character.moves[moveId];
         console.log("Confirm move: ", move);
+        if(!move) return;
 
         if (move.aoe) {
             setPlayerState("attacking");
@@ -205,10 +211,13 @@ const DynamicBattle: React.FC = () => {
             updatedEnemies = updatedEnemies.filter((enemy) => enemy.healthPoints > 0);
             setEnemies(updatedEnemies);
 
-            setCharacter((prevCharacter) => ({
-                ...prevCharacter,
-                manaPoints: prevCharacter.manaPoints - move.manaPoints,
-            }));
+            setCharacter((prevCharacter) => {
+                if(!prevCharacter) return;
+                return {
+                    ...prevCharacter,
+                    manaPoints: prevCharacter.manaPoints - move.manaPoints,
+                }
+            });
 
             setTimeout(() => {
                 console.log("AoE move complete, switching turn to enemy");
@@ -236,10 +245,13 @@ const DynamicBattle: React.FC = () => {
             const updatedEnemy = { ...selectedEnemy, healthPoints: selectedEnemy.healthPoints - damage };
             setEnemies(enemies.map((enemy) => enemy === selectedEnemy ? updatedEnemy : enemy));
 
-            setCharacter((prevCharacter) => ({
-                ...prevCharacter,
-                manaPoints: prevCharacter.manaPoints - move.manaPoints,
-            }));
+            setCharacter((prevCharacter) => {
+                if(!prevCharacter) return;
+                return {
+                    ...prevCharacter,
+                    manaPoints: prevCharacter.manaPoints - move.manaPoints,
+                }
+            });
 
             setTimeout(() => {
                 setTurnCount(turnCount + 1);
@@ -266,10 +278,11 @@ const DynamicBattle: React.FC = () => {
 
                 const randomMoveIndex = Math.floor(Math.random() * enemy.moves.length);
                 const move = enemy.moves[randomMoveIndex];
+                if(!character) return;
                 const damage = calculateDamage(enemy, character, move.attack, move.magicAttack);
                 const newPlayerHealth = character.healthPoints - damage;
 
-                setCharacter((prevCharacter) => ({ ...prevCharacter, healthPoints: newPlayerHealth }));
+                setCharacter((prevCharacter) => { if(!prevCharacter) return; return { ...prevCharacter, healthPoints: newPlayerHealth }});
 
                 setTimeout(() => {
                     setEnemies((prevEnemies) =>
@@ -290,6 +303,7 @@ const DynamicBattle: React.FC = () => {
         }, attackDelay);
     };
 
+    if(!character || !enemies) return null;
     return (
         <main className={quinquefiveFont.className}>
             <PageTransition state="expand" />
@@ -302,7 +316,7 @@ const DynamicBattle: React.FC = () => {
                 <>
                     {!moveSelected ?
                         <TextContainer Skippable={turn === "player" ? false : true}>
-                            {character.move.map((m, i) => (
+                            {character.moves.map((m, i) => (
                                 <TextButton key={i} text={m.name} useMove={playerTurn} moveId={i} />
                             ))}
                         </TextContainer>
@@ -326,7 +340,7 @@ const DynamicBattle: React.FC = () => {
                     />
                 ))}
             </div>
-            {moveSelected && !character.move[selectedMove as number].aoe && selectedEnemy && playerState !== "attacking" && (
+            {moveSelected && !character.moves[selectedMove as number].aoe && selectedEnemy && playerState !== "attacking" && (
                 <>
                     <TextButton text="Confirm Attack" onClick={() => confirmMove(selectedMove as number)} />
                     <TextButton text="Cancel" onClick={cancel} />
