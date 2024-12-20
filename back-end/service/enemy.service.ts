@@ -1,6 +1,6 @@
 import enemyRepository from '../repository/enemy.db';
 import { Enemy } from '../model/enemy';
-import { BattleType, EnemyType } from '../types';
+import { BattleType, EnemyType, worldId } from '../types';
 import { Battle } from '../model/battle';
 
 const getAllEnemies = async (): Promise<Enemy[]> => {
@@ -8,18 +8,31 @@ const getAllEnemies = async (): Promise<Enemy[]> => {
 };
 
 const getEnemy = async (id: number): Promise<Enemy | null> => {
-    const enemies = await enemyRepository.getEnemies();
-    const enemyExists = enemies.some((enemy) => enemy.id === id);
-    
-    if (!enemyExists) {
-        throw new Error(`Enemy with id ${id} does not exist`)
+    const enemy = await enemyRepository.getEnemyById(id);
+    if (!enemy) {
+        return null;
     }
-    return await enemyRepository.getEnemyById(id);
+    return enemy;
+};
+const getEnemyTemplates = async (worldId: string) => {
+    if(!worldId) throw new Error(`worldId does not exist`);
+
+    const enemies = await enemyRepository.getEnemyTemplateByWorldId(worldId);
+    if(!enemies) throw  new Error(`No enemies found for world ${worldId}`);
+
+    return enemies;
 };
 
 const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles }: Enemy): Promise<Enemy> => {
     const enemy = new Enemy({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds, battles });
     return await enemyRepository.createEnemy(enemy);
+};
+
+const createEnemies = async (enemyArr: Enemy[]): Promise<Enemy[]> => {
+    const newArr = await Promise.all(enemyArr.map(async (enemy) => {
+        return await enemyRepository.createEnemy(enemy);
+    }));
+    return newArr;
 };
 
 // const mapBattleTypeToBattle = (battleType: BattleType): Battle => {
@@ -58,8 +71,10 @@ const deleteEnemy = async (id: number): Promise<void> => {
 
 export {
     getAllEnemies,
+    getEnemyTemplates,
     getEnemy,
     createEnemy,
+    createEnemies,
     updateEnemy,
     deleteEnemy,
 };

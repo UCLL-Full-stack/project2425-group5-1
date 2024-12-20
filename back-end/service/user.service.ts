@@ -5,6 +5,7 @@ import { User } from '../model/user';
 import encryptor from '../helpers/encryptor';
 import decryptor from '../helpers/decryptor';
 import { Character } from '../model/character';
+import generateAccessToken from '../helpers/generateAccessToken';
 
 const getAllUsers = async (): Promise<User[]> => {
     return await userRepository.getUsers();
@@ -18,6 +19,19 @@ const getUser = async (id: number): Promise<User | null> => {
     }
 
     return await users;
+};
+
+const getUserByEmail = async (email: string, password: string): Promise<{ token: string; user: Partial<User> }> => {
+    const user = await userRepository.getUserByEmail(email);
+    if(!user) throw new Error('User not found by email');
+
+    const passIsValid = await decryptor(password, user.password);
+    if(passIsValid) {
+        const token = generateAccessToken(user.name, '4h');
+        return {token: token, user: { id: user.id, name: user.name }};
+    } else {
+        throw new Error(`Password is not valid`);
+    }
 };
 
 const getUserCharacter = async (id: number): Promise<Character | null> => {
@@ -69,4 +83,4 @@ const deleteUser = async (id: number): Promise<void> => {
     await userRepository.deleteUser(id);
 };
 
-export { getAllUsers, getUser, createUser, deleteUser, addCharacterToUser, getUserCharacter };
+export { getAllUsers, getUser, createUser, deleteUser, addCharacterToUser, getUserCharacter, getUserByEmail };

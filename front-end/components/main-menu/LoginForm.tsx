@@ -4,6 +4,7 @@ import loginStyles from "@/styles/main-menu/LoginForm.module.css";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/navigation";
 
 interface Props {
   setShow?: (show: "login" | "register") => void;
@@ -12,6 +13,7 @@ interface Props {
 
 const LoginForm: React.FC<Props> = ({ setShow, showState }) => {
   const [firstAnimateDelay, usefirstAnimateDelay] = useState(-1);
+  const [loginSuccess, setLoginSuccess] = useState<boolean | null>(null);
   const { register, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -19,15 +21,23 @@ const LoginForm: React.FC<Props> = ({ setShow, showState }) => {
     }
   });
   const { t } = useTranslation();
+  const router = useRouter();
 
 
   useEffect(() => {
     usefirstAnimateDelay(firstAnimateDelay + 1);
   }, [showState]);
 
-  const handleLogin = (formData: { email: string, password: string; }) => {
+  const handleLogin = async (formData: { email: string, password: string; }) => {
     if (formData.email.length && formData.password.length) {
-      UserService.postLoginData(formData);
+      const response = await UserService.postLoginData(formData);
+      if(response.token) {
+        setLoginSuccess(true);
+        setTimeout(() => router.push("/characterCreator"), 1500);
+        return
+      } else {
+        return setLoginSuccess(false);
+      }
     }
   };
 
@@ -44,6 +54,7 @@ const LoginForm: React.FC<Props> = ({ setShow, showState }) => {
         <input type="password" placeholder={t("root.login.passwordInput")} {...register("password", { required: true })} />
       </label>
       <button type="submit">{t("root.login.submit")}</button>
+      {loginSuccess === null ? null : loginSuccess ? <p style={{color: "green", textAlign: "center"}}>Logging in...</p> : !loginSuccess ? <p style={{color: "red", textAlign: "center"}}>Something went wrong</p> : null}
       <a className={formStyles.instead} href="#" onClick={() => setShow ? setShow("register") : null}>{t("root.login.alternative")}</a>
     </form>
   );

@@ -50,6 +50,8 @@ router.get('/:id/character', async (req: Request, res: Response) => {
 router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+        const user = await UserService.getUserByEmail(email, password);
+        res.status(200).json(user);
     } catch (error) {
         const err = error as Error;
         res.status(500).json({ message: err.message });

@@ -282,19 +282,19 @@ console.log('Creating enemies...');
   
 const enemy1 = await prisma.enemy.create({
   data: {
-    name: 'Goblin',
-    level: 100,
-    strength: 500,
-    speed: 100,
-    magic: 50,
-    dexterity: 250,
-    healthPoints: 1500,
-    manaPoints: 50,
-    luck: 25,
-    defense: 250,
-    magicDefense: 50,
+    name: 'slime',
+    level: 1,
+    strength: 5,
+    speed: 10,
+    magic: 0,
+    dexterity: 4,
+    healthPoints: 100,
+    manaPoints: 0,
+    luck: 5,
+    defense: 6,
+    magicDefense: 5,
     moves: {
-      connect: [{ id: move2.id }, { id: move5.id }]
+      connect: [{ id: move6.id }]
     },
     battles: { connect: [] }
   },
@@ -303,19 +303,19 @@ console.log(`Created enemy: ${enemy1.name}`);
 
 const enemy2 = await prisma.enemy.create({
   data: {
-    name: 'Dark Knight',
-    level: 120,
-    strength: 600,
-    speed: 90,
-    magic: 60,
-    dexterity: 200,
-    healthPoints: 1800,
-    manaPoints: 100,
-    luck: 15,
-    defense: 300,
-    magicDefense: 75,
+    name: 'skeleton',
+    level: 1,
+    strength: 7,
+    speed: 8,
+    magic: 0,
+    dexterity: 6,
+    healthPoints: 120,
+    manaPoints: 0,
+    luck: 6,
+    defense: 5,
+    magicDefense: 4,
     moves: {
-      connect: [{ id: move2.id }, { id: move4.id }]
+      connect: [{ id: move6.id }]
     },
     battles: { connect: [] }
   },
@@ -387,66 +387,66 @@ console.log(`Created enemy: ${enemy4.name}`);
 
 // 6. Maak battles data aan
 console.log('Creating battles...');
-const battle1 = await prisma.battle.create({
-  data: {
-    turn: 1,
-    currentTurn: 1,
-    state: 'ongoing',
-    characterId: character1.id,
-  },
-});
-console.log(`Created battle with ID: ${battle1.id}`);
+// const battle1 = await prisma.battle.create({
+//   data: {
+//     turn: 1,
+//     currentTurn: 1,
+//     state: 'ongoing',
+//     characterId: character1.id,
+//   },
+// });
+// console.log(`Created battle with ID: ${battle1.id}`);
 
-const battle2 = await prisma.battle.create({
-  data: {
-    turn: 1,
-    currentTurn: 1,
-    state: 'ongoing',
-    characterId: character2.id,
-  },
-});
-console.log(`Created battle with ID: ${battle2.id}`);
+// const battle2 = await prisma.battle.create({
+//   data: {
+//     turn: 1,
+//     currentTurn: 1,
+//     state: 'ongoing',
+//     characterId: character2.id,
+//   },
+// });
+// console.log(`Created battle with ID: ${battle2.id}`);
 
-const battle3 = await prisma.battle.create({
-  data: {
-    turn: 1,
-    currentTurn: 1,
-    state: 'ongoing',
-    characterId: character3.id,
-  },
-});
-console.log(`Created battle with ID: ${battle3.id}`);
+// const battle3 = await prisma.battle.create({
+//   data: {
+//     turn: 1,
+//     currentTurn: 1,
+//     state: 'ongoing',
+//     characterId: character3.id,
+//   },
+// });
+// console.log(`Created battle with ID: ${battle3.id}`);
 
 // 7. Link battles to enemies
-await prisma.enemy.update({
-  where: { id: enemy1.id },
-  data: {
-    battles: {
-      connect: [{ id: battle1.id }],
-    },
-  },
-});
-console.log(`Linked enemy ${enemy1.name} to battle ${battle1.id}`);
+// await prisma.enemy.update({
+//   where: { id: enemy1.id },
+//   data: {
+//     battles: {
+//       connect: [{ id: battle1.id }],
+//     },
+//   },
+// });
+// console.log(`Linked enemy ${enemy1.name} to battle ${battle1.id}`);
 
-await prisma.enemy.update({
-  where: { id: enemy2.id },
-  data: {
-    battles: {
-      connect: [{ id: battle2.id }],
-    },
-  },
-});
-console.log(`Linked enemy ${enemy2.name} to battle ${battle2.id}`);
+// await prisma.enemy.update({
+//   where: { id: enemy2.id },
+//   data: {
+//     battles: {
+//       connect: [{ id: battle2.id }],
+//     },
+//   },
+// });
+// console.log(`Linked enemy ${enemy2.name} to battle ${battle2.id}`);
 
-await prisma.enemy.update({
-  where: { id: enemy3.id },
-  data: {
-    battles: {
-      connect: [{ id: battle3.id }],
-    },
-  },
-});
-console.log(`Linked enemy ${enemy3.name} to battle ${battle3.id}`);
+// await prisma.enemy.update({
+//   where: { id: enemy3.id },
+//   data: {
+//     battles: {
+//       connect: [{ id: battle3.id }],
+//     },
+//   },
+// });
+// console.log(`Linked enemy ${enemy3.name} to battle ${battle3.id}`);
 
 console.log('Seed data successfully added!');
 }

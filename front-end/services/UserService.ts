@@ -1,26 +1,30 @@
 import { Character } from "@/types";
 import useSWR from "swr";
 
-const fetcher = (url: string) => fetch(url).then((res) => {
-  if (!res.ok) {
-    throw new Error('Network response not okay');
-  }
-  return res.json();
-});
-
-const postLoginData = (body: { email: string; password: string }) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + "/user", {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
+const postLoginData = async (body: { email: string; password: string }): Promise<{
+  token?: any; id?: number; name?: string, message?: string
+}> => {
+  try {
+    return await fetch(process.env.NEXT_PUBLIC_API_URL + "/user/login", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    }).then(data =>{
       console.log(data);
-      sessionStorage.setItem("userId", data.user.id);
+      sessionStorage.setItem("loggedInUser", JSON.stringify({token: data.token, user: {id: data.user.id, name : data.user.name}}));
+  
+      return data;
     });
+  } catch (error) {
+    const err = error as Error;
+    return err;
+  }
 };
 
 const postRegisterData = (body: {
@@ -100,7 +104,7 @@ const addCharacterToUser = (characterId: number) => {
     })
     .then((response) => {
       if(!response.ok) throw new Error(`Http error, status: ${response.status}, ${response.statusText}`);
-      return response.json()
+      return response.json();
     })
     .then((data) => {
         return { status: 200, data: data };

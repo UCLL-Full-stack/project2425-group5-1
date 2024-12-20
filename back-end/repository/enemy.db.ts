@@ -1,5 +1,8 @@
 import prisma from './database';
 import { Enemy } from '../model/enemy';
+import { MoveType, worldId } from '../types';
+import moveRepository from './move.db';
+import { Move } from '../model/move';
 
 const getEnemies = async (): Promise<Enemy[]> => {
     try {
@@ -16,6 +19,53 @@ const getEnemies = async (): Promise<Enemy[]> => {
     }
 };
 
+const enemyTemplatesByWorld: {[key in string]: string[]} = {
+    "1": ["slime", "skeleton",],
+    "2": ["skeleton",],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": [],
+    "7": [],
+    "8": [],
+    "9": [],
+    "10": [],
+}
+const getEnemyTemplateByWorldId = async (worldId: string): Promise<Enemy[]> => {
+    try {
+        if (!enemyTemplatesByWorld.hasOwnProperty(worldId)) throw new Error(`World id does not exist in templates`);
+
+        const enemyArr = enemyTemplatesByWorld[worldId];
+
+        const enemyTemplate: Enemy[] = [];
+
+        await Promise.all(enemyArr.map(async name => {
+            const enemyPrisma = await prisma.enemy.findFirst({
+                where: { name: name },
+                include: {
+                    moves: true,
+                    battles: true,
+                }
+            });
+            if(enemyPrisma) {
+                let newMoves: Move[] = []
+                enemyPrisma.moves.map(async move => {
+                    const moveStats = await moveRepository.getMoveById(move.id);
+                    if(!moveStats) return;
+                    newMoves.push(moveStats);
+                })
+                console.log(newMoves);
+                enemyTemplate.push(Enemy.from(enemyPrisma));
+            }
+        }));
+
+        return enemyTemplate;
+    } catch (error) {
+        console.error(`Error getting template enemies by world id:`, error);
+        throw new Error('Failed to get template enemies by worldId');
+    }
+};
+
 const getEnemyById = async (id: number): Promise<Enemy | null> => {
     try {
         const enemyPrisma = await prisma.enemy.findUnique({
@@ -27,8 +77,8 @@ const getEnemyById = async (id: number): Promise<Enemy | null> => {
         });
         return enemyPrisma ? Enemy.from(enemyPrisma) : null;
     } catch ( error ) {
-        console.log('Error fetching enemy by id:', error);
-        throw new Error('Failed to fetch enemy by id');
+        console.error(`Error creating user:`, error);
+        throw new Error('Failed to create user');
     }
 };
 
@@ -87,14 +137,14 @@ const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => 
                 defense: data.defense,
                 magicDefense: data.magicDefense,
                 moves: data.moveIds
-                    ? { 
+                    ? {
                         set: [],
                         connect: data.moveIds.map(id => ({ id }))
                     }
                     : undefined,
 
                 battles: data.battles
-                ? { connect: data.battles.map((battle) => ({ id: battle.id })) }
+                ? { connect: data.battles }
                 : undefined,
             },
             include: {
@@ -111,8 +161,8 @@ const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => 
 
 const deleteEnemy = async (id: number): Promise<void> => {
     try {
-        await prisma.enemy.delete({ 
-            where: { id } 
+        await prisma.enemy.delete({
+            where: { id }
         });
     } catch ( error ) {
         console.log('Error deleting enemy:', error);
@@ -123,6 +173,7 @@ const deleteEnemy = async (id: number): Promise<void> => {
 const enemyRepository = {
     getEnemies,
     getEnemyById,
+    getEnemyTemplateByWorldId,
     createEnemy,
     updateEnemy,
     deleteEnemy,

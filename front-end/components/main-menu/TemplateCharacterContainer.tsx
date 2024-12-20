@@ -11,27 +11,6 @@ interface TemplateCharacterType {
   name: string;
 }
 
-export const templateCharacters: Record<string, TemplateCharacterType & Character> = {
-  "fighter": {
-    name: "Fighter",
-    characterClass: "Fighter",
-    src: "/images/player/HumanFighter.png",
-    level: 1,
-    xp: 0,
-    strength: 10,
-    speed: 10,
-    magic: 5,
-    dexterity: 12,
-    healthPoints: 150,
-    manaPoints: 150,
-    luck: 10,
-    defense: 10,
-    magicDefense: 5,
-    progress: "1-1",
-    moveIds: [23]
-  },
-};
-
 const TemplateCharacterContainer: React.FC<Props> = () => {
   const [templateCharacters, setTemplateCharacters] = useState<(TemplateCharacterType & Character)[]>();
   useEffect(() => {

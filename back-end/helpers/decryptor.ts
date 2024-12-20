@@ -1,13 +1,13 @@
 import bcrypt from 'bcrypt';
 
-const decryptor = async (plainPass: string, hashedPass: string) => {
-        await bcrypt.compare(plainPass, hashedPass, (err, isCorrect) => {
-            if (err) {
-                console.log('an error has occured');
-                throw new Error(`Something went wrong while decrypting the password: ${err}`);
-            }
-            return true;
-        });
+const decryptor = async (plainPass: string, hashedPass: string): Promise<boolean> => {
+    try {
+        const isCorrect = await bcrypt.compare(plainPass, hashedPass);
+        return isCorrect;
+    } catch (err) {
+        console.log('An error has occurred: ' + err);
+        return false;
+    }
 };
 
 export default decryptor;

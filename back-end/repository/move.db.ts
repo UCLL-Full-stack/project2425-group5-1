@@ -13,8 +13,9 @@ const getMoves = async (): Promise<Move[]> => {
 
 const getMoveById = async (id: number): Promise<Move | null> => {
     try {
-        const movePrisma = await prisma.move.findUnique({ 
-            where: { id } 
+        console.log(id);
+        const movePrisma = await prisma.move.findUnique({
+            where: { id }
         });
         return movePrisma ? Move.from(movePrisma) : null;
     } catch ( error ) {

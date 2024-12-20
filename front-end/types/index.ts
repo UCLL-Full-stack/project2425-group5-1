@@ -46,13 +46,14 @@ type Class = {
   weapon: Weapon;
   armor: Armor;
 };
-type Battle = {
+type BattleType = {
   id?: number;
   turn: number;
   currentTurn: number;
-  state: {};
-  character: Character;
-};
+  state: string;
+  characterId: number;
+  character?: Character;
+}
 type Item = {
   id: number;
   name: string;
@@ -117,7 +118,7 @@ type Vector2D = [x: number, y: number];
 
 export type {
   Armor,
-  Battle,
+  BattleType,
   Character,
   Class,
   Consumable,

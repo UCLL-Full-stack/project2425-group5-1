@@ -19,14 +19,14 @@ const RegisterForm: React.FC<Props> = ({ setShow, showState }) => {
 
   async function registerUser(formData: { name: string, email: string, password: string; }) {
     if (formData.email.length && formData.name.length && formData.password.length) {
-      console.log(formData);
       const response = await UserService.postRegisterData(formData);
       if(response.status === 200) {
         setRegisterSuccess(true);
         setTimeout(() => router.push("/characterCreator"), 1500);
+        return;
       } else {
         setRegisterSuccess(false);
-        console.log(response.data);
+        return
       }
     }
   }

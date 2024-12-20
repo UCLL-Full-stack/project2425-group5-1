@@ -35,6 +35,8 @@ type BattleType = {
     character?: CharacterType;
 };
 
+type worldId = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+
 type MoveType = {
     id?: number;
     name: string;
@@ -62,4 +64,4 @@ type EnemyType = {
     battles: BattleType[];
 };
 
-export { UserType, CharacterType, BattleType, MoveType, EnemyType };
+export { UserType, CharacterType, BattleType, MoveType, EnemyType, worldId };

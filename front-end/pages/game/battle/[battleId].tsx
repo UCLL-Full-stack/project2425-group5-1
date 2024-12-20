@@ -4,13 +4,15 @@ import Player from "@/components/game/battle/Player";
 import PageTransition from "@/components/game/ui/PageTransition";
 import TextButton from "@/components/game/ui/TextButton";
 import TextContainer from "@/components/game/ui/TextContainer";
-import { Character, EnemyType } from "@/types";
+import { BattleType, Character, EnemyType, Move } from "@/types";
 import localFont from "next/font/local";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/pages/game/battle/Index.module.css"
 import Music from "@/components/settings/Music";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import EnemyService from "@/services/EnemyService";
+import BattleService from "@/services/BattleService";
 
 
 const quinquefiveFont = localFont({ src: "../fonts/quinque-five-font/Quinquefive-ALoRM.ttf" });
@@ -51,47 +53,7 @@ const DynamicBattle: React.FC = () => {
             ]
     });
 
-    const [enemies, setEnemies] = useState<EnemyType[]>([
-        {
-            id: 1,
-            name: "slime",
-            level: 10,
-            strength: 5,
-            speed: 10,
-            magic: 0,
-            dexterity: 25,
-            healthPoints: 100,
-            manaPoints: 0,
-            luck: 5,
-            defense: 6,
-            magicDefense: 5,
-            description: "Random enemy",
-            moves: [
-                { name: 'slash', attack: 40, magicAttack: 0, manaPoints: 0, aoe: true },
-                { name: 'Fireball', attack: 30, magicAttack: 50, manaPoints: 20, aoe: false }
-            ],
-            state: "slimeIdle",
-        },
-        {
-            id: 2,
-            name: "slime",
-            level: 8,
-            strength: 7,
-            speed: 12,
-            magic: 0,
-            dexterity: 18,
-            healthPoints: 120,
-            manaPoints: 0,
-            luck: 6,
-            defense: 5,
-            magicDefense: 4,
-            description: "A tough skeleton",
-            moves: [
-                { name: 'slash', attack: 50, magicAttack: 0, manaPoints: 0, aoe: true },
-            ],
-            state: "slimeIdle",
-        }
-    ]);
+    const [enemies, setEnemies] = useState<EnemyType[]>([]);
 
     const [turn, setTurn] = useState<"player" | "enemy">("player");
     const [battleOver, setBattleOver] = useState<boolean>(false);
@@ -110,13 +72,73 @@ const DynamicBattle: React.FC = () => {
         const maxBattleWorld = Number(maxBattle.split("-")[0]);
         const maxBattleLevel = Number(maxBattle.split("-")[1]);
 
-        console.log(urlBattleWorld, maxBattleWorld, urlBattleWorld > maxBattleWorld);
-        console.log(urlBattleLevel, maxBattleLevel, urlBattleLevel > maxBattleLevel);
-
         if(urlBattleWorld > maxBattleWorld || urlBattleLevel > maxBattleLevel) {
             router.back();
         }
+
+        (async () => {
+            const response = await EnemyService.getEnemyTemplates(urlBattleWorld);
+
+            console.log(response);
+
+            if(response.status !== 200) return console.error("Failed to fetch enemy templates");
+
+            const enemyTemplates = response.data;
+            
+            // between 1-2 enemies
+            const enemyCount = Math.floor(Math.random() * 2) + 1;
+            const selectedEnemies: EnemyType[] = [];
+
+            for(let i = 0 ; i < enemyCount ; i++) {
+            const randomIndex = Math.floor(Math.random() * enemyTemplates.length);
+                selectedEnemies.push(enemyTemplates[randomIndex]);
+            }
+
+            const scaledEnemies = await scaleEnemyTemplate(selectedEnemies, urlBattleWorld, urlBattleLevel);
+            const newBattle = await makeBattle();
+            if(!scaledEnemies) return;
+            if(!newBattle.id) return;
+            linkEnemiesToBattle(scaledEnemies.data, newBattle.id);
+        })();
+        return () => {};
     }, []);
+
+    const scaleEnemyTemplate = async (enemiesTemplate: EnemyType[], worldId: number, levelId: number) => {
+        const newEnemies = enemiesTemplate.map(enemyTemplate => {
+            enemyTemplate.defense = enemyTemplate.defense + (1 * worldId) + levelId;
+            enemyTemplate.healthPoints = enemyTemplate.healthPoints + 5 * worldId + levelId * 2;
+            enemyTemplate.strength = enemyTemplate.strength + (1 * worldId) + levelId;
+            enemyTemplate.magicDefense = enemyTemplate.magicDefense + (1 * worldId) + levelId;
+            enemyTemplate.magic = enemyTemplate.magic + (1 * worldId) + levelId;
+            enemyTemplate.speed = enemyTemplate.speed + (1 * worldId) + levelId;
+            enemyTemplate.dexterity = enemyTemplate.dexterity + (1 * worldId) + levelId;
+            enemyTemplate.luck = enemyTemplate.luck + (1 * worldId) + levelId;
+            enemyTemplate.level = enemyTemplate.level + (1 * worldId) + levelId;
+            return enemyTemplate
+        });
+        console.log(newEnemies);
+        const createdEnemies = await EnemyService.createEnemies(newEnemies);
+        console.log(createdEnemies);
+        if(!createdEnemies) return;
+        return createdEnemies;
+    };
+
+    const makeBattle = async (): Promise<BattleType> => {
+        const battleResponse = await BattleService.createBattle();
+        if(battleResponse.status !== 200) console.error("Something went wrong with battle creation");
+
+        const battle = battleResponse.data;
+        console.log(battle);
+        return battle;
+    };
+
+    const linkEnemiesToBattle = async (enemies: EnemyType[], battleId: number) => {
+        enemies.map(async enemy => {
+            if(!enemy.id) return;
+            const test = await EnemyService.addBattleToEnemy(battleId, enemy.id);
+            console.log(test);
+        })
+    };
 
     useEffect(() => {
         if (character.healthPoints <= 0 || enemies.every(enemy => enemy.healthPoints <= 0)) {
@@ -150,7 +172,7 @@ const DynamicBattle: React.FC = () => {
         setSelectedMove(moveId);
         setMoveSelected(true);
     
-        const move = character.move[moveId];
+        const move = character.moveIds[moveId];
         if (move.aoe) {
             confirmMove(moveId);
         }
