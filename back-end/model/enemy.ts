@@ -33,7 +33,7 @@ export class Enemy {
         defense: number;
         magicDefense: number;
         moveIds: number[];
-        battles: Battle[]
+        battles: Battle[];
     }) {
         this.id = enemy.id;
         this.name = enemy.name;

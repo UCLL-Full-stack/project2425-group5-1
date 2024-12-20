@@ -108,3 +108,16 @@
     }
 }
 
+.healthContainer {
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    transform: scaleX(-1) translateX(-50%);
+    max-width: 300px;
+    border: 3px solid white;
+
+    & p {
+        background: linear-gradient(180deg, rgba(155,1,1,1) 0%, rgba(87,27,27,1) 100%);
+        padding: 0.6rem;
+    }
+}

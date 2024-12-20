@@ -19,10 +19,10 @@ async function main() {
   const move1 = await prisma.move.create({
     data: {
       name: 'Fireball',
-      attack: 30,
-      magicAttack: 50,
-      manaPoints: 20,
-      aoe: false,
+      attack: 0,
+      magicAttack: 15,
+      manaPoints: 60,
+      aoe: true,
     },
   });
   console.log(`Created move: ${move1.name}`);
@@ -70,27 +70,38 @@ async function main() {
     },
   });
   console.log(`Created move: ${move5.name}`);
+
+  const move6 = await prisma.move.create({
+    data: {
+      name: 'Punch',
+      attack: 10,
+      magicAttack: 0,
+      manaPoints: 0,
+      aoe: false,
+    },
+  });
+  console.log(`Created move: ${move6.name}`);
   
   // 2. Maak characters data aan
   console.log('Creating characters...');
   const character1 = await prisma.character.create({
     data: {
       name: 'Mage',
-      level: 5,
-      xp: 800,
+      level: 1,
+      xp: 0,
       strength: 3,
       speed: 4,
       magic: 12,
       dexterity: 5,
-      healthPoints: 60,
-      manaPoints: 100,
+      healthPoints: 80,
+      manaPoints: 150,
       luck: 5,
       defense: 4,
       magicDefense: 10,
-      progress: 'Beginner',
+      progress: '1-1',
       characterClass: 'Mage',
       moves: {
-        connect: [{ id: move1.id }, { id: move2.id }]
+        connect: [{ id: move1.id }, { id: move6.id }]
       },
     },
   });
@@ -98,22 +109,22 @@ async function main() {
 
   const character2 = await prisma.character.create({
     data: {
-      name: 'Warrior',
-      level: 8,
-      xp: 1200,
-      strength: 15,
-      speed: 8,
+      name: 'Fighter',
+      level: 1,
+      xp: 0,
+      strength: 10,
+      speed: 6,
       magic: 3,
-      dexterity: 7,
-      healthPoints: 120,
-      manaPoints: 50,
-      luck: 8,
-      defense: 12,
-      magicDefense: 8,
-      progress: 'Intermediate',
-      characterClass: 'Warrior',
+      dexterity: 6,
+      healthPoints: 140,
+      manaPoints: 30,
+      luck: 3,
+      defense: 8,
+      magicDefense: 5,
+      progress: '1-1',
+      characterClass: 'Fighter',
       moves: {
-        connect: [{ id: move3.id }, { id: move4.id }]
+        connect: [{ id: move6.id }]
       },
     },
   });
@@ -121,26 +132,118 @@ async function main() {
 
   const character3 = await prisma.character.create({
     data: {
-      name: 'Rogue',
-      level: 3,
-      xp: 500,
-      strength: 8,
+      name: 'Thief',
+      level: 1,
+      xp: 0,
+      strength: 7,
       speed: 10,
       magic: 5,
-      dexterity: 9,
-      healthPoints: 80,
-      manaPoints: 60,
-      luck: 6,
-      defense: 6,
-      magicDefense: 5,
-      progress: 'Beginner',
-      characterClass: 'Rogue',
+      dexterity: 10,
+      healthPoints: 100,
+      manaPoints: 50,
+      luck: 7,
+      defense: 5,
+      magicDefense: 6,
+      progress: '1-1',
+      characterClass: 'Thief',
       moves: {
-        connect: [{ id: move2.id }, { id: move5.id }]
+        connect: [{ id: move6.id }]
       },
     },
   });
   console.log(`Created character: ${character3.name}`);
+
+  const character4 = await prisma.character.create({
+    data: {
+      name: 'Priest',
+      level: 1,
+      xp: 0,
+      strength: 6,
+      speed: 3,
+      magic: 10,
+      dexterity: 3,
+      healthPoints: 90,
+      manaPoints: 160,
+      luck: 7,
+      defense: 6,
+      magicDefense: 4,
+      progress: '1-1',
+      characterClass: 'Priest',
+      moves: {
+        connect: [{ id: move6.id }]
+      },
+    },
+  });
+  console.log(`Created character: ${character4.name}`);
+
+  const character5 = await prisma.character.create({
+    data: {
+      name: 'Paladin',
+      level: 1,
+      xp: 0,
+      strength: 7,
+      speed: 4,
+      magic: 7,
+      dexterity: 4,
+      healthPoints: 130,
+      manaPoints: 100,
+      luck: 5,
+      defense: 6,
+      magicDefense: 6,
+      progress: '1-1',
+      characterClass: 'Paladin',
+      moves: {
+        connect: [{ id: move6.id }]
+      },
+    },
+  });
+  console.log(`Created character: ${character5.name}`);
+
+  const character6 = await prisma.character.create({
+    data: {
+      name: 'Druid',
+      level: 1,
+      xp: 0,
+      strength: 2,
+      speed: 5,
+      magic: 13,
+      dexterity: 4,
+      healthPoints: 170,
+      manaPoints: 140,
+      luck: 6,
+      defense: 7,
+      magicDefense: 5,
+      progress: '1-1',
+      characterClass: 'Druid',
+      moves: {
+        connect: [{ id: move6.id }]
+      },
+    },
+  });
+  console.log(`Created character: ${character6.name}`);
+
+  const character7 = await prisma.character.create({
+    data: {
+      name: 'Archer',
+      level: 1,
+      xp: 0,
+      strength: 5,
+      speed: 8,
+      magic: 2,
+      dexterity: 10,
+      healthPoints: 110,
+      manaPoints: 30,
+      luck: 5,
+      defense: 5,
+      magicDefense: 5,
+      progress: '1-1',
+      characterClass: 'Archer',
+      moves: {
+        connect: [{ id: move6.id }]
+      },
+    },
+  });
+  console.log(`Created character: ${character7.name}`);
 
 // 3. Maak users data aan en koppel ze aan characters
 console.log('Creating users...');
@@ -239,6 +342,48 @@ const enemy3 = await prisma.enemy.create({
   },
 });
 console.log(`Created enemy: ${enemy3.name}`);
+
+const enemy4 = await prisma.enemy.create({
+  data: {
+    name: 'slime',
+    level: 1,
+    strength: 5,
+    speed: 5,
+    magic: 0,
+    dexterity: 7,
+    healthPoints: 100,
+    manaPoints: 0,
+    luck: 5,
+    defense: 3,
+    magicDefense: 5,
+    moves: {
+      connect: [{ id: move6.id }]
+    },
+    battles: { connect: [] }
+  },
+});
+console.log(`Created enemy: ${enemy4.name}`);
+
+const enemy5 = await prisma.enemy.create({
+  data: {
+    name: 'skeleton',
+    level: 1,
+    strength: 7,
+    speed: 6,
+    magic: 0,
+    dexterity: 5,
+    healthPoints: 150,
+    manaPoints: 50,
+    luck: 3,
+    defense: 5,
+    magicDefense: 2,
+    moves: {
+      connect: [{ id: move6.id }]
+    },
+    battles: { connect: [] }
+  },
+});
+console.log(`Created enemy: ${enemy4.name}`);
 
 // 6. Maak battles data aan
 console.log('Creating battles...');

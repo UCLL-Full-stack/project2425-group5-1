@@ -9,7 +9,8 @@ import localFont from "next/font/local";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/pages/game/battle/Index.module.css"
-import Music from "@/components/Music";
+import Music from "@/components/settings/Music";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 
 const quinquefiveFont = localFont({ src: "../fonts/quinque-five-font/Quinquefive-ALoRM.ttf" });
@@ -26,7 +27,7 @@ const DynamicBattle: React.FC = () => {
             magic: 5,
             dexterity: 12,
             healthPoints: 150,
-            manaPoints: 30,
+            manaPoints: 3030,
             luck: 8,
             defense: 12,
             magicDefense: 6,
@@ -52,6 +53,7 @@ const DynamicBattle: React.FC = () => {
 
     const [enemies, setEnemies] = useState<EnemyType[]>([
         {
+            id: 1,
             name: "slime",
             level: 10,
             strength: 5,
@@ -71,7 +73,8 @@ const DynamicBattle: React.FC = () => {
             state: "slimeIdle",
         },
         {
-            name: "skeleton",
+            id: 2,
+            name: "slime",
             level: 8,
             strength: 7,
             speed: 12,
@@ -86,7 +89,7 @@ const DynamicBattle: React.FC = () => {
             moves: [
                 { name: 'slash', attack: 50, magicAttack: 0, manaPoints: 0, aoe: true },
             ],
-            state: "skeletonIdle",
+            state: "slimeIdle",
         }
     ]);
 
@@ -99,8 +102,20 @@ const DynamicBattle: React.FC = () => {
     const [playerState, setPlayerState] = useState<"idle" | "attacking">("idle");
 
     useEffect(() => {
-        if(!battleId) router.back();
-        console.log(battleId);
+        if(!battleId || typeof battleId !== "string") {router.back(); return;};
+        if(!JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token) router.push("/");
+        const urlBattleWorld = Number(battleId.split("-")[0]);
+        const urlBattleLevel = Number(battleId.split("-")[1]);
+        const maxBattle = JSON.parse(sessionStorage.getItem("character") || "{}")?.data.progress;
+        const maxBattleWorld = Number(maxBattle.split("-")[0]);
+        const maxBattleLevel = Number(maxBattle.split("-")[1]);
+
+        console.log(urlBattleWorld, maxBattleWorld, urlBattleWorld > maxBattleWorld);
+        console.log(urlBattleLevel, maxBattleLevel, urlBattleLevel > maxBattleLevel);
+
+        if(urlBattleWorld > maxBattleWorld || urlBattleLevel > maxBattleLevel) {
+            router.back();
+        }
     }, []);
 
     useEffect(() => {
@@ -125,81 +140,111 @@ const DynamicBattle: React.FC = () => {
         console.log(selectedEnemy, selectedMove, moveSelected);
     }, [moveSelected]);
 
-    const calculateDamage = (attacker: Character | EnemyType, defender: Character | EnemyType, attack: number) => {
-        const damage = (attacker.strength * attack / 10) - defender.defense;
+    const calculateDamage = (attacker: Character | EnemyType, defender: Character | EnemyType, attack: number, magicAttack: number) => {
+        const damage = ((attacker.strength * attack / 10) - defender.defense) + ((attacker.magic * magicAttack / 10) - defender.magicDefense);
         return damage > 0 ? damage : 0;
     };
 
     const playerTurn = (moveId: number) => {
+        console.log("Player turn: Move selected", moveId);
         setSelectedMove(moveId);
         setMoveSelected(true);
-
-        confirmMove();
+    
+        const move = character.move[moveId];
+        if (move.aoe) {
+            confirmMove(moveId);
+        }
     };
 
     const handleEnemySelection = (enemy: EnemyType) => {
-        if (!moveSelected) return;
+        if (!moveSelected || character.move[selectedMove as number].aoe) return;
+        console.log("Enemy selected:", enemy.id);
+    
         setSelectedEnemy(enemy);
-    }
+    };
 
-    const confirmMove = () => {
-        if(!selectedEnemy) {
-            console.log("no enemy selected");
+    const confirmMove = (moveId: number) => {
+        if (moveId === null) {
+            console.log("No move selected or no enemy selected for non-AoE move");
             return;
         }
 
-        const move = character.move[selectedMove as number];
+        const move = character.move[moveId];
+        console.log("Confirm move: ", move);
 
-        // This move should just be greyed out
-        if(move.manaPoints > character.manaPoints) {
-            console.log("not enough mana points");
-            return;
-        }
+        if (move.aoe) {
+            setPlayerState("attacking");
 
-        setPlayerState("attacking");
-
-        let updatedEnemies = [...enemies];
-
-        if(move.aoe) {
-            updatedEnemies = enemies.map((enemy) => {
-                const damage = calculateDamage(character, enemy, move.attack);
+            let updatedEnemies = enemies.map((enemy) => {
+                const damage = calculateDamage(character, enemy, move.attack, move.magicAttack);
                 return { ...enemy, healthPoints: enemy.healthPoints - damage };
             });
+
+            updatedEnemies = updatedEnemies.filter((enemy) => enemy.healthPoints > 0);
             setEnemies(updatedEnemies);
-        } else if(selectedEnemy) {
-            const damage = calculateDamage(character, selectedEnemy, move.attack);
+
+            setCharacter((prevCharacter) => ({
+                ...prevCharacter,
+                manaPoints: prevCharacter.manaPoints - move.manaPoints,
+            }));
+
+            setTimeout(() => {
+                console.log("AoE move complete, switching turn to enemy");
+                setTurnCount(turnCount + 1);
+                setTurn("enemy");
+                setMoveSelected(false);
+                setPlayerState("idle");
+            }, 3000);
+
+        } else {
+            if(!selectedEnemy) {
+                console.log("Oh oh, this should never be possible?");
+                return;
+            };
+            console.log("Single target attack detected, targeting:", selectedEnemy.name, selectedEnemy.id);
+
+            if (move.manaPoints > character.manaPoints) {
+                console.log("Not enough mana points");
+                return;
+            }
+
+            setPlayerState("attacking");
+
+            const damage = calculateDamage(character, selectedEnemy, move.attack, move.magicAttack);
             const updatedEnemy = { ...selectedEnemy, healthPoints: selectedEnemy.healthPoints - damage };
             setEnemies(enemies.map((enemy) => enemy === selectedEnemy ? updatedEnemy : enemy));
+
+            setCharacter((prevCharacter) => ({
+                ...prevCharacter,
+                manaPoints: prevCharacter.manaPoints - move.manaPoints,
+            }));
+
+            setTimeout(() => {
+                setTurnCount(turnCount + 1);
+                setTurn("enemy");
+                setMoveSelected(false);
+                setPlayerState("idle");
+            }, 3000);
         }
-
-        updatedEnemies = updatedEnemies.filter((enemy) => enemy.healthPoints > 0);
-        setEnemies(updatedEnemies);
-
-        setCharacter((prevCharacter) => ({ ...prevCharacter, manaPoints: prevCharacter.manaPoints - move.manaPoints }));
-
-        setTimeout(() => {
-            setTurnCount(turnCount + 1);
-            setTurn("enemy");
-            setMoveSelected(false);
-            setPlayerState("idle");
-        }, 3000);
     };
+
 
     const cancel = () => {
         setMoveSelected(false);
     };
 
     const enemyTurn = () => {
+        setSelectedEnemy(null);
         let attackDelay = 0;
 
-        enemies.forEach((enemy, index) => {
+        enemies.forEach((enemy) => {
             setTimeout(() => {
 
-                setEnemies((prevEnemies) => prevEnemies.map((e) => e.name === enemy.name ? {...e, state: `${e.name}Attacking`} : e));
+                setEnemies((prevEnemies) => prevEnemies.map((e) => e.id === enemy.id ? {...e, state: `${e.name}Attacking`} : e));
 
                 const randomMoveIndex = Math.floor(Math.random() * enemy.moves.length);
                 const move = enemy.moves[randomMoveIndex];
-                const damage = calculateDamage(enemy, character, move.attack);
+                const damage = calculateDamage(enemy, character, move.attack, move.magicAttack);
                 const newPlayerHealth = character.healthPoints - damage;
 
                 setCharacter((prevCharacter) => ({ ...prevCharacter, healthPoints: newPlayerHealth }));
@@ -207,7 +252,7 @@ const DynamicBattle: React.FC = () => {
                 setTimeout(() => {
                     setEnemies((prevEnemies) =>
                         prevEnemies.map((e) =>
-                            e.name === enemy.name ? { ...e, state: `${e.name}Idle` } : e
+                            e.id === enemy.id ? { ...e, state: `${e.name}Idle` } : e
                         )
                     );
                 }, 1000);
@@ -247,24 +292,36 @@ const DynamicBattle: React.FC = () => {
                 <TextContainer textContent={["Enemy is attacking!"]} />
             }
             <div className={styles.enemyContainer}>
-                {enemies.map((enemy) => (
+                {enemies.map((enemy, i) => (
                     <Enemy
-                        key={enemy.name}
+                        key={i}
+                        enemyId={enemy.id}
                         name={enemy.name}
                         state={enemy.state}
+                        enemy={enemy}
                         onClick={() => handleEnemySelection(enemy)}
-                        selected={selectedEnemy}
+                        selected={turn === "player" ? selectedEnemy : null}
                     />
                 ))}
             </div>
-                {moveSelected && selectedEnemy && (
-                    <>
-                        <TextButton text="Confirm Attack" onClick={confirmMove} />
-                        <TextButton text="Cancel" onClick={cancel} />
-                    </>
-                )}
+            {moveSelected && !character.move[selectedMove as number].aoe && selectedEnemy && playerState !== "attacking" && (
+                <>
+                    <TextButton text="Confirm Attack" onClick={() => confirmMove(selectedMove as number)} />
+                    <TextButton text="Cancel" onClick={cancel} />
+                </>
+            )}
         </main>
     );
 };
+
+
+export const getServerSideProps = async (context: { locale: any; }) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"]))
+        }
+    }
+}
 
 export default DynamicBattle;

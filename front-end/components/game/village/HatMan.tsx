@@ -6,7 +6,7 @@ interface Props {
     textHandler: string;
 }
 
-export default function HatMan({ isClicked, textHandler }: Props) {
+const HatMan: React.FC<Props> = ({ isClicked, textHandler }) => {
     const [animationState, setAnimationState] = useState<"idle" | "walking">("walking");
     const villagerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -45,3 +45,5 @@ export default function HatMan({ isClicked, textHandler }: Props) {
         </div>
     );
 }
+
+export default HatMan;

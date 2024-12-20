@@ -5,7 +5,11 @@ import { loadFirePreset } from "@tsparticles/preset-fire";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { useEffect } from "react";
 
-const SplashScreen: React.FC = () => {
+interface Props {
+  skip?: boolean;
+}
+
+const SplashScreen: React.FC<Props> = ({ skip }) => {
 
   // this should be run only once per application lifetime
   useEffect(() => {
@@ -30,10 +34,14 @@ const SplashScreen: React.FC = () => {
 
   return (
     <>
-      <div className={`${style.overlay}`}></div>
-      <h1 className={`${style.title}`} id="title">
-        Ember
-      </h1>
+      {skip ? null :
+        <>
+          <div className={`${style.overlay}`}></div>
+          <h1 className={`${style.title}`} id="title">
+            Ember
+          </h1>
+        </>
+      }
       <Particles options={options} />
     </>
   );

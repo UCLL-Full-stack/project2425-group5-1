@@ -2,43 +2,62 @@ import { UserType } from '../types';
 import userRepository from '../repository/user.db';
 import characterRepository from '../repository/character.db';
 import { User } from '../model/user';
+import encryptor from '../helpers/encryptor';
+import decryptor from '../helpers/decryptor';
+import { Character } from '../model/character';
 
 const getAllUsers = async (): Promise<User[]> => {
     return await userRepository.getUsers();
 };
 
 const getUser = async (id: number): Promise<User | null> => {
-    const users = await userRepository.getUsers();
-    const userExists = users.some((user) => user.id === id);
-    
-    if (!userExists) {
+    const users = await userRepository.getUserById(id);
+
+    if (!users) {
         throw new Error('User not found');
     }
 
-    return await userRepository.getUserById(id);
+    return await users;
 };
 
-const createUser = async ({ name, email, password, characterId}: UserType): Promise<User> => {
-    if (!characterId) {
-        throw new Error('Character id is required');
+const getUserCharacter = async (id: number): Promise<Character | null> => {
+    const user = await userRepository.getUserById(id);
+    if (!user) {
+        throw new Error('User not found');
     }
-
-    const character = await characterRepository.getCharacterById( characterId );
+    if (!user.characterId) {
+        throw new Error('User characterId not found');
+    }
+    const character = await characterRepository.getCharacterById(user.characterId);
     if (!character) {
-        throw new Error(`Character with id ${characterId} not found`);
+        throw new Error('Character not found');
+    }
+    return await character;
+};
+
+const createUser = async ({ name, email, password }: UserType): Promise<User> => {
+    const emailExists = await userRepository.getUserByEmail(email);
+    if (emailExists !== null) {
+        throw new Error(`User with email already exists`);
     }
 
-    const user = new User({ name, email, password, characterId });
+    const encryptedPassword = await encryptor(password);
+
+    const user = new User({ name, email, password: encryptedPassword });
     return await userRepository.createUser(user);
 };
 
-const updateUser = async (id: number, data: Partial<UserType>): Promise<User> => {
-    const existingUser = await userRepository.getUserById(id);
-    if (!existingUser) {
+const addCharacterToUser = async (userId: number, characterId: number): Promise<User> => {
+    const user = await userRepository.getUserById(userId);
+    if (!user) {
         throw new Error('User not found');
     }
 
-    return await userRepository.updateUser(id, data);
+    if(user.characterId !== undefined) {
+        throw new Error('User already has a character');
+    }
+
+    return await userRepository.updateUser(userId, { characterId: characterId });
 };
 
 const deleteUser = async (id: number): Promise<void> => {
@@ -50,10 +69,4 @@ const deleteUser = async (id: number): Promise<void> => {
     await userRepository.deleteUser(id);
 };
 
-export {
-    getAllUsers,
-    getUser,
-    createUser,
-    updateUser,
-    deleteUser,
-};
+export { getAllUsers, getUser, createUser, deleteUser, addCharacterToUser, getUserCharacter };

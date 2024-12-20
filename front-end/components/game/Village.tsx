@@ -11,6 +11,7 @@ import QuestBoard from './village/QuestBoard';
 import TextButton from './ui/TextButton';
 import { useRouter } from 'next/navigation';
 import PageTransition from './ui/PageTransition';
+import UserService from '@/services/UserService';
 
 export default function Village() {
     const ref = useRef(null);
@@ -19,8 +20,22 @@ export default function Village() {
     const [clickHandler, setClickHandler] = useState<"merchant" | "hatman" | "woman" | "questboard" | "">("");
     const [levelId, setLevelId] = useState<string>("");
     const [pageTransition, setPageTransition] = useState<boolean>(false);
+    const [currentLevel, setCurrentLevel] = useState<string>("1-1");
+    const [levelArr, setLevelArr] = useState<string[]>([]);
 
     useEffect(() => {
+        (async () => {
+            if(sessionStorage.getItem("character")) return;
+            const loggedInUser = sessionStorage.getItem("loggedInUser");
+            if(!loggedInUser) return;
+            const user = JSON.parse(loggedInUser);
+            if(!user) return;
+            const character = await UserService.getCharacterData(user.user.id);
+            if(!character) return;
+            sessionStorage.setItem("character", JSON.stringify(character));
+            setCurrentLevel(character.data.progress);
+        })();
+
         // Adapted to horizontal https://jsfiddle.net/byeam39o/2/
         const container = scrollRef.current;
         if (container) {
@@ -34,10 +49,25 @@ export default function Village() {
     }, []);
 
     useEffect(() => {
-        if(!levelId) return;
-        setPageTransition(true);
-        setTimeout(() => router.push(`/game/battle/${levelId}`), 1000);
+            if(!levelId) return;
+            setPageTransition(true);
+            setTimeout(() => router.push(`/game/battle/${levelId}`), 1000);
     }, [levelId]);
+
+    useEffect(() => {
+        handleLevels();
+        return () => {};
+    }, [currentLevel]);
+
+    const handleLevels = () => {
+        const world = Number(currentLevel.split("-")[0]);
+        const maxLevel = Number(currentLevel.split("-")[1]);
+        const newLevelArr = [];
+        for(let level = 1; level <= maxLevel; level++) {
+            newLevelArr.push(`${world}-${level}`);
+        }
+        setLevelArr(newLevelArr);
+    };
 
     const scrollListener = (e: Event, container: HTMLDivElement) => {
         if (!e.target) return;
@@ -80,16 +110,9 @@ export default function Village() {
                     <TextContainer isClicked={setClickHandler} textContent={["Clear the well"]} >
                         <p style={{marginBottom: "1.5rem"}}>Quests:</p>
                         <div style={{display: "flex", flexWrap: "wrap"}}>
-                            <TextButton text="1-1" setLevelId={setLevelId} />
-                            <TextButton text="2-2" setLevelId={setLevelId} />
-                            <TextButton text="3-3" setLevelId={setLevelId} />
-                            <TextButton text="4-4" setLevelId={setLevelId} />
-                            <TextButton text="5-5" setLevelId={setLevelId} />
-                            <TextButton text="6-6" setLevelId={setLevelId} />
-                            <TextButton text="7-7" setLevelId={setLevelId} />
-                            <TextButton text="8-8" setLevelId={setLevelId} />
-                            <TextButton text="9-9" setLevelId={setLevelId} />
-                            <TextButton text="10-10" setLevelId={setLevelId} />
+                            {levelArr.map((level) => (
+                                <TextButton key={level} text={level} setLevelId={setLevelId} />
+                            ))}
                         </div>
                     </TextContainer>
                 </>

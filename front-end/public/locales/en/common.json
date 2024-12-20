@@ -1,0 +1,28 @@
+{
+    "language": {
+        "english": "English",
+        "dutch": "Dutch"
+    },
+    "root": {
+        "login": {
+            "title": "Login",
+            "email": "Email",
+            "emailInput": "Enter email address",
+            "password": "Password",
+            "passwordInput": "Enter password",
+            "submit": "Login",
+            "alternative": "Register instead"
+        },
+        "register": {
+            "title": "Register",
+            "username":  "Username",
+            "usernameInput": "Enter username",
+            "email": "Email",
+            "emailInput": "Enter email address",
+            "password": "Password",
+            "passwordInput": "Enter password",
+            "submit": "Register",
+            "alternative": "Login instead"
+        }
+    }
+}

@@ -4,9 +4,10 @@ import { CharacterType } from '../types';
 
 const router = express.Router();
 
-router.get('/', async (req: Request, res: Response) => {
+// Get template characters
+router.get('/template', async (req: Request, res: Response) => {
    try {
-       const characters = await CharacterService.getAllCharacters();
+       const characters = await CharacterService.getTemplateCharacters();
        res.json(characters);
    } catch (error) {
        const err = error as Error;
@@ -30,12 +31,12 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
    try {
-       const character = <CharacterType>req.body;
-       const newCharacter = await CharacterService.createCharacter(character);
-       res.status(200).json(newCharacter);
+        const character = <CharacterType>req.body;
+        const newCharacter = await CharacterService.createCharacter(character);
+        res.status(200).json(newCharacter);
    } catch (error) {
-       const err = error as Error;
-       res.status(500).json({ message: err.message });
+        const err = error as Error;
+        res.status(500).json({ message: err.message });
    }
 });
 

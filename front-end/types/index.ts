@@ -10,6 +10,7 @@ type User = {
 type Character = {
   id?: number;
   name: string;
+  characterClass: string;
   level: number;
   xp: number;
   strength: number;
@@ -23,8 +24,8 @@ type Character = {
   magicDefense: number;
   progress: string;
   inventory?: Item[];
-  move: Move[];
-  userId: number;
+  moveIds: number[];
+  userId?: number;
   class?: Class;
   weapon?: Weapon;
   armor?: Armor;

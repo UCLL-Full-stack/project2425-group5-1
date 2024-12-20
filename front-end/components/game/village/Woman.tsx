@@ -6,7 +6,7 @@ interface Props {
     textHandler: string;
 }
 
-export default function Woman({ isClicked, textHandler }: Props) {
+const Woman: React.FC<Props> = ({ isClicked, textHandler }) => {
     const [animationState, setAnimationState] = useState<"idle" | "walking">("walking");
     const villagerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -44,3 +44,5 @@ export default function Woman({ isClicked, textHandler }: Props) {
         </div>
     );
 }
+
+export default Woman;

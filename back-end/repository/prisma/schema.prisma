@@ -19,8 +19,8 @@ model User {
   email     String     @unique
   password  String
 
-  characterId Int @unique
-  character   Character @relation(fields: [characterId], references: [id])
+  characterId Int?  @unique
+  character   Character? @relation(fields: [characterId], references: [id])
 }
 
 model Character {
@@ -39,7 +39,7 @@ model Character {
   magicDefense Int
   progress     String
   characterClass        String
-  user User?    
+  user User? @relation
   battles   Battle[]
 
   moves  Move[]
@@ -51,7 +51,7 @@ model Battle {
   currentTurn Int
   state       String
   character   Character @relation(fields: [characterId], references: [id])
-  characterId Int 
+  characterId Int
 
   enemies Enemy[]
 }

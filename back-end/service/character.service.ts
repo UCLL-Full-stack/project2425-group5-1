@@ -2,8 +2,13 @@ import characterRepository from '../repository/character.db';
 import { Character } from '../model/character';
 import { CharacterType } from '../types';
 
-const getAllCharacters = async (): Promise<Character[]> => {
-    return await characterRepository.getCharacters();
+const getTemplateCharacters = async (): Promise<Character[]> => {
+    const characters = await characterRepository.getCharacters();
+    const characterTemplates = [];
+    for(let i = 0 ; i < 7 ; i++) {
+        characterTemplates.push(characters[i]);
+    }
+    return characterTemplates
 };
 
 const getCharacter = async (id: number): Promise<Character | null> => {
@@ -43,7 +48,7 @@ const deleteCharacter = async (id: number): Promise<void> => {
 };
 
 export {
-    getAllCharacters,
+    getTemplateCharacters,
     getCharacter,
     createCharacter,
     updateCharacter,

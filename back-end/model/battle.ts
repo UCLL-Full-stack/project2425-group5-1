@@ -17,6 +17,8 @@ export class Battle {
         character?: Character;
         characterId: number;
     }) {
+        // this.validate(battle);
+
         this.id = battle.id;
         this.turn = battle.turn;
         this.currentTurn = battle.currentTurn;
@@ -25,6 +27,36 @@ export class Battle {
         this.characterId = battle.characterId;
     }
 
+    // validate(battle: { turn: number, currentTurn: number, state: string, character?: Character, characterId: number }) {
+    //     if (!battle.turn) {
+    //         throw new Error('Turn is required');
+    //     }
+    //     if (battle.turn <= 0) {
+    //         throw new Error('Turn must be greather than 0');
+    //     }
+    //     if (!battle.currentTurn) {
+    //         throw new Error('Current turn is required')
+    //     }
+    //     if (battle.currentTurn <= 0) {
+    //         throw new Error('Current turn must be greather than 0');
+    //     }
+    //     if (!battle.state) {
+    //         throw new Error('State is required');
+    //     }
+    //     if (typeof battle.state !== 'string' || battle.state.trim() === '') {
+    //         throw new Error('State must be a non-empty string');
+    //     }
+    //     if (!battle.character) {
+    //         throw new Error('Character Id is required');
+    //     }
+    //     if (battle.characterId <= 0) {
+    //         throw new Error('Character Id must be greather than 0');
+    //     }
+    //     if (battle.character && !(battle.character instanceof Character)) {
+    //         throw new Error('Character must be a valid instance of the Character class');
+    //     }
+    // }
+    
     static from({
         id,
         turn,

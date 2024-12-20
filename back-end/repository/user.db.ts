@@ -4,11 +4,7 @@ import { UserType } from '../types';
 
 const getUsers = async (): Promise<User[]> => {
     try {
-        const usersPrisma = await prisma.user.findMany({
-            include: {
-                character: true,
-            },
-        });
+        const usersPrisma = await prisma.user.findMany({});
         return usersPrisma.map((userPrisma) => User.from(userPrisma));
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -20,9 +16,6 @@ const getUserById = async (id: number): Promise<User | null> => {
     try {
         const userPrisma = await prisma.user.findUnique({
             where: { id },
-            include: { 
-                character: true 
-            },
         });
         return userPrisma ? User.from(userPrisma) : null;
     } catch (error) {
@@ -31,26 +24,29 @@ const getUserById = async (id: number): Promise<User | null> => {
     }
 };
 
-const createUser = async ({ name, email, password, characterId }: User): Promise<User> => {
-    if (!characterId) {
-        throw new Error('Character must have a valid id');
+const getUserByEmail = async (email: string): Promise<User | null> => {
+    try {
+        const userPrisma = await prisma.user.findUnique({
+            where: { email },
+        });
+        return userPrisma ? User.from(userPrisma) : null;
+    } catch (error) {
+        console.error(`Error fetching user with email ${email}:`, error);
+        throw new Error('Failed to fetch user by email');
     }
+};
 
+const createUser = async ({ name, email, password }: User): Promise<User> => {
     try {
         const createdUser = await prisma.user.create({
             data: {
                 name,
                 email,
                 password,
-                characterId,
-            },
-            include: {
-                character: true,
             },
         });
-
         return User.from(createdUser);
-    } catch ( error ) {
+    } catch (error) {
         console.error(`Error creating user:`, error);
         throw new Error('Failed to create user');
     }
@@ -61,11 +57,8 @@ const updateUser = async (id: number, data: Partial<UserType>): Promise<User> =>
         const updatedUser = await prisma.user.update({
             where: { id },
             data: {
-                name: data.name,
-                password: data.password,
-            },
-            include: {
-                character: true,
+                ...data,
+                characterId: data.characterId,
             },
         });
         return User.from(updatedUser);
@@ -74,6 +67,7 @@ const updateUser = async (id: number, data: Partial<UserType>): Promise<User> =>
         throw new Error('Failed to update user');
     }
 };
+
 const deleteUser = async (id: number): Promise<void> => {
     try {
         const userWithCharacter = await prisma.user.findUnique({
@@ -90,7 +84,7 @@ const deleteUser = async (id: number): Promise<void> => {
         await prisma.user.delete({
             where: { id },
         });
-        
+
         if (userWithCharacter.character) {
             await prisma.character.delete({
                 where: { id: userWithCharacter.character.id },
@@ -104,16 +98,13 @@ const deleteUser = async (id: number): Promise<void> => {
     }
 };
 
-
-
-
-
 const userRepository = {
     getUsers,
     getUserById,
     createUser,
     updateUser,
     deleteUser,
+    getUserByEmail,
 };
 
 export default userRepository;

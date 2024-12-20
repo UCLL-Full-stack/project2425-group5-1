@@ -1,0 +1,58 @@
+.container {
+    position: relative;
+    background: rgb(157,117,22);
+    background: radial-gradient(circle, rgba(157,117,22,1) 0%, rgba(87,27,27,1) 100%);
+    width: 450px;
+    height: 100%;
+    z-index: 1;
+    margin: 0 2rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: 0.4s all ease;
+    
+    &:hover {
+        filter: brightness(1.3);
+    }
+    &:hover .image {
+        transform: scale(1.1);
+    }
+    & h1 {
+        text-align: center;
+    }
+}
+
+.confirmButton {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 99;
+    font-size: 2rem;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.image {
+    aspect-ratio: 1/1;
+    width: 100%;
+    height: max-content;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    user-select: none;
+    transition: 0.4s all ease;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem 5rem;
+
+    & div {
+        display: flex;
+        justify-content: space-between;
+        margin: 0.4rem 0;
+        padding: 0.1rem;
+    }
+}

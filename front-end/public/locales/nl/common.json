@@ -1,0 +1,28 @@
+{
+    "language": {
+        "english": "Engels",
+        "dutch": "Nederlands"
+    },
+    "root": {
+        "login": {
+            "title": "Inloggen",
+            "email": "E-mail",
+            "emailInput": "Voer e-mailadres in",
+            "password": "Wachtwoord",
+            "passwordInput": "Voer wachtwoord in",
+            "submit": "Inloggen",
+            "alternative": "Nog geen profiel?"
+        },
+        "register": {
+            "title": "Registreren",
+            "username":  "Gebruikersnaam",
+            "usernameInput": "Voer gebruikersnaam in",
+            "email": "E-mail",
+            "emailInput": "Voer e-mailadres in",
+            "password": "Wachtwoord",
+            "passwordInput": "Voer wachtwoord in",
+            "submit": "Registreren",
+            "alternative": "Heb je al een profiel"
+        }
+    }
+}

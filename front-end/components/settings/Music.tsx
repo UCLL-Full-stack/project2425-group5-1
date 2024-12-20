@@ -1,4 +1,4 @@
-import styles from "@/styles/main-menu/MenuMusic.module.css";
+import styles from "@/styles/settings/Music.module.css";
 import VolumeOffRoundedIcon from '@mui/icons-material/VolumeOffRounded';
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
 import { useEffect } from "react";

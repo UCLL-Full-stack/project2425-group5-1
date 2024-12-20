@@ -1,10 +1,12 @@
-import Music from "@/components/Music";
+import Music from "@/components/settings/Music";
 import LoginForm from "@/components/main-menu/LoginForm";
 import RegisterForm from "@/components/main-menu/RegisterForm";
 import SplashScreen from "@/components/main-menu/SplashScreen";
 import { useState } from "react";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import Language from "@/components/settings/Language";
 
-export default function Home() {
+const Home: React.FC = () => {
   const [showState, setShowState] = useState("login" as "login" | "register");
 
   const setShow = (show: "login" | "register") => {
@@ -18,6 +20,18 @@ export default function Home() {
 
       <SplashScreen />
       <Music musicPath="/music/Soliloquy.mp3" volume={0.07} />
+      <Language />
     </>
   );
 }
+
+export const getServerSideProps = async (context: { locale: any; }) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"]))
+    }
+  }
+}
+
+export default Home;

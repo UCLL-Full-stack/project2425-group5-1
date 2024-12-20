@@ -40,6 +40,8 @@ export class Character {
         user?: User;
         moveIds: number[];
     }) {
+        // this.validate(character);
+
         this.id = character.id;
         this.name = character.name;
         this.level = character.level;
@@ -59,8 +61,25 @@ export class Character {
         this.moveIds = character.moveIds;
     }
 
-    static from({ id, name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moves }: CharacterPrisma & { moves: MovePrisma[] }) {
-        const moveIds = moves.map(move => move.id);
+    static from({
+        id,
+        name,
+        level,
+        xp,
+        strength,
+        speed,
+        magic,
+        dexterity,
+        healthPoints,
+        manaPoints,
+        luck,
+        defense,
+        magicDefense,
+        progress,
+        characterClass,
+        moves,
+    }: CharacterPrisma & { moves: MovePrisma[] }) {
+        const moveIds = moves.map((move) => move.id);
         return new Character({
             id,
             name,
@@ -80,4 +99,4 @@ export class Character {
             moveIds,
         });
     }
-}    
+}

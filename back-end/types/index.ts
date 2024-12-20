@@ -1,10 +1,9 @@
-
 type UserType = {
     id?: number;
     name: string;
     email: string;
     password: string;
-    characterId: number;
+    characterId?: number;
 };
 
 type CharacterType = {
@@ -22,7 +21,7 @@ type CharacterType = {
     defense: number;
     magicDefense: number;
     progress: string;
-    characterClass: "Warrior" | "Mage" | "Rogue" | "Archer";
+    characterClass: 'Fighter' | 'Archer' | 'Druid' | 'Mage' | 'Paladin' | 'Priest' | 'Thief';
     moveIds: number[];
 };
 
@@ -63,10 +62,4 @@ type EnemyType = {
     battles: BattleType[];
 };
 
-export {
-    UserType,
-    CharacterType,
-    BattleType,
-    MoveType,
-    EnemyType,
-};
+export { UserType, CharacterType, BattleType, MoveType, EnemyType };

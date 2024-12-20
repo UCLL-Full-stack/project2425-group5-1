@@ -111,7 +111,7 @@ const updateCharacter = async (
                 progress: data.progress,
                 characterClass: data.characterClass,
                 moves: data.moveIds
-                    ? { 
+                    ? {
                         set: [],
                         connect: data.moveIds.map(id => ({ id }))
                     }

@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  position: absolute;
+  top: 24px;
+  right: calc(24px * 3);
+  align-items: center;
+  width: 3.5rem;
+  height: 32px;
+  justify-content: space-between;
+  z-index: 99999999999999;
+}
+.content {
+  z-index: 2;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: 0.4s ease color;
+}
+.content:hover {
+  color: #7f7f7f;
+}
+
+.active {
+  font-weight: bold;
+  text-decoration: underline;
+}

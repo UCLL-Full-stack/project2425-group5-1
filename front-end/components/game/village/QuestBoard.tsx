@@ -1,4 +1,5 @@
 import style from "@/styles/game/village/QuestBoard.module.css";
+import { useEffect } from "react";
 
 interface Props {
     isClicked?: (name: "" | "merchant" | "hatman" | "woman" | "questboard" ) => void;

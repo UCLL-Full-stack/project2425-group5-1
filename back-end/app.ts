@@ -11,19 +11,22 @@ import battleRouter from './controller/battle.routes';
 
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import userMiddleWare from './middleware/user.middleware';
+import helmet from 'helmet';
 
 const app = express();
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/user', userRouter);
-app.use('/character', characterRouter);
-app.use('/battle', battleRouter);
-app.use('/move', moveRouter);
-app.use('/enemy', enemyRouter);
+app.use('/user', userMiddleWare, userRouter);
+app.use('/character', userMiddleWare, characterRouter);
+app.use('/battle', userMiddleWare, battleRouter);
+app.use('/move', userMiddleWare, moveRouter);
+app.use('/enemy', userMiddleWare, enemyRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
@@ -31,14 +34,14 @@ app.get('/status', (req, res) => {
 
 const swaggerOpts = {
     definition: {
-        openapi: "3.0.0",
+        openapi: '3.0.0',
         info: {
-            title: "Course API",
-            version: "1.0.0",
+            title: 'Course API',
+            version: '1.0.0',
         },
     },
-    apis: ["./controller/*.routes.ts"],
-}
+    apis: ['./controller/*.routes.ts'],
+};
 
 const swaggerSpec = swaggerJSDoc(swaggerOpts);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
