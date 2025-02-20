@@ -55,7 +55,7 @@ const deleteEnemy = async (id: number): Promise<void> => {
     await enemyRepository.deleteEnemy(id);
 };
 
-export {
+const EnemyService =  {
     getAllEnemies,
     getEnemyTemplates,
     getEnemy,
@@ -64,3 +64,5 @@ export {
     updateEnemy,
     deleteEnemy,
 };
+
+export default EnemyService;

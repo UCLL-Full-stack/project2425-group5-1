@@ -12,17 +12,15 @@ export default function authenticateAccessToken(req: Request, res: Response, nex
         if (token == null) {
             return res.status(401).json({ message: `Unauthorized` });
         }
-        jwt.verify(
-            token,
-            process.env.TOKEN_SECRET || 'temporary_dev_secret',
-            (err: null | Error) => {
+        jwt.verify(token, process.env.TOKEN_SECRET || 'temporary_dev_secret', (err: null | Error, decoded: any) => {
                 console.log(err);
                 if (err) {
                     return res.sendStatus(403);
                 }
+                //@ts-ignore:next-line
+                // req.username = decoded.name;
                 next();
-            }
-        );
+        });
     } catch (error) {
         const err = error as Error;
         res.status(500).json({ message: err.message });

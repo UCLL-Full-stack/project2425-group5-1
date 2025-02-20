@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import * as EnemyService from '../service/enemy.service';
+import EnemyService from '../service/enemy.service';
 import { worldId } from '../types';
 
 const router = express.Router()

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Battle" ALTER COLUMN "enemies" SET NOT NULL,
+ALTER COLUMN "enemies" SET DATA TYPE TEXT;

@@ -73,3 +73,18 @@ model Enemy {
 
   moves Move[]
 }
+
+model Battle {
+  id           Int    @id @default(autoincrement())
+  turnCount    Int
+
+  // Either "player" or "enemy"
+  currentTurn  String
+  
+  // Array of stringified json objects containing the current enemy
+  enemies      String
+  // stringified json object of a Character containing the current character
+  character    String
+  // Stringified json object containing gold, xp based on the level of the enemies
+  reward       String
+}

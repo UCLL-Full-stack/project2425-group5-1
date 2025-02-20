@@ -21,11 +21,11 @@ type CharacterType = {
     defense: number;
     magicDefense: number;
     progress: string;
-    characterClass: 'Fighter' | 'Archer' | 'Druid' | 'Mage' | 'Paladin' | 'Priest' | 'Thief';
+    characterClass: 'Fighter' | 'Archer' | 'Druid' | 'Mage' | 'Paladin' | 'Priest' | 'Thief' | string;
     moveIds: number[];
 };
 
-type worldId = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+type worldId = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10";
 
 type MoveType = {
     id?: number;
@@ -53,4 +53,13 @@ type EnemyType = {
     moveIds: number[];
 };
 
-export { UserType, CharacterType, MoveType, EnemyType, worldId };
+type BattleType = {
+    id?: number;
+    turnCount: number;
+    currentTurn: string;
+    enemies: string;
+    character: string;
+    reward: string;
+}
+
+export { UserType, CharacterType, MoveType, EnemyType, worldId, BattleType };

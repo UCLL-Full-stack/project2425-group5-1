@@ -7,6 +7,7 @@ import characterRouter from './controller/character.routes';
 import userRouter from './controller/user.routes';
 import enemyRouter from './controller/enemy.routes';
 import moveRouter from './controller/move.routes';
+import battleRouter from './controller/battle.routes';
 
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -25,6 +26,7 @@ app.use('/user', userMiddleWare, userRouter);
 app.use('/character', userMiddleWare, characterRouter);
 app.use('/move', userMiddleWare, moveRouter);
 app.use('/enemy', userMiddleWare, enemyRouter);
+app.use('/battle', userMiddleWare, battleRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
