@@ -52,3 +52,26 @@
         background-position: calc(-256px * 10) calc(-256px * 3);
     }
 }
+
+.healthContainer {
+    position: absolute;
+    bottom: -75px;
+    right: 0;
+    transform: translateX(-25%);
+    max-width: 300px;
+    border: 3px solid white;
+    background: rgb(80, 80, 80);
+
+    & p {
+        padding: 0.6rem;
+    }
+
+    & .liveHp {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        height: 100%;
+        background: linear-gradient(180deg, rgba(155,1,1,1) 0%, rgba(87,27,27,1) 100%);
+    }
+}

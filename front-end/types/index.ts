@@ -5,6 +5,7 @@ type User = {
   username: string;
   email: string;
   password: string;
+  characterId?: number;
 };
 
 type Character = {

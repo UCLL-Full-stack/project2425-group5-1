@@ -33,8 +33,12 @@ const LoginForm: React.FC<Props> = ({ setShow, showState }) => {
       const response = await UserService.postLoginData(formData);
       if(response.token) {
         setLoginSuccess(true);
-        setTimeout(() => router.push("/characterCreator"), 1500);
-        return
+        if(response.user?.characterId) {
+          setTimeout(() => router.push("/game"), 1500);
+        } else {
+          setTimeout(() => router.push("/characterCreator"), 1500);
+        }
+        return;
       } else {
         return setLoginSuccess(false);
       }

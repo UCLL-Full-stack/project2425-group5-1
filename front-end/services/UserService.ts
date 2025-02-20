@@ -1,8 +1,8 @@
-import { Character } from "@/types";
+import { Character, User } from "@/types";
 import useSWR from "swr";
 
 const postLoginData = async (body: { email: string; password: string }): Promise<{
-  token?: any; id?: number; name?: string, message?: string
+  token?: any; message?: string, user?: User,
 }> => {
   try {
     return await fetch(process.env.NEXT_PUBLIC_API_URL + "/user/login", {

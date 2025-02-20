@@ -28,10 +28,11 @@ const Enemy: React.FC<EnemyProps> = ({ enemyId, name, state, onClick, selected, 
     return (
         <>
             <div style={selectionStyle} className={styles[name + "Container"]} onClick={() => onClick()}>
-                <div className={`${styles.enemy} ${styles[name]} ${styles[state]}`} />
+                <div className={`${styles.enemy} ${styles[name]} ${styles[state]}`}/>
                 <div className={`${styles[name + "Shadow"]}`} />
                 <div className={styles.healthContainer}>
                     <p style={{width: `${(enemy.healthPoints / maxHp) * 300}`}}>{enemy.healthPoints}/{maxHp}</p>
+                    <div className={styles.liveHp} style={{width: `${Math.floor((enemy.healthPoints / maxHp) * 100)}%`}}></div>
                 </div>
             </div>
         </>

@@ -23,7 +23,7 @@ interface Props {
         defense: number;
         magicDefense: number;
         progress: string;
-        moveIds: number[];
+        moves: Move[];
     };
 }
 

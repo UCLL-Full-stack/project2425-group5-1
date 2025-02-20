@@ -100,7 +100,7 @@ const DynamicBattle: React.FC = () => {
     const scaleEnemyTemplate = async (enemiesTemplate: EnemyType[], worldId: number, levelId: number) => {
         const newEnemies = enemiesTemplate.map(enemyTemplate => {
             enemyTemplate.defense = enemyTemplate.defense + (1 * worldId) + levelId;
-            enemyTemplate.healthPoints = enemyTemplate.healthPoints + 5 * worldId + levelId * 2;
+            enemyTemplate.healthPoints = enemyTemplate.healthPoints + 5 * worldId + levelId * 1.2;
             enemyTemplate.strength = enemyTemplate.strength + (1 * worldId) + levelId;
             enemyTemplate.magicDefense = enemyTemplate.magicDefense + (1 * worldId) + levelId;
             enemyTemplate.magic = enemyTemplate.magic + (1 * worldId) + levelId;
@@ -155,8 +155,28 @@ const DynamicBattle: React.FC = () => {
     }, [moveSelected]);
 
     const calculateDamage = (attacker: Character | EnemyType, defender: Character | EnemyType, attack: number, magicAttack: number) => {
-        const damage = ((attacker.strength * attack / 10) - defender.defense) + ((attacker.magic * magicAttack / 10) - defender.magicDefense);
-        return damage > 0 ? damage : 0;
+        let damage = 0;
+        let mgcDmg = 0;
+
+        let baseAtkDmg = attacker.strength * attack;
+        let baseMgcDmg = attacker.magic * magicAttack;
+        let defenseMod = 1 - (defender.defense / (defender.defense + 100));
+        let mgcDefMod = 1 - (defender.magicDefense / (defender.magicDefense + 100));
+
+        if(attack > 0 && magicAttack > 0) {
+            damage = baseAtkDmg * defenseMod;
+            mgcDmg = baseMgcDmg * mgcDefMod;
+        } else if(attack > 0 && magicAttack === 0) {
+            damage = baseAtkDmg * defenseMod;
+        } else {
+            mgcDmg = baseMgcDmg * mgcDefMod;
+        }
+
+        const totalDmg = Math.floor(damage + mgcDmg);
+
+            // damage = ((attacker.strength * attack / 10) - defender.defense) + ((attacker.magic * magicAttack / 10) - defender.magicDefense);
+        console.log(totalDmg);
+        return totalDmg > 0 ? totalDmg : 0;
     };
 
     const playerTurn = (moveId: number) => {
@@ -209,6 +229,7 @@ const DynamicBattle: React.FC = () => {
             });
 
             updatedEnemies = updatedEnemies.filter((enemy) => enemy.healthPoints > 0);
+            console.log(updatedEnemies);
             setEnemies(updatedEnemies);
 
             setCharacter((prevCharacter) => {
@@ -243,6 +264,7 @@ const DynamicBattle: React.FC = () => {
 
             const damage = calculateDamage(character, selectedEnemy, move.attack, move.magicAttack);
             const updatedEnemy = { ...selectedEnemy, healthPoints: selectedEnemy.healthPoints - damage };
+            console.log(updatedEnemy);
             setEnemies(enemies.map((enemy) => enemy === selectedEnemy ? updatedEnemy : enemy));
 
             setCharacter((prevCharacter) => {
@@ -271,6 +293,9 @@ const DynamicBattle: React.FC = () => {
         setSelectedEnemy(null);
         let attackDelay = 0;
 
+        if(!character) return;
+        let characterHp = character.healthPoints;
+
         enemies.forEach((enemy) => {
             setTimeout(() => {
 
@@ -278,11 +303,15 @@ const DynamicBattle: React.FC = () => {
 
                 const randomMoveIndex = Math.floor(Math.random() * enemy.moves.length);
                 const move = enemy.moves[randomMoveIndex];
-                if(!character) return;
                 const damage = calculateDamage(enemy, character, move.attack, move.magicAttack);
-                const newPlayerHealth = character.healthPoints - damage;
+                console.log("Enemy is attacking: ", enemy, "hp: ", characterHp);
+                let newPlayerHealth = characterHp - damage;
+                characterHp -= damage;
 
-                setCharacter((prevCharacter) => { if(!prevCharacter) return; return { ...prevCharacter, healthPoints: newPlayerHealth }});
+                setCharacter((prevCharacter) => {
+                    if(!prevCharacter) return;
+                    return { ...prevCharacter, healthPoints: newPlayerHealth }
+                });
 
                 setTimeout(() => {
                     setEnemies((prevEnemies) =>
@@ -311,7 +340,7 @@ const DynamicBattle: React.FC = () => {
 
             <p>{battleId}</p>
             <Background world={battleId} />
-            <Player state={playerState} />
+            <Player state={playerState} player={character} />
             {turn === "player" ?
                 <>
                     {!moveSelected ?

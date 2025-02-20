@@ -28,7 +28,7 @@ const getUserByEmail = async (email: string, password: string): Promise<{ token:
     const passIsValid = await decryptor(password, user.password);
     if(passIsValid) {
         const token = generateAccessToken(user.name, '4h');
-        return {token: token, user: { id: user.id, name: user.name }};
+        return {token: token, user: { id: user.id, name: user.name, characterId: user.characterId }};
     } else {
         throw new Error(`Password is not valid`);
     }

@@ -115,9 +115,18 @@
     transform: scaleX(-1) translateX(-50%);
     max-width: 300px;
     border: 3px solid white;
+    background: rgb(80, 80, 80);
 
     & p {
-        background: linear-gradient(180deg, rgba(155,1,1,1) 0%, rgba(87,27,27,1) 100%);
         padding: 0.6rem;
+    }
+
+    & .liveHp {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        height: 100%;
+        background: linear-gradient(180deg, rgba(155,1,1,1) 0%, rgba(87,27,27,1) 100%);
     }
 }
