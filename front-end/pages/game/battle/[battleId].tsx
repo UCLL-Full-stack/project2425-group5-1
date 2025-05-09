@@ -4,23 +4,22 @@ import Player from "@/components/game/battle/Player";
 import PageTransition from "@/components/game/ui/PageTransition";
 import TextButton from "@/components/game/ui/TextButton";
 import TextContainer from "@/components/game/ui/TextContainer";
-import { BattleType, Character, EnemyType, Move } from "@/types";
+import { Character, EnemyType } from "@/types";
 import localFont from "next/font/local";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/pages/game/battle/Index.module.css"
 import Music from "@/components/settings/Music";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import EnemyService from "@/services/EnemyService";
 import BattleService from "@/services/BattleService";
-import MoveService from "@/services/MoveService";
+import CharacterService from "@/services/CharacterService";
+import { useRouter, useParams } from "next/navigation";
 
 
 const quinquefiveFont = localFont({ src: "../fonts/quinque-five-font/Quinquefive-ALoRM.ttf" });
 
 const DynamicBattle: React.FC = () => {
     const router = useRouter();
-    const { battleId } = router.query;
+    const { battleId } = useParams();
     const [character, setCharacter] = useState<Character>();
 
     const [enemies, setEnemies] = useState<EnemyType[]>([]);
@@ -35,100 +34,112 @@ const DynamicBattle: React.FC = () => {
 
     useEffect(() => {
         if(!battleId || typeof battleId !== "string") {router.back(); return;};
-        if(!JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token) router.push("/");
-        const urlBattleWorld = Number(battleId.split("-")[0]);
-        const urlBattleLevel = Number(battleId.split("-")[1]);
-        const maxBattle = JSON.parse(sessionStorage.getItem("character") || "{}")?.data;
-        const maxBattleWorld = Number(maxBattle.progress.split("-")[0]);
-        const maxBattleLevel = Number(maxBattle.progress.split("-")[1]);
-
-        if(urlBattleWorld > maxBattleWorld || urlBattleLevel > maxBattleLevel) {
-            router.back();
-        }
+        const selectedWorld = Number(battleId.split("-")[0]);
+        const selectedLevel = Number(battleId.split("-")[1]);
 
         (async () => {
-            const response = await EnemyService.getEnemyTemplates(urlBattleWorld);
+            const playerChar: Character = await (await CharacterService.getCharacterData(router)).data;
 
-            if(response.status !== 200) return console.error("Failed to fetch enemy templates");
-
-            const enemyTemplates = response.data;
-            
-            // between 1-2 enemies
-            const enemyCount = Math.floor(Math.random() * 2) + 1;
-            const selectedEnemies: EnemyType[] = [];
-
-            for(let i = 0 ; i < enemyCount ; i++) {
-                const randomIndex = Math.floor(Math.random() * enemyTemplates.length);
-                selectedEnemies.push(enemyTemplates[randomIndex]);
+            if(selectedWorld > playerChar.progress.world || selectedLevel > playerChar.progress.level) {
+                router.back();
             }
 
-            const scaledEnemies = await scaleEnemyTemplate(selectedEnemies, urlBattleWorld, urlBattleLevel);
+            const newBattle = await BattleService.createBattle({ world: selectedWorld, level: selectedLevel }, router);
+            console.log(newBattle);
+
+            setEnemies(newBattle.data.enemies);
+            setCharacter(newBattle.data.character);
+
+            console.log(newBattle.data.character);
+
             // const newBattle = await makeBattle();
-            if(!scaledEnemies) return;
+            // console.log(newBattle);
+
+            // const response = await EnemyService.getEnemyTemplates(urlBattleWorld);
+
+            // if(response.status !== 200) return console.error("Failed to fetch enemy templates");
+
+            // const enemyTemplates = response.data;
+            
+            // // between 1-2 enemies
+            // const enemyCount = Math.floor(Math.random() * 2) + 1;
+            // const selectedEnemies: EnemyType[] = [];
+
+            // for(let i = 0 ; i < enemyCount ; i++) {
+            //     const randomIndex = Math.floor(Math.random() * enemyTemplates.length);
+            //     selectedEnemies.push(enemyTemplates[randomIndex]);
+            // }
+
+            // const scaledEnemies = await scaleEnemyTemplate(selectedEnemies, urlBattleWorld, urlBattleLevel);
+            // // const newBattle = await makeBattle();
+            // if(!scaledEnemies) return;
             // if(!newBattle.id) return;
             // linkEnemiesToBattle(scaledEnemies.data, newBattle.id);
-            console.log(scaledEnemies.data, maxBattle);
+            // console.log(scaledEnemies.data, maxBattle);
 
-            let userMoves = [];
+            // let userMoves = [];
 
-            for(let i of maxBattle.moveIds) {
-                const userMove = await MoveService.getMoveById(i)
-                if(!userMove.data) return;
-                userMoves.push(userMove.data);
-            }
+            // for(let i of maxBattle.moveIds) {
+            //     const userMove = await MoveService.getMoveById(i)
+            //     if(!userMove.data) return;
+            //     userMoves.push(userMove.data);
+            // }
 
-            const updatedEnemies = await Promise.all(scaledEnemies.data.map(async (enemy: { moveIds: any[]; }) => {
-                const moves = await Promise.all(enemy.moveIds.map(async (moveId) => {
-                    const enemyMove = await MoveService.getMoveById(moveId);
-                    if (!enemyMove.data) return null;
-                    return enemyMove.data;
-                }));
-                const validMoves = moves.filter(move => move !== null);
+            // const updatedEnemies = await Promise.all(scaledEnemies.data.map(async (enemy: { moveIds: any[]; }) => {
+            //     const moves = await Promise.all(enemy.moveIds.map(async (moveId) => {
+            //         const enemyMove = await MoveService.getMoveById(moveId);
+            //         if (!enemyMove.data) return null;
+            //         return enemyMove.data;
+            //     }));
+            //     const validMoves = moves.filter(move => move !== null);
 
-                return {
-                    ...enemy,
-                    moves: validMoves
-                };
-            }));
+            //     return {
+            //         ...enemy,
+            //         moves: validMoves
+            //     };
+            // }));
 
-            setEnemies(updatedEnemies);
-            setCharacter({...maxBattle, moves: userMoves});
+            // setEnemies(updatedEnemies);
+            // setCharacter({...maxBattle, moves: userMoves});
         })();
         return () => {};
     }, []);
 
-    const scaleEnemyTemplate = async (enemiesTemplate: EnemyType[], worldId: number, levelId: number) => {
-        const newEnemies = enemiesTemplate.map(enemyTemplate => {
-            enemyTemplate.defense = enemyTemplate.defense + (1 * worldId) + levelId;
-            enemyTemplate.healthPoints = enemyTemplate.healthPoints + 5 * worldId + levelId * 1.2;
-            enemyTemplate.strength = enemyTemplate.strength + (1 * worldId) + levelId;
-            enemyTemplate.magicDefense = enemyTemplate.magicDefense + (1 * worldId) + levelId;
-            enemyTemplate.magic = enemyTemplate.magic + (1 * worldId) + levelId;
-            enemyTemplate.speed = enemyTemplate.speed + (1 * worldId) + levelId;
-            enemyTemplate.dexterity = enemyTemplate.dexterity + (1 * worldId) + levelId;
-            enemyTemplate.luck = enemyTemplate.luck + (1 * worldId) + levelId;
-            enemyTemplate.level = enemyTemplate.level + (1 * worldId) + levelId;
-            return enemyTemplate
-        });
-        const createdEnemies = await EnemyService.createEnemies(newEnemies);
-        if(!createdEnemies) return;
-        return createdEnemies;
-    };
+    // const scaleEnemyTemplate = async (enemiesTemplate: EnemyType[], worldId: number, levelId: number) => {
+    //     const newEnemies = enemiesTemplate.map(enemyTemplate => {
+    //         enemyTemplate.defense = enemyTemplate.defense + (1 * worldId) + levelId;
+    //         enemyTemplate.healthPoints = enemyTemplate.healthPoints + 5 * worldId + levelId * 1.2;
+    //         enemyTemplate.strength = enemyTemplate.strength + (1 * worldId) + levelId;
+    //         enemyTemplate.magicDefense = enemyTemplate.magicDefense + (1 * worldId) + levelId;
+    //         enemyTemplate.magic = enemyTemplate.magic + (1 * worldId) + levelId;
+    //         enemyTemplate.speed = enemyTemplate.speed + (1 * worldId) + levelId;
+    //         enemyTemplate.dexterity = enemyTemplate.dexterity + (1 * worldId) + levelId;
+    //         enemyTemplate.luck = enemyTemplate.luck + (1 * worldId) + levelId;
+    //         enemyTemplate.level = enemyTemplate.level + (1 * worldId) + levelId;
+    //         return enemyTemplate
+    //     });
+    //     const createdEnemies = await EnemyService.createEnemies(newEnemies);
+    //     if(!createdEnemies) return;
+    //     return createdEnemies;
+    // };
 
-    const makeBattle = async (): Promise<BattleType> => {
-        const battleResponse = await BattleService.createBattle();
-        if(battleResponse.status !== 200) console.error("Something went wrong with battle creation");
+    // const makeBattle = async (): Promise<BattleType> => {
+    //     const checkExistingBattle = await BattleService.checkExistingBattles();
+    //     console.log(checkExistingBattle.data);
+    //     // const battleResponse = await BattleService.createBattle();
+    //     // if(battleResponse.status !== 200) console.error("Something went wrong with battle creation");
 
-        const battle = battleResponse.data;
-        return battle;
-    };
+    //     // const battle = battleResponse.data;
+    //     // console.log(battle);
+    //     return checkExistingBattle.data;
+    // };
 
-    const linkEnemiesToBattle = async (enemies: EnemyType[], battleId: number) => {
-        enemies.map(async enemy => {
-            if(!enemy.id) return;
-            const test = await EnemyService.addBattleToEnemy(battleId, enemy.id);
-        })
-    };
+    // const linkEnemiesToBattle = async (enemies: EnemyType[], battleId: number) => {
+    //     enemies.map(async enemy => {
+    //         if(!enemy.id) return;
+    //         const test = await EnemyService.addBattleToEnemy(battleId, enemy.id);
+    //     })
+    // };
 
     useEffect(() => {
         console.log(character, enemies);
@@ -146,7 +157,9 @@ const DynamicBattle: React.FC = () => {
 
     useEffect(() => {
         if(battleOver){
-            router.push("/game");
+            setTimeout(() => {
+                router.push("/game");
+            }, 3000);
         }
     }, [battleOver]);
 

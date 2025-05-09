@@ -1,5 +1,6 @@
 import prisma from './database';
 import { Move } from '../model/move';
+import { MoveType } from '../types';
 
 const getMoves = async (): Promise<Move[]> => {
     try {
@@ -13,7 +14,6 @@ const getMoves = async (): Promise<Move[]> => {
 
 const getMoveById = async (id: number): Promise<Move | null> => {
     try {
-        console.log(id);
         const movePrisma = await prisma.move.findFirst({
             where: { id: id }
         });
@@ -36,7 +36,7 @@ const getMoveByIdNormal = async (id: number): Promise<Move | null> => {
     }
 };
 
-const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: Move): Promise<Move> => {
+const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: MoveType): Promise<Move> => {
     try {
         const newMovePrisma = await prisma.move.create({
             data: {

@@ -28,7 +28,7 @@ const getMultipleMovesById = async (ids:  number[]): Promise<Move[]> => {
 }
 
 const createMove = async ({ name, attack, magicAttack, manaPoints, aoe }: MoveType): Promise<Move> => {
-    const move = new Move({ name, attack, magicAttack, manaPoints, aoe })
+    const move: MoveType = { name, attack, magicAttack, manaPoints, aoe };
     return await moveRepository.createMove(move);
 };
 

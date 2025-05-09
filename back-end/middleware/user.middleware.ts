@@ -4,7 +4,6 @@ import authenticateAccessToken from './authenticateAccessToken.middleware';
 export default function userMiddleWare(req: Request, res: Response, next: NextFunction) {
     try {
         const nonSecurePaths = ['/register', '/login'];
-        console.log(req.path);
         if (nonSecurePaths.includes(req.path)) {
             return next();
         }

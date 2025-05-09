@@ -1,5 +1,7 @@
 import prisma from './database';
 import { Character } from '../model/character';
+import { JsonValue } from '@prisma/client/runtime/library';
+import { CharacterType } from '../types';
 
 const getCharacters = async (): Promise<Character[]> => {
     try {
@@ -11,10 +13,26 @@ const getCharacters = async (): Promise<Character[]> => {
         });
         return charactersPrisma.map((characterPrisma) => Character.from(characterPrisma));
     } catch (error) {
-        console.error('Error fetching characters:', error);
-        throw new Error('Failed to fetch characters');
+        throw new Error(`Failed to fetch characters!\n\n\n${error}`);
     }
 };
+
+const getTemplateCharacters = async (): Promise<Character[] | null> => {
+    try {
+        const characterTemplate = await prisma.character.findMany({
+            orderBy: {
+                id: "asc"
+            },
+            take: 7,
+            include: {
+                moves: true,
+            }
+        });
+        return characterTemplate;
+    } catch(error) {
+        throw new Error(`Failed to fetch character templates!\n\n\n${error}`);
+    }
+}
 
 const getCharacterById = async (id: number): Promise<Character | null> => {
     try {
@@ -27,66 +45,51 @@ const getCharacterById = async (id: number): Promise<Character | null> => {
         });
         return characterPrisma ? Character.from(characterPrisma) : null;
     } catch (error) {
-        console.error('Error fetching character:', error);
-        throw new Error('Failed to fetch character');
+        throw new Error(`Failed to fetch character\n\n\n${error}`);
     }
 };
 
-const createCharacter = async ({
-    name,
-    level,
-    xp,
-    strength,
-    speed,
-    magic,
-    dexterity,
-    healthPoints,
-    manaPoints,
-    luck,
-    defense,
-    magicDefense,
-    progress,
-    characterClass,
-    moveIds,
-}: Character): Promise<Character> => {
+const createCharacter = async ( username: string, chosenTemplateCharacter: Character): Promise<Character> => {
     try {
-        if (!moveIds || moveIds.length === 0) {
-            throw new Error('Move IDs must be provided');
-        }
-
         const newCharacterPrisma = await prisma.character.create({
             data: {
-                name,
-                level,
-                xp,
-                strength,
-                speed,
-                magic,
-                dexterity,
-                healthPoints,
-                manaPoints,
-                luck,
-                defense,
-                magicDefense,
-                progress,
-                characterClass,
-                moves: {
-                    connect: moveIds.map((moveId: number) => ({ id: moveId })),
+                characterClass: chosenTemplateCharacter.characterClass,
+                name: chosenTemplateCharacter.name,
+                defense: chosenTemplateCharacter.defense,
+                dexterity: chosenTemplateCharacter.dexterity,
+                healthPoints: chosenTemplateCharacter.healthPoints,
+                level: chosenTemplateCharacter.level,
+                luck: chosenTemplateCharacter.luck,
+                magic: chosenTemplateCharacter.magic,
+                magicDefense: chosenTemplateCharacter.magicDefense,
+                manaPoints: chosenTemplateCharacter.manaPoints,
+                progress: chosenTemplateCharacter.progress,
+                strength: chosenTemplateCharacter.strength,
+                speed: chosenTemplateCharacter.speed,
+                xp: chosenTemplateCharacter.xp,
+                
+                user: {
+                    connect: {
+                        name: username,
+                    }
                 },
+                moves: {
+                    connect: chosenTemplateCharacter.moves.map((move) => ({
+                        id: move.id,
+                    }))
+                }
             },
             include: {
-                user: true,
+                user: false,
                 moves: true,
             },
         });
 
-        return Character.from(newCharacterPrisma);
+        return newCharacterPrisma;
     } catch (error) {
-        console.error('Error creating character:', error);
-        throw new Error(`Failed to create character with name ${name}`);
+        throw new Error(`Failed to create character with name: ${name}\n\n\n${error}`);
     }
 };
-
 
 const updateCharacter = async (
     id: number,
@@ -110,15 +113,11 @@ const updateCharacter = async (
                 magicDefense: data.magicDefense,
                 progress: data.progress,
                 characterClass: data.characterClass,
-                moves: data.moveIds
-                    ? {
-                        set: [],
-                        connect: data.moveIds.map(id => ({ id }))
-                    }
-                    : undefined,
+                moves: {
+                    connect: data.moves?.map(m => ({ id: m.id }))
+                }
             },
             include: {
-                user: true,
                 moves: true,
             },
         });
@@ -128,6 +127,27 @@ const updateCharacter = async (
         throw new Error('Failed to update character');
     }
 };
+
+const getCharacterByUserName = async (name: string): Promise<Character | null> => {
+    try {
+        const character = await prisma.character.findFirst({
+            where: {
+                user: {
+                    is: {
+                        name: name,
+                    }
+                }
+            },
+            include: {
+                battle: true,
+                moves: true,
+            }
+        })
+        return character;
+    } catch (error) {
+        throw new Error(`Error getting character with name: ${name}\n\n\n${error}`);
+    }
+}
 
 const deleteCharacter = async (id: number): Promise<void> => {
     try {
@@ -142,8 +162,10 @@ const deleteCharacter = async (id: number): Promise<void> => {
 
 export default {
     getCharacters,
+    getCharacterByUserName,
     getCharacterById,
     createCharacter,
     updateCharacter,
     deleteCharacter,
+    getTemplateCharacters,
 };

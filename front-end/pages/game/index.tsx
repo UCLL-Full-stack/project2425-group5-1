@@ -8,12 +8,6 @@ import { useRouter } from "next/navigation";
 const quinquefiveFont = localFont({ src: "./fonts/quinque-five-font/Quinquefive-ALoRM.ttf" });
 
 const Game: React.FC = () => {
-    const router = useRouter();
-
-    useEffect(() => {
-        if(!JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token) router.push("/");
-    }, []);
-
     return (
         <main className={quinquefiveFont.className}>
             <Village />

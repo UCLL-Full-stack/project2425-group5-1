@@ -3,23 +3,23 @@ import styles from "@/styles/main-menu/TemplateCharacterContainer.module.css";
 import TemplateCharacter from './TemplateCharacter';
 import { Character } from '@/types';
 import CharacterService from '@/services/CharacterService';
+import { useRouter } from 'next/navigation';
 
 interface Props {};
 
-interface TemplateCharacterType {
-  src: string;
-  name: string;
-}
-
 const TemplateCharacterContainer: React.FC<Props> = () => {
-  const [templateCharacters, setTemplateCharacters] = useState<(TemplateCharacterType & Character)[]>();
+  const [templateCharacters, setTemplateCharacters] = useState<(Character & {src: string})[]>();
+  const router = useRouter();
   useEffect(() => {
     (async () => {
-      const templates = await CharacterService.getCharacterTemplates();
-      templates.data.forEach((template: TemplateCharacterType & Character) => {
-        template.src = `/images/player/Human${template.name}.png`;
-      });
-      setTemplateCharacters(templates.data);
+      const templates = await CharacterService.getCharacterTemplates(router);
+      console.log(templates);
+      const characterWithSrc = templates.data.map((template: Character) => ({
+        ...template,
+        src: `/images/player/Human${template.name}.png`,
+      }));
+      console.log(characterWithSrc);
+      setTemplateCharacters(characterWithSrc);
     })();
   }, []);
 

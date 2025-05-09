@@ -1,8 +1,6 @@
 import prisma from './database';
 import { Enemy } from '../model/enemy';
-import { MoveType, worldId } from '../types';
-import moveRepository from './move.db';
-import { Move } from '../model/move';
+import { EnemyType } from '../types';
 
 const getEnemies = async (): Promise<Enemy[]> => {
     try {
@@ -11,58 +9,32 @@ const getEnemies = async (): Promise<Enemy[]> => {
                 moves: true,
             }
         });
-        return enemiesPrisma.map((enemyPrisma) => Enemy.from(enemyPrisma));
+        return enemiesPrisma;
     } catch ( error ) {
-        console.log('Error fetching enemies:', error);
-        throw new Error('Failed to fetch enemies');
+        throw new Error(`Failed to fetch enemies\n\n\n${error}`);
     }
 };
 
-const enemyTemplatesByWorld: {[key in string]: string[]} = {
-    "1": ["slime", "skeleton",],
-    "2": ["skeleton",],
-    "3": [],
-    "4": [],
-    "5": [],
-    "6": [],
-    "7": [],
-    "8": [],
-    "9": [],
-    "10": [],
-}
-const getEnemyTemplateByWorldId = async (worldId: string): Promise<Enemy[]> => {
+const getEnemiesByWorld = async (worldNumber: number): Promise<Enemy[]> => {
     try {
-        if (!enemyTemplatesByWorld.hasOwnProperty(worldId)) throw new Error(`World id does not exist in templates`);
-
-        const enemyArr = enemyTemplatesByWorld[worldId];
-
-        const enemyTemplate: Enemy[] = [];
-
-        await Promise.all(enemyArr.map(async name => {
-            const enemyPrisma = await prisma.enemy.findFirst({
-                where: { name: name },
-                include: {
-                    moves: true,
+        const enemiesPrisma = await prisma.enemy.findMany({
+            where: {
+                world: worldNumber,
+                AND: {
+                    isTemplate: true,
                 }
-            });
-            if(enemyPrisma) {
-                let newMoves: Move[] = []
-                enemyPrisma.moves.map(async move => {
-                    const moveStats = await moveRepository.getMoveById(move.id);
-                    if(!moveStats) return;
-                    newMoves.push(moveStats);
-                })
-                console.log(newMoves);
-                enemyTemplate.push(Enemy.from(enemyPrisma));
+            },
+            include: {
+                elements: true,
+                moves: true,
             }
-        }));
+        });
 
-        return enemyTemplate;
+        return enemiesPrisma;
     } catch (error) {
-        console.error(`Error getting template enemies by world id:`, error);
-        throw new Error('Failed to get template enemies by worldId');
+        throw new Error(`Failed to fetch enemies by world number\n\n\n${error}`);
     }
-};
+}
 
 const getEnemyById = async (id: number): Promise<Enemy | null> => {
     try {
@@ -72,79 +44,79 @@ const getEnemyById = async (id: number): Promise<Enemy | null> => {
                 moves: true,
             }
         });
-        return enemyPrisma ? Enemy.from(enemyPrisma) : null;
+        return enemyPrisma ? enemyPrisma : null;
     } catch ( error ) {
         console.error(`Error creating user:`, error);
         throw new Error('Failed to create user');
     }
 };
 
-const createEnemy = async ({ name, level, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, moveIds}: Enemy): Promise<Enemy> => {
+const createEnemy = async (newEnemy: EnemyType): Promise<Enemy> => {
     try {
-        if (!moveIds || moveIds.length === 0) {
-            throw new Error('Move IDs must be provided');
-        }
-        const newEnemyPrisma = await prisma.enemy.create({
+        if(!newEnemy.elements || !newEnemy.moves) throw new Error(`elements or moves missing from enemy!`);
+        
+        const enemy = prisma.enemy.create({
             data: {
-                name,
-                level,
-                strength,
-                speed,
-                magic,
-                dexterity,
-                healthPoints,
-                manaPoints,
-                luck,
-                defense,
-                magicDefense,
-                moves: {
-                    connect: moveIds.map((moveId: number) => ({ id: moveId })),
+                name: newEnemy.name,
+                strength: newEnemy.strength,
+                speed: newEnemy.speed,
+                defense: newEnemy.defense,
+                healthPoints: newEnemy.healthPoints,
+                manaPoints: newEnemy.manaPoints,
+                magic: newEnemy.magic,
+                dexterity: newEnemy.dexterity,
+                luck: newEnemy.luck,
+                magicDefense: newEnemy.magicDefense,
+                world: newEnemy.world,
+                isBoss: newEnemy.isBoss,
+                elements: {
+                    connect: newEnemy.elements.map(e => ({ id: e.id }))
                 },
-            },
-            include: {
-                moves: true,
+                moves: {
+                    connect: newEnemy.moves.map(m => ({ id: m.id }))
+                },
             }
         });
-        return Enemy.from(newEnemyPrisma);
-    } catch ( error ) {
-        console.log('Error creating enemy:', error);
-        throw new Error('Failed to create enemy');
-    }
-};
 
-const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => {
-    try {
-        const updatedEnemyPrisma = await prisma.enemy.update({
-            where: {id},
-            data: {
-                name: data.name,
-                level: data.level,
-                strength: data.strength,
-                speed: data.speed,
-                magic: data.magic,
-                dexterity: data.dexterity,
-                healthPoints: data.healthPoints,
-                manaPoints: data.manaPoints,
-                luck: data.luck,
-                defense: data.defense,
-                magicDefense: data.magicDefense,
-                moves: data.moveIds
-                    ? {
-                        set: [],
-                        connect: data.moveIds.map(id => ({ id }))
-                    }
-                    : undefined,
-            },
-            include: {
-                moves: true,
-            }
-        });
-        return Enemy.from(updatedEnemyPrisma);
-    } catch ( error ) {
-        console.log('Error updating enemy:', error);
-        throw new Error('Failed to update enemy');
+        return enemy;
+    } catch(error) {
+        throw new Error(`Failed to create new enemy\n\n\n${error}`);
     }
-};
+}
+
+// const updateEnemy = async (id: number, data: Partial<Enemy>): Promise<Enemy> => {
+//     try {
+//         const updatedEnemyPrisma = await prisma.enemy.update({
+//             where: {id},
+//             data: {
+//                 name: data.name,
+//                 level: data.level,
+//                 strength: data.strength,
+//                 speed: data.speed,
+//                 magic: data.magic,
+//                 dexterity: data.dexterity,
+//                 healthPoints: data.healthPoints,
+//                 manaPoints: data.manaPoints,
+//                 luck: data.luck,
+//                 defense: data.defense,
+//                 magicDefense: data.magicDefense,
+//                 moves: data.moveIds
+//                     ? {
+//                         set: [],
+//                         connect: data.moveIds.map(id => ({ id }))
+//                     }
+//                     : undefined,
+//             },
+//             include: {
+//                 moves: true,
+//             }
+//         });
+//         return Enemy.from(updatedEnemyPrisma);
+//     } catch ( error ) {
+//         console.log('Error updating enemy:', error);
+//         throw new Error('Failed to update enemy');
+//     }
+// };
 
 const deleteEnemy = async (id: number): Promise<void> => {
     try {
@@ -160,10 +132,10 @@ const deleteEnemy = async (id: number): Promise<void> => {
 const enemyRepository = {
     getEnemies,
     getEnemyById,
-    getEnemyTemplateByWorldId,
     createEnemy,
-    updateEnemy,
+    // updateEnemy,
     deleteEnemy,
+    getEnemiesByWorld,
 };
 
 export default enemyRepository;

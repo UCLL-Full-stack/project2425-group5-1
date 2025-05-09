@@ -1,41 +1,51 @@
 import characterRepository from '../repository/character.db';
 import { Character } from '../model/character';
 import { CharacterType } from '../types';
+import userRepository from '../repository/user.db';
 
 const getTemplateCharacters = async (): Promise<Character[]> => {
-    const characters = await characterRepository.getCharacters();
-    const characterTemplates = [];
-    for(let i = 0 ; i < 7 ; i++) {
-        characterTemplates.push(characters[i]);
+    const characters = await characterRepository.getTemplateCharacters();
+    if(!characters) {
+        throw new Error(`Something went wrong with fetching the character templates!\n\n${characters}`);
     }
-    return characterTemplates
+    return characters;
 };
 
-const getCharacter = async (id: number): Promise<Character | null> => {
-    const characters = await characterRepository.getCharacters();
-    const characterExists = characters.some((character) => character.id === id );
+const getCharacter = async (username: string): Promise<Character | null> => {
+    const character = await characterRepository.getCharacterByUserName(username);
+    console.log(character, username);
 
-    if (!characterExists) {
-        throw new Error(`Character with id ${id} does not exist`);
+    if (!character) {
+        throw new Error(`User with name ${username} does not have a character!`);
     }
 
-    return await characterRepository.getCharacterById(id);
+    return character;
 };
 
-const createCharacter = async ({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moveIds }: CharacterType): Promise<Character> => {
-    const character = new Character({ name, level, xp, strength, speed, magic, dexterity, healthPoints, manaPoints, luck, defense, magicDefense, progress, characterClass, moveIds });
-    return await characterRepository.createCharacter(character);
+const createCharacter = async (username: string, characterClass: string): Promise<Character> => {
+        // const existingCharacter = await characterRepository.getCharacterByUserName(username);
+        // console.log(existingCharacter);
+        // if(!existingCharacter || existingCharacter) {
+        //     throw new Error(`User with username ${username} does not exist or already has a character!`);
+        // }
+
+        const templateChar = await characterRepository.getTemplateCharacters();
+        if(!templateChar) throw new Error(`Template characters not found!`);
+
+        const chosenTemplateChar = templateChar.find(char => char.characterClass === characterClass);
+        if(!chosenTemplateChar) throw new Error(`Chosen character class does not exist!`);
+
+        return await characterRepository.createCharacter(username, chosenTemplateChar);
 };
 
-const updateCharacter = async (id: number, data: Partial<CharacterType>): Promise<Character> => {
+const updateCharacter = async (id: number, data: Partial<Character>): Promise<Character> => {
     const existingCharacter = await characterRepository.getCharacterById(id);
     if (!existingCharacter) {
         throw new Error(`Character with id ${id} does not exist`);
     }
 
     return await characterRepository.updateCharacter(id, {
-        ...data,
-        moveIds: data.moveIds ? data.moveIds : existingCharacter.moveIds,
+        moves: data.moves,
     });
 };
 

@@ -14,77 +14,91 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  name      String
-  email     String     @unique
-  password  String
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+  email             String            @unique
+  password          String
 
-  characterId Int?  @unique
-  character   Character? @relation(fields: [characterId], references: [id])
+  characterId       Int?              @unique
+  character         Character?        @relation(fields: [characterId], references: [id])
 }
 
 model Character {
-  id           Int    @id @default(autoincrement())
-  name         String
-  level        Int
-  xp           Int
-  strength     Int
-  speed        Int
-  magic        Int
-  dexterity    Int
-  healthPoints Int
-  manaPoints   Int
-  luck         Int
-  defense      Int
-  magicDefense Int
-  progress     String
-  characterClass        String
-  user User? @relation
+  id                Int               @id @default(autoincrement())
+  name              String
+  level             Int
+  xp                Int
+  strength          Int
+  speed             Int
+  magic             Int
+  dexterity         Int
+  healthPoints      Int
+  manaPoints        Int
+  luck              Int
+  defense           Int
+  magicDefense      Int
+  progress          Json
+  characterClass    String
+  user              User?             @relation
 
-  moves  Move[]
+  moves             Move[]
+  battle            Battle?
 }
 
 model Move {
-  id          Int     @id @default(autoincrement())
-  name        String
-  attack      Int
-  magicAttack Int
-  manaPoints  Int
-  aoe         Boolean
+  id                Int               @id @default(autoincrement())
+  name              String
+  attack            Int               @default(0)
+  magicAttack       Int               @default(0)
+  manaPoints        Int               @default(0)
+  aoe               Boolean
+  statusEffect      String?           // "burn", "freeze", "stun",
+  cooldown          Int?
 
-  characters Character[]
-  enemies   Enemy[]
+  elements          Element[]         @relation("MoveElement")
+  characters        Character[]
+  enemies           Enemy[]
 }
 
+model Element {
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+
+  enemies           Enemy[]           @relation("EnemyElement")
+  moves             Move[]            @relation("MoveElement")
+
+  strongAgainst     Element[]         @relation("ElementStrengths")
+  strongAgainstBy   Element[]         @relation("ElementStrengths")
+}
 
 model Enemy {
-  id           Int    @id @default(autoincrement())
-  name         String
-  level        Int
-  strength     Int
-  speed        Int
-  magic        Int
-  dexterity    Int
-  healthPoints Int
-  manaPoints   Int
-  luck         Int
-  defense      Int
-  magicDefense Int
+  id                Int               @id @default(autoincrement())
+  name              String
+  strength          Int
+  speed             Int
+  magic             Int
+  dexterity         Int
+  healthPoints      Int
+  manaPoints        Int
+  luck              Int
+  defense           Int
+  magicDefense      Int
+  world             Int
+  isBoss            Boolean
+  isTemplate        Boolean           @default(false)
 
-  moves Move[]
+  elements          Element[]         @relation("EnemyElement")
+  moves             Move[]
+  battles           Battle[]
 }
 
 model Battle {
-  id           Int    @id @default(autoincrement())
-  turnCount    Int
-
-  // Either "player" or "enemy"
-  currentTurn  String
-  
-  // Array of stringified json objects containing the current enemy
-  enemies      String
-  // stringified json object of a Character containing the current character
-  character    String
-  // Stringified json object containing gold, xp based on the level of the enemies
-  reward       String
+  id                Int               @id @default(autoincrement())
+  turnCount         Int
+  currentTurn       String            // "player" or "enemy"
+  enemies           Enemy[]
+  character         Character         @relation(fields: [characterId], references: [id])
+  characterId       Int               @unique
+  reward            Json              // { gold, xp & items[] }
+  createdAt         DateTime          @default(now())
 }

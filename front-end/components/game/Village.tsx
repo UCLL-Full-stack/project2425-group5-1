@@ -12,6 +12,7 @@ import TextButton from './ui/TextButton';
 import { useRouter } from 'next/navigation';
 import PageTransition from './ui/PageTransition';
 import UserService from '@/services/UserService';
+import CharacterService from '@/services/CharacterService';
 
 export default function Village() {
     const ref = useRef(null);
@@ -20,19 +21,18 @@ export default function Village() {
     const [clickHandler, setClickHandler] = useState<"merchant" | "hatman" | "woman" | "questboard" | "">("");
     const [levelId, setLevelId] = useState<string>("");
     const [pageTransition, setPageTransition] = useState<boolean>(false);
-    const [currentLevel, setCurrentLevel] = useState<string>("1-1");
+    const [currentLevel, setCurrentLevel] = useState<{world: number, level: number}>({world: 1, level: 1});
     const [levelArr, setLevelArr] = useState<string[]>([]);
 
     useEffect(() => {
+
         (async () => {
-            if(sessionStorage.getItem("character")) return;
-            const loggedInUser = sessionStorage.getItem("loggedInUser");
-            if(!loggedInUser) return;
-            const user = JSON.parse(loggedInUser);
-            if(!user) return;
-            const character = await UserService.getCharacterData(user.user.id);
+            const check = await UserService.checkJwt(router);
+            if(check === "undefined") router.push("/characterCreator");
+
+            const character = await CharacterService.getCharacterData(router);
+            console.log(character);
             if(!character) return;
-            sessionStorage.setItem("character", JSON.stringify(character));
             setCurrentLevel(character.data.progress);
         })();
 
@@ -60,8 +60,8 @@ export default function Village() {
     }, [currentLevel]);
 
     const handleLevels = () => {
-        const world = Number(currentLevel.split("-")[0]);
-        const maxLevel = Number(currentLevel.split("-")[1]);
+        const world = currentLevel.world;
+        const maxLevel = currentLevel.level;
         const newLevelArr = [];
         for(let level = 1; level <= maxLevel; level++) {
             newLevelArr.push(`${world}-${level}`);

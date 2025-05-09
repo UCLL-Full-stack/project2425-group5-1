@@ -1,6 +1,5 @@
 import express, {Request, Response} from 'express';
 import EnemyService from '../service/enemy.service';
-import { worldId } from '../types';
 
 const router = express.Router()
 
@@ -8,18 +7,6 @@ router.get('/', async (req: Request, res: Response) => {
     try {
         const enemies = await EnemyService.getAllEnemies();
         res.json(enemies);
-    } catch (error) {
-        const err = error as Error;
-        res.status(500).json({ message: err.message });
-    }
-});
-
-router.get("/template/:worldId", async (req: Request, res: Response) => {
-    try {
-        const { worldId } = req.params;
-        
-        const enemyTemplates = await EnemyService.getEnemyTemplates(worldId);
-        res.status(200).json(enemyTemplates);
     } catch (error) {
         const err = error as Error;
         res.status(500).json({ message: err.message });
@@ -40,36 +27,36 @@ router.get('/:id', async (req: Request, res: Response) => {
    }
 });
 
-router.post('/', async (req: Request, res: Response) => {
-   try {
-       const newEnemy = await EnemyService.createEnemy(req.body);
-       res.status(201).json(newEnemy);
-   } catch (error) {
-       const err = error as Error;
-       res.status(500).json({ message: err.message });
-   }
-});
+// router.post('/', async (req: Request, res: Response) => {
+//    try {
+//        const newEnemy = await EnemyService.createEnemy(req.body);
+//        res.status(201).json(newEnemy);
+//    } catch (error) {
+//        const err = error as Error;
+//        res.status(500).json({ message: err.message });
+//    }
+// });
 
-router.post('/enemies', async (req: Request, res: Response) => {
-    try {
-        const newEnemies = await EnemyService.createEnemies(req.body);
-        res.status(200).json(newEnemies);
-    } catch (error) {
-       const err = error as Error;
-       res.status(500).json({ message: err.message });
-    }
-});
+// router.post('/enemies', async (req: Request, res: Response) => {
+//     try {
+//         const newEnemies = await EnemyService.createEnemies(req.body);
+//         res.status(200).json(newEnemies);
+//     } catch (error) {
+//        const err = error as Error;
+//        res.status(500).json({ message: err.message });
+//     }
+// });
 
-router.put('/:id', async (req: Request, res: Response) => {
-   const { id } = req.params;
-   try {
-       const updatedEnemy = await EnemyService.updateEnemy(Number(id), req.body);
-       res.json(updatedEnemy);
-   } catch (error) {
-       const err = error as Error;
-       res.status(500).json({ message: err.message });
-   }
-});
+// router.put('/:id', async (req: Request, res: Response) => {
+//    const { id } = req.params;
+//    try {
+//        const updatedEnemy = await EnemyService.updateEnemy(Number(id), req.body);
+//        res.json(updatedEnemy);
+//    } catch (error) {
+//        const err = error as Error;
+//        res.status(500).json({ message: err.message });
+//    }
+// });
 
 router.delete('/:id', async (req: Request, res: Response) => {
    const { id } = req.params;

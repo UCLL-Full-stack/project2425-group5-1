@@ -3,22 +3,17 @@ import jwt from 'jsonwebtoken';
 
 export default function authenticateAccessToken(req: Request, res: Response, next: NextFunction) {
     try {
-        if (!req.headers.authorization) {
+        const jwtToken = req.signedCookies.jwt;
+        
+        if (!jwtToken) {
             return res.status(401).json({ message: 'No token provided' });
         }
-        const authHeader = req.headers.authorization;
-        let token = JSON.parse(authHeader);
-        console.log(token);
-        if (token == null) {
-            return res.status(401).json({ message: `Unauthorized` });
-        }
-        jwt.verify(token, process.env.TOKEN_SECRET || 'temporary_dev_secret', (err: null | Error, decoded: any) => {
-                console.log(err);
+
+        jwt.verify(jwtToken, process.env.TOKEN_SECRET || 'temporary_dev_secret', (err: null | Error, decoded: any) => {
                 if (err) {
-                    return res.sendStatus(403);
+                    return res.sendStatus(403).json({ message: "Forbidden" });
                 }
-                //@ts-ignore:next-line
-                // req.username = decoded.name;
+                res.locals.username = decoded.name;
                 next();
         });
     } catch (error) {

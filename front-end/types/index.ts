@@ -23,7 +23,10 @@ type Character = {
   luck: number;
   defense: number;
   magicDefense: number;
-  progress: string;
+  progress: {
+    world: number,
+    level: number,
+  };
   inventory?: Item[];
   moves: Move[];
   userId?: number;
